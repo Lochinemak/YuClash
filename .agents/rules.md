@@ -72,7 +72,7 @@ the invariant hard to break beats prose that asks the next reader not to break i
 
 ## Lifecycle Rules
 
-- Desktop process ownership belongs to `DesktopCoreLifecycle`; do not start/kill `FlClashCore` from providers, widgets,
+- Desktop process ownership belongs to `DesktopCoreLifecycle`; do not start/kill `YuClashCore` from providers, widgets,
   managers, or ad hoc exit callbacks. Acquire and release it through a `CoreProcessLease`.
 - `CoreController.close()` and platform `close()` implementations are terminal and idempotent. Application shutdown must
   stay centralized in `SystemAction`/`SystemExitCoordinator`.
@@ -86,6 +86,9 @@ the invariant hard to break beats prose that asks the next reader not to break i
   overwrite `coreStatusProvider`, and a real failure must bypass/cancel the hold immediately.
 
 ## Testing Rules
+
+Unit and widget tests are allowed. Keep them focused on changed behavior and integration contracts, and run them with
+`flutter test` rather than `dart test`.
 
 The `core/` directory is excluded from automated coverage accounting. Do not add coverage instrumentation or coverage
 collection for code under `core/`. CI still runs `CGO_ENABLED=0 go test .` and `go vet .` to compile/check the Go wrapper;

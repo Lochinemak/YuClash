@@ -1,4 +1,4 @@
-cask "flclash" do
+cask "yuclash" do
   version "VERSION"
 
   on_macos do
@@ -7,12 +7,12 @@ cask "flclash" do
     sha256 arm:   "ARM_SHA256",
            intel: "AMD_SHA256"
 
-    url "https://github.com/chen08209/FlClash/releases/download/v#{version}/FlClash-#{version}-macos-#{arch}.dmg"
+    url "https://github.com/Little-Orange-Limited/YuClash/releases/download/v#{version}/YuClash-#{version}-macos-#{arch}.dmg"
   end
 
-  name "FlClash"
+  name "YuClash"
   desc "Multi-platform proxy client based on ClashMeta"
-  homepage "https://github.com/chen08209/FlClash"
+  homepage "https://github.com/Little-Orange-Limited/YuClash"
 
   livecheck do
     url :url
@@ -21,19 +21,19 @@ cask "flclash" do
 
   depends_on :macos
 
-  app "FlClash.app"
+  app "YuClash.app"
 
   postflight do
     system_command "xattr",
-                   args: ["-rd", "com.apple.quarantine", "#{appdir}/FlClash.app"]
+                   args: ["-rd", "com.apple.quarantine", "#{appdir}/YuClash.app"]
   end
 
-  uninstall quit: "com.follow.clash"
+  uninstall quit: "com.yucloud.clash"
 
   zap trash: [
-    "~/Library/Application Support/com.follow.clash",
-    "~/Library/Caches/com.follow.clash",
-    "~/Library/Preferences/com.follow.clash.plist",
-    "~/Library/Saved Application State/com.follow.clash.savedState",
+    "~/Library/Application Support/com.yucloud.clash",
+    "~/Library/Caches/com.yucloud.clash",
+    "~/Library/Preferences/com.yucloud.clash.plist",
+    "~/Library/Saved Application State/com.yucloud.clash.savedState",
   ]
 end

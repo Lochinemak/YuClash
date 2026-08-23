@@ -5,7 +5,7 @@
 
     <application>
         <service
-            android:name=".VpnService"
+            android:name="com.follow.clash.service.VpnService"
             android:exported="false"
             android:foregroundServiceType="specialUse"
             android:permission="android.permission.BIND_VPN_SERVICE">
@@ -18,7 +18,7 @@
         </service>
 
         <service
-            android:name=".ProxyService"
+            android:name="com.follow.clash.service.ProxyService"
             android:exported="false"
             android:foregroundServiceType="specialUse">
             <property
@@ -27,7 +27,7 @@
         </service>
 
         <provider
-            android:name=".FilesProvider"
+            android:name="com.follow.clash.service.FilesProvider"
             android:authorities="${applicationId}.files"
             android:exported="true"
             android:grantUriPermissions="true"

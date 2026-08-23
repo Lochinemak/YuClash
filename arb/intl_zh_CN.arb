@@ -440,7 +440,7 @@
   "expectedStatus": "预期状态",
   "selectProxies": "选择代理",
   "inputProxyGroupName": "输入策略组名称",
-  "helperCorruptTip": "Helper 服务不可用，无法启用 TUN 模式，请重新安装 FlClash。",
+  "helperCorruptTip": "Helper 服务不可用，无法启用 TUN 模式，请重新安装 YuClash。",
   "hideFromList": "从列表中隐藏",
   "testWhenUsed": "使用时测试",
   "disableUDP": "禁用UDP",
@@ -553,5 +553,18 @@
   "geoSkipped": "{name} 已是最新版本",
   "geoUpdated": "{name} 已更新",
   "secondsCount": "{count} 秒",
-  "entriesCount": "{count} 个条目"
+  "entriesCount": "{count} 个条目",
+  "v2boardAccount": "V2Board 账号",
+  "serverAddress": "服务器地址",
+  "email": "邮箱",
+  "emailTip": "请输入有效的邮箱地址",
+  "login": "登录",
+  "logout": "退出登录",
+  "hide": "隐藏",
+  "refreshSubscription": "刷新订阅",
+  "subscriptionUpdated": "订阅已更新",
+  "invalidV2boardServerUrl": "请输入有效的 V2Board 服务器地址",
+  "invalidV2boardSubscriptionUrl": "V2Board 返回了无效的订阅链接",
+  "invalidV2boardResponse": "V2Board 服务器返回了无效响应",
+  "missingV2boardSubscriptionUrl": "V2Board 账号未提供订阅链接"
 }
