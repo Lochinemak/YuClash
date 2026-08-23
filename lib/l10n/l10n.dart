@@ -4544,6 +4544,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Service code`
+  String get serviceCode {
+    return Intl.message(
+      'Service code',
+      name: 'serviceCode',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Email`
   String get email {
     return Intl.message('Email', name: 'email', desc: '', args: []);
@@ -4594,11 +4604,21 @@ class AppLocalizations {
     );
   }
 
-  /// `Please enter a valid V2Board server URL`
-  String get invalidV2boardServerUrl {
+  /// `Service configuration is unavailable`
+  String get invalidV2boardServerConfiguration {
     return Intl.message(
-      'Please enter a valid V2Board server URL',
-      name: 'invalidV2boardServerUrl',
+      'Service configuration is unavailable',
+      name: 'invalidV2boardServerConfiguration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a valid service code`
+  String get invalidV2boardServerCode {
+    return Intl.message(
+      'Enter a valid service code',
+      name: 'invalidV2boardServerCode',
       desc: '',
       args: [],
     );

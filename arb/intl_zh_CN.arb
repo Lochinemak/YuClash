@@ -556,6 +556,7 @@
   "entriesCount": "{count} 个条目",
   "v2boardAccount": "V2Board 账号",
   "serverAddress": "服务器地址",
+  "serviceCode": "服务代码",
   "email": "邮箱",
   "emailTip": "请输入有效的邮箱地址",
   "login": "登录",
@@ -563,7 +564,8 @@
   "hide": "隐藏",
   "refreshSubscription": "刷新订阅",
   "subscriptionUpdated": "订阅已更新",
-  "invalidV2boardServerUrl": "请输入有效的 V2Board 服务器地址",
+  "invalidV2boardServerConfiguration": "服务配置暂不可用",
+  "invalidV2boardServerCode": "请输入有效的服务代码",
   "invalidV2boardSubscriptionUrl": "V2Board 返回了无效的订阅链接",
   "invalidV2boardResponse": "V2Board 服务器返回了无效响应",
   "missingV2boardSubscriptionUrl": "V2Board 账号未提供订阅链接"

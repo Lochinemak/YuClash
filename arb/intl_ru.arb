@@ -556,6 +556,7 @@
   "entriesCount": "{count} записей",
   "v2boardAccount": "Учетная запись V2Board",
   "serverAddress": "Адрес сервера",
+  "serviceCode": "Код сервиса",
   "email": "Электронная почта",
   "emailTip": "Введите корректный адрес электронной почты",
   "login": "Войти",
@@ -563,7 +564,8 @@
   "hide": "Скрыть",
   "refreshSubscription": "Обновить подписку",
   "subscriptionUpdated": "Подписка обновлена",
-  "invalidV2boardServerUrl": "Введите корректный URL сервера V2Board",
+  "invalidV2boardServerConfiguration": "Конфигурация сервиса недоступна",
+  "invalidV2boardServerCode": "Введите корректный код сервиса",
   "invalidV2boardSubscriptionUrl": "V2Board вернул некорректный URL подписки",
   "invalidV2boardResponse": "Сервер V2Board вернул некорректный ответ",
   "missingV2boardSubscriptionUrl": "Для учетной записи V2Board отсутствует URL подписки"

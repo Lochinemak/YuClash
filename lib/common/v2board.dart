@@ -9,7 +9,8 @@ import 'preferences.dart';
 enum V2boardErrorType {
   invalidLoginResponse,
   missingSubscriptionUrl,
-  invalidServerUrl,
+  invalidServerConfiguration,
+  invalidServerCode,
   invalidSubscriptionUrl,
   network,
   server,
@@ -173,10 +174,55 @@ String normalizeV2boardBaseUrl(String value) {
   if (uri == null ||
       !{'http', 'https'}.contains(uri.scheme) ||
       uri.host.isEmpty) {
-    throw const V2boardException(V2boardErrorType.invalidServerUrl);
+    throw const V2boardException(V2boardErrorType.invalidServerConfiguration);
   }
   final path = uri.path.endsWith('/') ? uri.path : '${uri.path}/';
   return uri.replace(path: path, query: null, fragment: null).toString();
+}
+
+String resolveV2boardBaseUrl(
+  String code, {
+  String serverMapJson = v2boardServerMapJson,
+}) {
+  final normalizedCode = code.trim().toUpperCase();
+  if (normalizedCode.isEmpty) {
+    throw const V2boardException(V2boardErrorType.invalidServerCode);
+  }
+
+  try {
+    final decoded = jsonDecode(serverMapJson);
+    if (decoded is! Map) {
+      throw const V2boardException(V2boardErrorType.invalidServerConfiguration);
+    }
+
+    String? baseUrl;
+    final normalizedCodes = <String>{};
+    for (final entry in decoded.entries) {
+      if (entry.key is! String || entry.value is! String) {
+        throw const V2boardException(
+          V2boardErrorType.invalidServerConfiguration,
+        );
+      }
+      final configuredCode = (entry.key as String).trim().toUpperCase();
+      if (configuredCode.isEmpty || !normalizedCodes.add(configuredCode)) {
+        throw const V2boardException(
+          V2boardErrorType.invalidServerConfiguration,
+        );
+      }
+      if (configuredCode == normalizedCode) {
+        baseUrl = entry.value as String;
+      }
+    }
+
+    if (baseUrl == null) {
+      throw const V2boardException(V2boardErrorType.invalidServerCode);
+    }
+    return normalizeV2boardBaseUrl(baseUrl);
+  } on V2boardException {
+    rethrow;
+  } catch (_) {
+    throw const V2boardException(V2boardErrorType.invalidServerConfiguration);
+  }
 }
 
 String clashSubscriptionUrl(String value) {

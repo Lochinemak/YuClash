@@ -10,7 +10,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:flutter/material.dart';
 
 const appName = 'YuClash';
-const v2boardBaseUrl = String.fromEnvironment('V2BOARD_BASE_URL');
+const v2boardServerMapJson = String.fromEnvironment('V2BOARD_BASE_URL');
 const v2boardProfileName = String.fromEnvironment(
   'V2BOARD_PROFILE_NAME',
   defaultValue: 'YuCloud',

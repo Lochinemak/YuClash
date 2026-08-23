@@ -14,8 +14,10 @@ String v2boardErrorText(BuildContext context, Object error) {
       appLocalizations.invalidV2boardResponse,
     V2boardErrorType.missingSubscriptionUrl =>
       appLocalizations.missingV2boardSubscriptionUrl,
-    V2boardErrorType.invalidServerUrl =>
-      appLocalizations.invalidV2boardServerUrl,
+    V2boardErrorType.invalidServerConfiguration =>
+      appLocalizations.invalidV2boardServerConfiguration,
+    V2boardErrorType.invalidServerCode =>
+      appLocalizations.invalidV2boardServerCode,
     V2boardErrorType.invalidSubscriptionUrl =>
       appLocalizations.invalidV2boardSubscriptionUrl,
     V2boardErrorType.network => appLocalizations.networkException,

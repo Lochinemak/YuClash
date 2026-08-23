@@ -358,8 +358,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidV2boardResponse": MessageLookupByLibrary.simpleMessage(
       "V2Board 服务器返回了无效响应",
     ),
-    "invalidV2boardServerUrl": MessageLookupByLibrary.simpleMessage(
-      "请输入有效的 V2Board 服务器地址",
+    "invalidV2boardServerCode": MessageLookupByLibrary.simpleMessage(
+      "请输入有效的服务代码",
+    ),
+    "invalidV2boardServerConfiguration": MessageLookupByLibrary.simpleMessage(
+      "服务配置暂不可用",
     ),
     "invalidV2boardSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
       "V2Board 返回了无效的订阅链接",
@@ -674,6 +677,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "selected": MessageLookupByLibrary.simpleMessage("已选择"),
     "selectedCountTitle": m23,
     "serverAddress": MessageLookupByLibrary.simpleMessage("服务器地址"),
+    "serviceCode": MessageLookupByLibrary.simpleMessage("服务代码"),
     "settings": MessageLookupByLibrary.simpleMessage("设置"),
     "show": MessageLookupByLibrary.simpleMessage("显示"),
     "shrink": MessageLookupByLibrary.simpleMessage("紧凑"),
