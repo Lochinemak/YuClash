@@ -75,7 +75,8 @@ brew install --cask yuclash
 
 2. Install `Flutter` and `Golang` environment
 
-   Set `V2BOARD_BASE_URL` to prefill the V2Board server in release builds.
+   Set `V2BOARD_BASE_URL` to a service-code JSON map, for example
+   `{"SERVICE_CODE":"https://example.com"}`.
 
 3. Build Application
 

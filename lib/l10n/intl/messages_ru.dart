@@ -529,8 +529,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidV2boardResponse": MessageLookupByLibrary.simpleMessage(
       "Сервер V2Board вернул некорректный ответ",
     ),
-    "invalidV2boardServerUrl": MessageLookupByLibrary.simpleMessage(
-      "Введите корректный URL сервера V2Board",
+    "invalidV2boardServerCode": MessageLookupByLibrary.simpleMessage(
+      "Введите корректный код сервиса",
+    ),
+    "invalidV2boardServerConfiguration": MessageLookupByLibrary.simpleMessage(
+      "Конфигурация сервиса недоступна",
     ),
     "invalidV2boardSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
       "V2Board вернул некорректный URL подписки",
@@ -1009,6 +1012,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "selected": MessageLookupByLibrary.simpleMessage("Выбрано"),
     "selectedCountTitle": m23,
     "serverAddress": MessageLookupByLibrary.simpleMessage("Адрес сервера"),
+    "serviceCode": MessageLookupByLibrary.simpleMessage("Код сервиса"),
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
     "shrink": MessageLookupByLibrary.simpleMessage("Сжать"),

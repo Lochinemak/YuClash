@@ -510,8 +510,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidV2boardResponse": MessageLookupByLibrary.simpleMessage(
       "The V2Board server returned an invalid response",
     ),
-    "invalidV2boardServerUrl": MessageLookupByLibrary.simpleMessage(
-      "Please enter a valid V2Board server URL",
+    "invalidV2boardServerCode": MessageLookupByLibrary.simpleMessage(
+      "Enter a valid service code",
+    ),
+    "invalidV2boardServerConfiguration": MessageLookupByLibrary.simpleMessage(
+      "Service configuration is unavailable",
     ),
     "invalidV2boardSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
       "V2Board returned an invalid subscription URL",
@@ -962,6 +965,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
     "selectedCountTitle": m23,
     "serverAddress": MessageLookupByLibrary.simpleMessage("Server address"),
+    "serviceCode": MessageLookupByLibrary.simpleMessage("Service code"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),

@@ -402,8 +402,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidV2boardResponse": MessageLookupByLibrary.simpleMessage(
       "V2Board サーバーから無効な応答が返されました",
     ),
-    "invalidV2boardServerUrl": MessageLookupByLibrary.simpleMessage(
-      "有効な V2Board サーバー URL を入力してください",
+    "invalidV2boardServerCode": MessageLookupByLibrary.simpleMessage(
+      "有効なサービスコードを入力してください",
+    ),
+    "invalidV2boardServerConfiguration": MessageLookupByLibrary.simpleMessage(
+      "サービス設定を利用できません",
     ),
     "invalidV2boardSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
       "V2Board から無効な購読 URL が返されました",
@@ -780,6 +783,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "selected": MessageLookupByLibrary.simpleMessage("選択済み"),
     "selectedCountTitle": m23,
     "serverAddress": MessageLookupByLibrary.simpleMessage("サーバーアドレス"),
+    "serviceCode": MessageLookupByLibrary.simpleMessage("サービスコード"),
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "show": MessageLookupByLibrary.simpleMessage("表示"),
     "shrink": MessageLookupByLibrary.simpleMessage("縮小"),

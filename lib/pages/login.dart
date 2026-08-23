@@ -49,26 +49,21 @@ class V2boardLoginPage extends ConsumerStatefulWidget {
 
 class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _serverController;
+  final _serverCodeController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _serverController = TextEditingController(text: v2boardBaseUrl);
-  }
 
   Future<void> _submit() async {
     if (widget.state.loading || !_formKey.currentState!.validate()) {
       return;
     }
     try {
+      final baseUrl = resolveV2boardBaseUrl(_serverCodeController.text);
       await ref
           .read(v2boardActionProvider.notifier)
           .login(
-            baseUrl: _serverController.text,
+            baseUrl: baseUrl,
             email: _emailController.text,
             password: _passwordController.text,
           );
@@ -77,7 +72,7 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
 
   @override
   void dispose() {
-    _serverController.dispose();
+    _serverCodeController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -122,25 +117,24 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
                       ),
                       const SizedBox(height: 32),
                       TextFormField(
-                        controller: _serverController,
+                        controller: _serverCodeController,
                         enabled: !widget.state.loading,
-                        keyboardType: TextInputType.url,
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.characters,
                         textInputAction: TextInputAction.next,
-                        inputFormatters: TextInputLimits.limit(
-                          TextInputLimits.url,
-                        ),
-                        autofillHints: const [AutofillHints.url],
+                        autocorrect: false,
+                        enableSuggestions: false,
                         decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.dns_outlined),
+                          prefixIcon: const Icon(Icons.key_outlined),
                           border: const OutlineInputBorder(),
-                          labelText: appLocalizations.serverAddress,
+                          labelText: appLocalizations.serviceCode,
                         ),
                         validator: (value) {
                           try {
-                            normalizeV2boardBaseUrl(value ?? '');
+                            resolveV2boardBaseUrl(value ?? '');
                             return null;
-                          } catch (_) {
-                            return appLocalizations.invalidV2boardServerUrl;
+                          } catch (error) {
+                            return v2boardErrorText(context, error);
                           }
                         },
                       ),

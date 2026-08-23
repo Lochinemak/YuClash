@@ -75,7 +75,8 @@ brew install --cask yuclash
 
 2. 安装 `Flutter` 以及 `Golang` 环境
 
-   发布构建可通过 `V2BOARD_BASE_URL` 预填 V2Board 服务器地址。
+   将 `V2BOARD_BASE_URL` 配置为服务代码 JSON 映射，例如
+   `{"SERVICE_CODE":"https://example.com"}`。
 
 3. 构建应用
 

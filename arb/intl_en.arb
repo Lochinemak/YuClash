@@ -556,6 +556,7 @@
   "entriesCount": "{count} entries",
   "v2boardAccount": "V2Board account",
   "serverAddress": "Server address",
+  "serviceCode": "Service code",
   "email": "Email",
   "emailTip": "Enter a valid email address",
   "login": "Sign in",
@@ -563,7 +564,8 @@
   "hide": "Hide",
   "refreshSubscription": "Refresh subscription",
   "subscriptionUpdated": "Subscription updated",
-  "invalidV2boardServerUrl": "Please enter a valid V2Board server URL",
+  "invalidV2boardServerConfiguration": "Service configuration is unavailable",
+  "invalidV2boardServerCode": "Enter a valid service code",
   "invalidV2boardSubscriptionUrl": "V2Board returned an invalid subscription URL",
   "invalidV2boardResponse": "The V2Board server returned an invalid response",
   "missingV2boardSubscriptionUrl": "The V2Board account has no subscription URL"
