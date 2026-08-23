@@ -111,8 +111,16 @@ List<String> createFlutterBuildArgs({
   return flutterBuildArgs;
 }
 
-Map<String, String> createBuildEnvironment(String env) {
-  return {'APP_ENV': env};
+Map<String, String> createBuildEnvironment(
+  String env, {
+  String? v2boardBaseUrl,
+}) {
+  final normalizedV2boardBaseUrl = v2boardBaseUrl?.trim();
+  return {
+    'APP_ENV': env,
+    if (normalizedV2boardBaseUrl?.isNotEmpty == true)
+      'V2BOARD_BASE_URL': normalizedV2boardBaseUrl!,
+  };
 }
 
 String _getTargets(String platform, String arch, String? customTargets) {
@@ -141,7 +149,14 @@ Future<int> _package(
   required bool verbose,
 }) async {
   final file = File(p.join(rootDir, 'env.json'));
-  await file.writeAsString(jsonEncode(createBuildEnvironment(env)));
+  await file.writeAsString(
+    jsonEncode(
+      createBuildEnvironment(
+        env,
+        v2boardBaseUrl: Platform.environment['V2BOARD_BASE_URL'],
+      ),
+    ),
+  );
 
   final flutterBuildArgs = createFlutterBuildArgs(
     platform: platform,
@@ -161,7 +176,7 @@ Future<int> _package(
     'activate',
     '-s',
     'git',
-    'https://github.com/chen08209/flutter_distributor.git',
+    'https://github.com/Lochinemak/flutter_distributor.git',
     '--git-ref',
     'FlClash',
     '--git-path',

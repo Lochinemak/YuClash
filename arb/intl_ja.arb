@@ -553,5 +553,18 @@
   "geoSkipped": "{name} はすでに最新です",
   "geoUpdated": "{name} 更新済み",
   "secondsCount": "{count} 秒",
-  "entriesCount": "{count} エントリ"
+  "entriesCount": "{count} エントリ",
+  "v2boardAccount": "V2Boardアカウント",
+  "serverAddress": "サーバーアドレス",
+  "email": "メールアドレス",
+  "emailTip": "有効なメールアドレスを入力してください",
+  "login": "ログイン",
+  "logout": "ログアウト",
+  "hide": "非表示",
+  "refreshSubscription": "サブスクリプションを更新",
+  "subscriptionUpdated": "サブスクリプションを更新しました",
+  "invalidV2boardServerUrl": "有効な V2Board サーバー URL を入力してください",
+  "invalidV2boardSubscriptionUrl": "V2Board から無効な購読 URL が返されました",
+  "invalidV2boardResponse": "V2Board サーバーから無効な応答が返されました",
+  "missingV2boardSubscriptionUrl": "V2Board アカウントに購読 URL がありません"
 }
