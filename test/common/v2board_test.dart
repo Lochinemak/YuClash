@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('V2boardApiClient', () {
-    test('logs in with object auth data and returns a Clash URL', () async {
+    test('logs in with object auth data and returns a Clash Meta URL', () async {
       final adapter = _QueueAdapter([
         _jsonResponse({
           'data': {'auth_data': 'session-token'},
@@ -29,11 +29,11 @@ void main() {
 
       expect(session.baseUrl, 'https://panel.example/');
       expect(session.authData, 'session-token');
-      expect(session.subscriptionUrl, contains('flag=clash'));
+      expect(session.subscriptionUrl, contains('flag=clashmeta'));
       expect(adapter.requests.last.headers['Authorization'], 'session-token');
     });
 
-    test('supports legacy string auth data and Clash URL', () async {
+    test('supports legacy string auth data and Clash Meta URL', () async {
       final adapter = _QueueAdapter([
         _jsonResponse({'data': 'legacy-token'}),
         _jsonResponse({
@@ -54,7 +54,7 @@ void main() {
       expect(session.authData, 'legacy-token');
       expect(
         session.subscriptionUrl,
-        'https://subscribe.example/client?token=abc&flag=clash',
+        'https://subscribe.example/client?token=abc&flag=clashmeta',
       );
     });
 

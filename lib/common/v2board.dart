@@ -233,7 +233,7 @@ String clashSubscriptionUrl(String value) {
     throw const V2boardException(V2boardErrorType.invalidSubscriptionUrl);
   }
   final queryParameters = Map<String, String>.from(uri.queryParameters);
-  queryParameters.putIfAbsent('flag', () => 'clash');
+  queryParameters['flag'] = 'clashmeta';
   return uri.replace(queryParameters: queryParameters).toString();
 }
 
