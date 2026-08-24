@@ -95,6 +95,8 @@ enum Mode { rule, global, direct }
 
 enum ViewMode { mobile, laptop, desktop }
 
+enum DashboardLayout { compact, classic }
+
 enum LogLevel { debug, info, warning, error, silent }
 
 extension LogLevelExt on LogLevel {

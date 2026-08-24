@@ -63,6 +63,7 @@ List<DashboardWidget> dashboardWidgetsSafeFormJson(
 abstract class AppSettingProps with _$AppSettingProps {
   const factory AppSettingProps({
     String? locale,
+    @Default(DashboardLayout.compact) DashboardLayout dashboardLayout,
     @Default(defaultDashboardWidgets)
     @JsonKey(fromJson: dashboardWidgetsSafeFormJson)
     List<DashboardWidget> dashboardWidgets,
