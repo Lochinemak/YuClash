@@ -4,9 +4,13 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/manager/window_manager.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/views/v2board/account.dart';
 import 'package:fl_clash/widgets/animated_visibility.dart';
+import 'package:fl_clash/widgets/inherited.dart';
+import 'package:fl_clash/widgets/pop_scope.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -135,10 +139,32 @@ class AppEnvManager extends StatelessWidget {
   }
 }
 
-class AppSidebarContainer extends ConsumerWidget {
+class AppSidebarContainer extends ConsumerStatefulWidget {
   final Widget child;
 
   const AppSidebarContainer({super.key, required this.child});
+
+  @override
+  ConsumerState<AppSidebarContainer> createState() =>
+      _AppSidebarContainerState();
+}
+
+class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
+  static const _railWidth = 80.0;
+  static const _accountPanelWidth = 320.0;
+
+  final _drawerKey = GlobalKey<ScaffoldState>();
+  bool _accountPanelOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    ref.listenManual(viewModeProvider, (previous, next) {
+      if (previous != next && _accountPanelOpen && mounted) {
+        _closeAccountPanel();
+      }
+    });
+  }
 
   Widget _buildBackground({
     required BuildContext context,
@@ -173,109 +199,235 @@ class AppSidebarContainer extends ConsumerWidget {
     });
   }
 
+  void _openDrawer() {
+    _drawerKey.currentState?.openDrawer();
+  }
+
+  void _toggleAccountPanel() {
+    setState(() {
+      _accountPanelOpen = !_accountPanelOpen;
+    });
+  }
+
+  void _closeAccountPanel() {
+    if (!_accountPanelOpen) {
+      return;
+    }
+    setState(() {
+      _accountPanelOpen = false;
+    });
+  }
+
+  Widget _buildAccountButton(V2boardSession? session) {
+    if (session == null) {
+      return const SizedBox.shrink();
+    }
+    return IconButton(
+      tooltip: Intl.message('account'),
+      onPressed: _toggleAccountPanel,
+      icon: V2boardAccountAvatar(session: session, radius: 14),
+    );
+  }
+
+  Widget _buildRail({
+    required List<NavigationItem> navigationItems,
+    required int currentIndex,
+    required bool showLabel,
+    required V2boardSession? session,
+  }) {
+    return SizedBox(
+      width: _railWidth,
+      child: _buildBackground(
+        context: context,
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (system.isMacOS) const SizedBox(height: 22),
+              const SizedBox(height: 10),
+              if (!system.isMacOS) ...[
+                const ClipRect(child: AppIcon()),
+                const SizedBox(height: 12),
+              ],
+              Expanded(
+                child: ScrollConfiguration(
+                  behavior: HiddenBarScrollBehavior(),
+                  child: NavigationRail(
+                    scrollable: true,
+                    minWidth: _railWidth,
+                    minExtendedWidth: 200,
+                    backgroundColor: Colors.transparent,
+                    selectedLabelTextStyle: context.textTheme.labelLarge!
+                        .copyWith(color: context.colorScheme.onSurface),
+                    unselectedLabelTextStyle: context.textTheme.labelLarge!
+                        .copyWith(color: context.colorScheme.onSurface),
+                    destinations: navigationItems
+                        .map(
+                          (item) => NavigationRailDestination(
+                            icon: item.icon,
+                            label: Text(Intl.message(item.label.name)),
+                          ),
+                        )
+                        .toList(),
+                    onDestinationSelected: (index) {
+                      _handleToPage(navigationItems[index].label);
+                    },
+                    extended: false,
+                    selectedIndex: currentIndex,
+                    labelType: showLabel
+                        ? NavigationRailLabelType.all
+                        : NavigationRailLabelType.none,
+                  ),
+                ),
+              ),
+              _buildAccountButton(session),
+              const SizedBox(height: 4),
+              IconButton(
+                tooltip: Intl.message('layout'),
+                onPressed: () {
+                  ref
+                      .read(appSettingProvider.notifier)
+                      .update(
+                        (state) => state.copyWith(showLabel: !state.showLabel),
+                      );
+                },
+                icon: Icon(
+                  Icons.menu,
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMainContent(Widget child) {
+    return Expanded(
+      child: ClipRect(
+        child: LayoutBuilder(
+          builder: (_, constraints) {
+            _updateSideBarWidth(ref, constraints.maxWidth);
+            return child;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDesktopLayout({
+    required Widget child,
+    required ViewMode viewMode,
+    required List<NavigationItem> navigationItems,
+    required int currentIndex,
+    required bool showLabel,
+    required V2boardSession? session,
+  }) {
+    final content = Container(
+      color: context.colorScheme.surfaceContainer,
+      child: Row(
+        children: [
+          AnimatedVisibility.sidebar(
+            visible: viewMode != ViewMode.mobile,
+            child: _buildRail(
+              navigationItems: navigationItems,
+              currentIndex: currentIndex,
+              showLabel: showLabel,
+              session: session,
+            ),
+          ),
+          if (viewMode == ViewMode.desktop)
+            AnimatedSize(
+              alignment: Alignment.centerLeft,
+              duration: kThemeAnimationDuration,
+              curve: Curves.easeOut,
+              child: _accountPanelOpen
+                  ? SizedBox(
+                      width: _accountPanelWidth,
+                      child: V2boardAccountPanel(onClose: _closeAccountPanel),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          _buildMainContent(child),
+        ],
+      ),
+    );
+    if (!_accountPanelOpen) {
+      return content;
+    }
+    if (viewMode == ViewMode.desktop) {
+      return BackLayerScope(onBack: _closeAccountPanel, child: content);
+    }
+    if (viewMode != ViewMode.laptop) {
+      return content;
+    }
+    final panelWidth = (MediaQuery.sizeOf(context).width - _railWidth)
+        .clamp(0.0, _accountPanelWidth)
+        .toDouble();
+    return BackLayerScope(
+      onBack: _closeAccountPanel,
+      child: Stack(
+        children: [
+          content,
+          Positioned.fill(
+            left: _railWidth,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _closeAccountPanel,
+              child: ColoredBox(color: Colors.black.withValues(alpha: 0.2)),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            bottom: 0,
+            left: _railWidth,
+            width: panelWidth,
+            child: Material(
+              elevation: 3,
+              child: V2boardAccountPanel(onClose: _closeAccountPanel),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final navigationState = ref.watch(navigationStateProvider);
     final navigationItems = navigationState.navigationItems;
     final isMobileView = navigationState.viewMode == ViewMode.mobile;
     final currentIndex = navigationState.currentIndex;
     final showLabel = ref.watch(appSettingProvider).showLabel;
-    return Container(
-      color: context.colorScheme.surfaceContainer,
-      child: Row(
-        children: [
-          AnimatedVisibility.sidebar(
-            visible: !isMobileView,
-            child: _buildBackground(
-              context: context,
-              child: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (system.isMacOS) const SizedBox(height: 22),
-                    const SizedBox(height: 10),
-                    if (!system.isMacOS) ...[
-                      const ClipRect(child: AppIcon()),
-                      const SizedBox(height: 12),
-                    ],
-                    Expanded(
-                      child: ScrollConfiguration(
-                        behavior: HiddenBarScrollBehavior(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: NavigationRail(
-                                scrollable: true,
-                                minExtendedWidth: 200,
-                                backgroundColor: Colors.transparent,
-                                selectedLabelTextStyle: context
-                                    .textTheme
-                                    .labelLarge!
-                                    .copyWith(
-                                      color: context.colorScheme.onSurface,
-                                    ),
-                                unselectedLabelTextStyle: context
-                                    .textTheme
-                                    .labelLarge!
-                                    .copyWith(
-                                      color: context.colorScheme.onSurface,
-                                    ),
-                                destinations: navigationItems
-                                    .map(
-                                      (e) => NavigationRailDestination(
-                                        icon: e.icon,
-                                        label: Text(Intl.message(e.label.name)),
-                                      ),
-                                    )
-                                    .toList(),
-                                onDestinationSelected: (index) {
-                                  _handleToPage(navigationItems[index].label);
-                                },
-                                extended: false,
-                                selectedIndex: currentIndex,
-                                labelType: showLabel
-                                    ? NavigationRailLabelType.all
-                                    : NavigationRailLabelType.none,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    IconButton(
-                      onPressed: () {
-                        ref
-                            .read(appSettingProvider.notifier)
-                            .update(
-                              (state) =>
-                                  state.copyWith(showLabel: !state.showLabel),
-                            );
-                      },
-                      icon: Icon(
-                        Icons.menu,
-                        color: context.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: ClipRect(
-              child: LayoutBuilder(
-                builder: (_, constraints) {
-                  _updateSideBarWidth(ref, constraints.maxWidth);
-                  return child;
+    final session = ref.watch(
+      v2boardActionProvider.select((state) => state.session),
+    );
+    return Scaffold(
+      key: _drawerKey,
+      drawer: isMobileView
+          ? Drawer(
+              child: Builder(
+                builder: (drawerContext) {
+                  return V2boardAccountPanel(
+                    onClose: () => Navigator.of(drawerContext).pop(),
+                  );
                 },
               ),
-            ),
-          ),
-        ],
+            )
+          : null,
+      body: CommonScaffoldDrawerProvider(
+        openDrawer: _openDrawer,
+        enabled: isMobileView,
+        child: _buildDesktopLayout(
+          child: widget.child,
+          viewMode: navigationState.viewMode,
+          navigationItems: navigationItems,
+          currentIndex: currentIndex,
+          showLabel: showLabel,
+          session: session,
+        ),
       ),
     );
   }

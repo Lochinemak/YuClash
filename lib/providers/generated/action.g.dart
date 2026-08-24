@@ -398,7 +398,7 @@ final class V2boardActionProvider
   }
 }
 
-String _$v2boardActionHash() => r'80cda1967f973cfe6bbeebbd9e33cd660648f072';
+String _$v2boardActionHash() => r'cc3121efa3d2e2b2b3da75507835337face1b960';
 
 abstract class _$V2boardAction extends $Notifier<V2boardAccountState> {
   V2boardAccountState build();

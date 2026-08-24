@@ -254,6 +254,10 @@ void main() {
   testWidgets('inactive page scope exits dashboard edit layer', (tester) async {
     final container = ProviderContainer(
       overrides: [
+        appSettingProvider.overrideWithBuild(
+          (_, _) =>
+              const AppSettingProps(dashboardLayout: DashboardLayout.classic),
+        ),
         dashboardStateProvider.overrideWithValue(
           const DashboardState(dashboardWidgets: []),
         ),
@@ -325,6 +329,10 @@ void main() {
   ) async {
     final container = ProviderContainer(
       overrides: [
+        appSettingProvider.overrideWithBuild(
+          (_, _) =>
+              const AppSettingProps(dashboardLayout: DashboardLayout.classic),
+        ),
         dashboardStateProvider.overrideWithValue(
           const DashboardState(dashboardWidgets: []),
         ),
@@ -357,6 +365,10 @@ void main() {
   ) async {
     final container = ProviderContainer(
       overrides: [
+        appSettingProvider.overrideWithBuild(
+          (_, _) =>
+              const AppSettingProps(dashboardLayout: DashboardLayout.classic),
+        ),
         dashboardStateProvider.overrideWithValue(
           const DashboardState(
             dashboardWidgets: [

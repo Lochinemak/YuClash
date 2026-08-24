@@ -43,6 +43,27 @@ class CommonScaffoldBackActionProvider extends InheritedWidget {
       backAction != oldWidget.backAction;
 }
 
+class CommonScaffoldDrawerProvider extends InheritedWidget {
+  final VoidCallback openDrawer;
+  final bool enabled;
+
+  const CommonScaffoldDrawerProvider({
+    super.key,
+    required this.openDrawer,
+    required this.enabled,
+    required super.child,
+  });
+
+  static CommonScaffoldDrawerProvider? of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<CommonScaffoldDrawerProvider>();
+  }
+
+  @override
+  bool updateShouldNotify(CommonScaffoldDrawerProvider oldWidget) =>
+      openDrawer != oldWidget.openDrawer || enabled != oldWidget.enabled;
+}
+
 class CommonScaffoldFabExtendedProvider extends InheritedWidget {
   final bool isExtended;
 

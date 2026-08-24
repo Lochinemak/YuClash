@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:fl_clash/models/v2board.dart';
 
@@ -38,7 +39,7 @@ final class V2boardApiClient {
             BaseOptions(
               connectTimeout: const Duration(seconds: 10),
               receiveTimeout: const Duration(seconds: 20),
-              headers: {'User-Agent': browserUa},
+              headers: {'User-Agent': appName},
             ),
           );
 
@@ -54,15 +55,17 @@ final class V2boardApiClient {
         data: {'email': email.trim(), 'password': password},
       );
       final authData = _readAuthData(loginResponse.data);
-      final subscriptionUrl = await getSubscriptionUrl(
+      final snapshot = await getSubscriptionSnapshot(
         baseUrl: normalizedBaseUrl,
         authData: authData,
+        fallbackEmail: email.trim(),
       );
       return V2boardSession(
         baseUrl: normalizedBaseUrl,
         email: email.trim(),
         authData: authData,
-        subscriptionUrl: subscriptionUrl,
+        subscriptionUrl: snapshot.subscriptionUrl,
+        accountOverview: snapshot.accountOverview,
       );
     } on DioException catch (error) {
       throw _dioException(error);
@@ -73,12 +76,27 @@ final class V2boardApiClient {
     required String baseUrl,
     required String authData,
   }) async {
+    final snapshot = await getSubscriptionSnapshot(
+      baseUrl: baseUrl,
+      authData: authData,
+    );
+    return snapshot.subscriptionUrl;
+  }
+
+  Future<V2boardSubscriptionSnapshot> getSubscriptionSnapshot({
+    required String baseUrl,
+    required String authData,
+    String fallbackEmail = '',
+  }) async {
     try {
       final response = await _dio.get<Object?>(
         _endpoint(baseUrl, 'api/v1/user/getSubscribe'),
         options: Options(headers: {'Authorization': authData}),
       );
-      return clashSubscriptionUrl(_readSubscriptionUrl(response.data));
+      return _readSubscriptionSnapshot(
+        response.data,
+        fallbackEmail: fallbackEmail,
+      );
     } on DioException catch (error) {
       throw _dioException(error);
     }
@@ -120,6 +138,53 @@ final class V2boardApiClient {
     throw const V2boardException(V2boardErrorType.missingSubscriptionUrl);
   }
 
+  V2boardSubscriptionSnapshot _readSubscriptionSnapshot(
+    Object? responseData, {
+    required String fallbackEmail,
+  }) {
+    final data = _responseData(responseData);
+    final map = data is Map ? Map<String, Object?>.from(data) : const {};
+    final email = switch (map['email']) {
+      final String value when value.isNotEmpty => value,
+      _ => fallbackEmail,
+    };
+    final plan = map['plan'] is Map
+        ? Map<String, Object?>.from(map['plan']! as Map)
+        : const <String, Object?>{};
+    return V2boardSubscriptionSnapshot(
+      subscriptionUrl: clashSubscriptionUrl(_readSubscriptionUrl(responseData)),
+      accountOverview: V2boardAccountOverview(
+        email: email,
+        avatarUrl: _avatarUrl(email),
+        planName: plan['name'] as String?,
+        upload: _readInt(map['u']),
+        download: _readInt(map['d']),
+        total: _readInt(map['transfer_enable']),
+        expire: _readOptionalInt(map['expired_at']),
+        onlineDevices: _readInt(map['alive_ip']),
+        deviceLimit: _readOptionalInt(map['device_limit']),
+      ),
+    );
+  }
+
+  int _readInt(Object? value) => _readOptionalInt(value) ?? 0;
+
+  int? _readOptionalInt(Object? value) {
+    return switch (value) {
+      final num number => number.toInt(),
+      final String string => int.tryParse(string),
+      _ => null,
+    };
+  }
+
+  String _avatarUrl(String email) {
+    if (email.isEmpty) {
+      return '';
+    }
+    final digest = md5.convert(utf8.encode(email.trim().toLowerCase()));
+    return 'https://cravatar.cn/avatar/$digest?s=128&d=identicon';
+  }
+
   Object? _responseData(Object? responseData) {
     if (responseData is Map) {
       return responseData['data'];
@@ -139,7 +204,7 @@ final class V2boardApiClient {
   }
 }
 
-final class V2boardSessionStore {
+class V2boardSessionStore {
   static const _key = 'v2boardSession';
 
   Future<V2boardSession?> load() async {

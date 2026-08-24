@@ -9,6 +9,7 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'compact_dashboard.dart';
 import 'widgets/core_status_button.dart';
 import 'widgets/start_button.dart';
 
@@ -45,7 +46,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     );
   }
 
-  List<Widget> _buildActions(bool isEdit) {
+  List<Widget> _buildActions(bool isEdit, DashboardLayout layout) {
     return [
       if (!isEdit && coreLib == null) const CoreStatusButton(),
       if (isEdit)
@@ -65,7 +66,14 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
           ),
         ),
       FadeRotationScaleBox(
-        child: isEdit
+        child: layout == DashboardLayout.compact
+            ? IconButton(
+                key: const ValueKey('classic-dashboard-icon'),
+                tooltip: context.appLocalizations.classicDashboard,
+                onPressed: () => _setLayout(DashboardLayout.classic),
+                icon: const Icon(Icons.dashboard_customize_outlined),
+              )
+            : isEdit
             ? IconButton(
                 key: const ValueKey(true),
                 icon: const Icon(Icons.save, key: ValueKey('save-icon')),
@@ -77,7 +85,20 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                 onPressed: _handleEnterEdit,
               ),
       ),
+      if (layout == DashboardLayout.classic && !isEdit)
+        IconButton(
+          key: const ValueKey('compact-dashboard-icon'),
+          tooltip: context.appLocalizations.compactDashboard,
+          onPressed: () => _setLayout(DashboardLayout.compact),
+          icon: const Icon(Icons.space_dashboard_outlined),
+        ),
     ];
+  }
+
+  void _setLayout(DashboardLayout layout) {
+    ref
+        .read(appSettingProvider.notifier)
+        .update((state) => state.copyWith(dashboardLayout: layout));
   }
 
   void _showAddWidgetsModal() {
@@ -171,6 +192,9 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
+    final layout = ref.watch(
+      appSettingProvider.select((state) => state.dashboardLayout),
+    );
     final dashboardState = ref.watch(dashboardStateProvider);
     final spacing = 14.mAp;
     final children = [
@@ -193,48 +217,54 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     return _buildIsEdit(
       (isEdit) => CommonScaffold(
         title: context.appLocalizations.dashboard,
-        actions: _buildActions(isEdit),
-        floatingActionButton: const StartButton(),
-        body: Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16).copyWith(bottom: 88),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: _maxGridWidth),
-                child: LayoutBuilder(
-                  builder: (_, constraints) {
-                    final columns = min(
-                      max(4 * ((constraints.maxWidth / 280).ceil()), 8),
-                      _maxCrossAxisCount,
-                    );
-                    return isEdit
-                        ? BackLayerScope(
-                            onBack: _handleExitEdit,
-                            child: SuperGrid(
-                              key: key,
-                              crossAxisCount: columns,
-                              crossAxisSpacing: spacing,
-                              mainAxisSpacing: spacing,
-                              children: children,
-                              onUpdate: () {
-                                _handleSave();
-                              },
-                            ),
-                          )
-                        : Grid(
-                            crossAxisCount: columns,
-                            crossAxisSpacing: spacing,
-                            mainAxisSpacing: spacing,
-                            children: children,
+        actions: _buildActions(isEdit, layout),
+        floatingActionButton: layout == DashboardLayout.classic
+            ? const StartButton()
+            : null,
+        body: layout == DashboardLayout.compact
+            ? const CompactDashboard()
+            : Align(
+                alignment: Alignment.topCenter,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16).copyWith(bottom: 88),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: _maxGridWidth,
+                      ),
+                      child: LayoutBuilder(
+                        builder: (_, constraints) {
+                          final columns = min(
+                            max(4 * ((constraints.maxWidth / 280).ceil()), 8),
+                            _maxCrossAxisCount,
                           );
-                  },
+                          return isEdit
+                              ? BackLayerScope(
+                                  onBack: _handleExitEdit,
+                                  child: SuperGrid(
+                                    key: key,
+                                    crossAxisCount: columns,
+                                    crossAxisSpacing: spacing,
+                                    mainAxisSpacing: spacing,
+                                    children: children,
+                                    onUpdate: () {
+                                      _handleSave();
+                                    },
+                                  ),
+                                )
+                              : Grid(
+                                  crossAxisCount: columns,
+                                  crossAxisSpacing: spacing,
+                                  mainAxisSpacing: spacing,
+                                  children: children,
+                                );
+                        },
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }

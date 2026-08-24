@@ -29,3 +29,11 @@ part 'actions/proxies.dart';
 part 'actions/profiles.dart';
 part 'actions/geo_resource.dart';
 part 'generated/action.g.dart';
+
+final v2boardApiClientProvider = Provider<V2boardApiClient>(
+  (ref) => v2boardApiClient,
+);
+
+final v2boardSessionStoreProvider = Provider<V2boardSessionStore>(
+  (ref) => v2boardSessionStore,
+);

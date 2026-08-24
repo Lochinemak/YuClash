@@ -31,6 +31,10 @@ Read these only when the task touches their area:
   repository-wide invariants in `.agents/`, and keep a comment only for a fact that is local to one call site.
   See [.agents/rules.md](.agents/rules.md) for the full policy.
 - Use `flutter test`, not `dart test`, because models pull in Flutter types.
+- Use the project-local FVM toolchain for all local Flutter and Dart commands: run `fvm flutter ...` and `fvm dart ...`.
+  The repository `.fvmrc` pins Flutter 3.44.4; do not use a global Flutter or Dart SDK for project commands.
+- After every Android release build, preserve the R8 mapping that covers app and bundled `service` code by copying
+  `build/app/outputs/mapping/release/mapping.txt` beside the release artifact as `app-release-mapping.txt`.
 - Unit and widget tests are allowed. Add focused tests when they protect changed behavior or integration contracts.
 - Run code generation after modifying models, providers, or database schema.
 - Do not manually edit generated files.
