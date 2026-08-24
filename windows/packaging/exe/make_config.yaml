@@ -6,9 +6,9 @@ publisher_url: https://github.com/Little-Orange-Limited/YuClash
 display_name: YuClash
 executable_name: YuClash.exe
 output_base_file_name: YuClash.exe
-setup_icon_file: ..\windows\runner\resources\app_icon.ico
+setup_icon_file: windows\runner\resources\app_icon.ico
 locales:
   - lang: zh
-    file: ..\windows\packaging\exe\ChineseSimplified.isl
+    file: windows\packaging\exe\ChineseSimplified.isl
   - lang: en
 privileges_required: admin

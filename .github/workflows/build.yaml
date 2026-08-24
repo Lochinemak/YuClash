@@ -113,6 +113,7 @@ jobs:
     needs: [ test, windows-helper-test ]
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - platform: android
