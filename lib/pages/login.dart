@@ -107,14 +107,6 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
                         textAlign: TextAlign.center,
                         style: context.textTheme.headlineMedium,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        appLocalizations.v2boardAccount,
-                        textAlign: TextAlign.center,
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: context.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
                       const SizedBox(height: 32),
                       TextFormField(
                         controller: _serverCodeController,
