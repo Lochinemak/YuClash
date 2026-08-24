@@ -134,6 +134,66 @@ class AppLocalizations {
     );
   }
 
+  /// `Subscription plan`
+  String get subscriptionPlan {
+    return Intl.message(
+      'Subscription plan',
+      name: 'subscriptionPlan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expiration`
+  String get expiration {
+    return Intl.message('Expiration', name: 'expiration', desc: '', args: []);
+  }
+
+  /// `Device limit`
+  String get deviceUsage {
+    return Intl.message(
+      'Device limit',
+      name: 'deviceUsage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Compact dashboard`
+  String get compactDashboard {
+    return Intl.message(
+      'Compact dashboard',
+      name: 'compactDashboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Classic dashboard`
+  String get classicDashboard {
+    return Intl.message(
+      'Classic dashboard',
+      name: 'classicDashboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select node`
+  String get selectNode {
+    return Intl.message('Select node', name: 'selectNode', desc: '', args: []);
+  }
+
+  /// `No available proxies`
+  String get noAvailableProxies {
+    return Intl.message(
+      'No available proxies',
+      name: 'noAvailableProxies',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Network speed`
   String get networkSpeed {
     return Intl.message(

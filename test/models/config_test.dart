@@ -110,6 +110,12 @@ void main() {
       expect(restored.restoreStrategy, RestoreStrategy.compatible);
       expect(restored.customUserAgent, '');
       expect(restored.testUrl, defaultTestUrl);
+      expect(restored.dashboardLayout, DashboardLayout.compact);
+    });
+
+    test('legacy JSON defaults to the compact dashboard', () {
+      final restored = AppSettingProps.fromJson(const {});
+      expect(restored.dashboardLayout, DashboardLayout.compact);
     });
 
     test('custom values survive round-trip', () {
