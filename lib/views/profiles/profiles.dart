@@ -4,6 +4,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/profiles/overwrite/overwrite.dart';
+import 'package:fl_clash/views/v2board/account.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -68,29 +69,35 @@ class _ProfilesViewState extends State<ProfilesView> {
     _isUpdating = false;
   }
 
-  List<Widget> _buildActions(List<Profile> profiles) {
-    return profiles.isNotEmpty
-        ? [
-            IconButton(
-              onPressed: () {
-                _updateProfiles(profiles);
+  List<Widget> _buildActions(List<Profile> profiles, bool hasV2boardSession) {
+    return [
+      if (hasV2boardSession)
+        IconButton(
+          tooltip: context.appLocalizations.v2boardAccount,
+          onPressed: () => showV2boardAccountDialog(context),
+          icon: const Icon(Icons.account_circle_outlined),
+        ),
+      if (profiles.isNotEmpty) ...[
+        IconButton(
+          onPressed: () {
+            _updateProfiles(profiles);
+          },
+          icon: const Icon(Icons.sync),
+        ),
+        IconButton(
+          onPressed: () {
+            showSheet(
+              context: context,
+              builder: (_) {
+                return ReorderableProfilesSheet(profiles: profiles);
               },
-              icon: const Icon(Icons.sync),
-            ),
-            IconButton(
-              onPressed: () {
-                showSheet(
-                  context: context,
-                  builder: (_) {
-                    return ReorderableProfilesSheet(profiles: profiles);
-                  },
-                );
-              },
-              icon: const Icon(Icons.sort),
-              iconSize: 26,
-            ),
-          ]
-        : [];
+            );
+          },
+          icon: const Icon(Icons.sort),
+          iconSize: 26,
+        ),
+      ],
+    ];
   }
 
   Widget _buildFAB() {
@@ -108,12 +115,15 @@ class _ProfilesViewState extends State<ProfilesView> {
         final appLocalizations = context.appLocalizations;
         final isLoading = ref.watch(loadingProvider(LoadingTag.profiles));
         final state = ref.watch(profilesStateProvider);
+        final hasV2boardSession = ref.watch(
+          v2boardActionProvider.select((state) => state.session != null),
+        );
         final spacing = 14.mAp;
         return CommonScaffold(
           isLoading: isLoading,
           title: appLocalizations.profiles,
           floatingActionButton: _buildFAB(),
-          actions: _buildActions(state.profiles),
+          actions: _buildActions(state.profiles, hasV2boardSession),
           body: state.profiles.isEmpty
               ? NullStatus(
                   label: appLocalizations.nullProfileDesc,

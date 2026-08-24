@@ -11,8 +11,8 @@ add_dependencies(${BINARY_NAME} setup_buildkit_build)
 get_filename_component(PROJECT_ROOT "${CMAKE_SOURCE_DIR}" DIRECTORY)
 
 set(setup_bundled_libraries
-  "${PROJECT_ROOT}/libclash/windows/FlClashCore.exe"
-  "${PROJECT_ROOT}/libclash/windows/FlClashHelperService.exe"
+  "${PROJECT_ROOT}/libclash/windows/YuClashCore.exe"
+  "${PROJECT_ROOT}/libclash/windows/YuClashHelperService.exe"
   "${PROJECT_ROOT}/libclash/windows/manifest.json"
   PARENT_SCOPE
 )

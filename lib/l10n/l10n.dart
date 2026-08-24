@@ -3479,10 +3479,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Helper service unavailable; TUN mode cannot be enabled. Reinstall FlClash to restore it.`
+  /// `Helper service unavailable; TUN mode cannot be enabled. Reinstall YuClash to restore it.`
   String get helperCorruptTip {
     return Intl.message(
-      'Helper service unavailable; TUN mode cannot be enabled. Reinstall FlClash to restore it.',
+      'Helper service unavailable; TUN mode cannot be enabled. Reinstall YuClash to restore it.',
       name: 'helperCorruptTip',
       desc: '',
       args: [],
@@ -4521,6 +4521,136 @@ class AppLocalizations {
       name: 'entriesCount',
       desc: '',
       args: [count],
+    );
+  }
+
+  /// `V2Board account`
+  String get v2boardAccount {
+    return Intl.message(
+      'V2Board account',
+      name: 'v2boardAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Server address`
+  String get serverAddress {
+    return Intl.message(
+      'Server address',
+      name: 'serverAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service code`
+  String get serviceCode {
+    return Intl.message(
+      'Service code',
+      name: 'serviceCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get email {
+    return Intl.message('Email', name: 'email', desc: '', args: []);
+  }
+
+  /// `Enter a valid email address`
+  String get emailTip {
+    return Intl.message(
+      'Enter a valid email address',
+      name: 'emailTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign in`
+  String get login {
+    return Intl.message('Sign in', name: 'login', desc: '', args: []);
+  }
+
+  /// `Sign out`
+  String get logout {
+    return Intl.message('Sign out', name: 'logout', desc: '', args: []);
+  }
+
+  /// `Hide`
+  String get hide {
+    return Intl.message('Hide', name: 'hide', desc: '', args: []);
+  }
+
+  /// `Refresh subscription`
+  String get refreshSubscription {
+    return Intl.message(
+      'Refresh subscription',
+      name: 'refreshSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subscription updated`
+  String get subscriptionUpdated {
+    return Intl.message(
+      'Subscription updated',
+      name: 'subscriptionUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service configuration is unavailable`
+  String get invalidV2boardServerConfiguration {
+    return Intl.message(
+      'Service configuration is unavailable',
+      name: 'invalidV2boardServerConfiguration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a valid service code`
+  String get invalidV2boardServerCode {
+    return Intl.message(
+      'Enter a valid service code',
+      name: 'invalidV2boardServerCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `V2Board returned an invalid subscription URL`
+  String get invalidV2boardSubscriptionUrl {
+    return Intl.message(
+      'V2Board returned an invalid subscription URL',
+      name: 'invalidV2boardSubscriptionUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The V2Board server returned an invalid response`
+  String get invalidV2boardResponse {
+    return Intl.message(
+      'The V2Board server returned an invalid response',
+      name: 'invalidV2boardResponse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The V2Board account has no subscription URL`
+  String get missingV2boardSubscriptionUrl {
+    return Intl.message(
+      'The V2Board account has no subscription URL',
+      name: 'missingV2boardSubscriptionUrl',
+      desc: '',
+      args: [],
     );
   }
 }

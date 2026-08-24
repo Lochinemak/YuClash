@@ -24,6 +24,7 @@ part 'actions/core.dart';
 part 'actions/system.dart';
 part 'actions/store.dart';
 part 'actions/theme.dart';
+part 'actions/v2board.dart';
 part 'actions/proxies.dart';
 part 'actions/profiles.dart';
 part 'actions/geo_resource.dart';

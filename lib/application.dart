@@ -182,7 +182,7 @@ class ApplicationState extends ConsumerState<Application> {
           home: child!,
         );
       },
-      child: const HomePage(),
+      child: const V2boardGate(child: HomePage()),
     );
   }
 
