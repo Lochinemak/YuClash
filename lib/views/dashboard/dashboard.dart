@@ -1,21 +1,23 @@
-import 'dart:math';
-
 import 'package:defer_pointer/defer_pointer.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'compact_dashboard.dart';
+import 'widget_registry.dart';
 import 'widgets/core_status_button.dart';
 import 'widgets/start_button.dart';
 
 typedef _IsEditWidgetBuilder = Widget Function(bool isEdit);
 
+const _compactCrossAxisCount = 8;
+const _mediumCrossAxisCount = 12;
 const _maxCrossAxisCount = 16;
+const _mediumGridBreakpoint = 480.0;
+const _maxGridBreakpoint = 840.0;
 const _maxGridWidth = 280.0 * _maxCrossAxisCount / 4;
 
 class DashboardView extends ConsumerStatefulWidget {
@@ -29,6 +31,29 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
   final key = GlobalKey<SuperGridState>();
   final _isEditNotifier = ValueNotifier<bool>(false);
   final _addedWidgetsNotifier = ValueNotifier<List<GridItem>>([]);
+
+  @override
+  void initState() {
+    super.initState();
+    ref.listenManual(
+      dashboardStateProvider.select((state) => state.dashboardWidgets),
+      (_, dashboardWidgets) => _syncAddedWidgets(dashboardWidgets),
+      fireImmediately: true,
+    );
+  }
+
+  void _syncAddedWidgets(List<DashboardWidget> dashboardWidgets) {
+    bool onThisPlatform(DashboardWidget item) =>
+        item.platforms.contains(SupportPlatform.currentPlatform);
+    final shown = dashboardWidgets
+        .where(onThisPlatform)
+        .map((item) => item.widget)
+        .toSet();
+    _addedWidgetsNotifier.value = DashboardWidget.values
+        .where((item) => onThisPlatform(item) && !shown.contains(item.widget))
+        .map((item) => item.widget)
+        .toList();
+  }
 
   @override
   void dispose() {
@@ -46,7 +71,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     );
   }
 
-  List<Widget> _buildActions(bool isEdit, DashboardLayout layout) {
+  List<Widget> _buildActions(bool isEdit) {
     return [
       if (!isEdit && coreLib == null) const CoreStatusButton(),
       if (isEdit)
@@ -59,6 +84,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
             return child!;
           },
           child: IconButton(
+            tooltip: context.appLocalizations.addWidget,
             onPressed: () {
               _showAddWidgetsModal();
             },
@@ -66,39 +92,21 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
           ),
         ),
       FadeRotationScaleBox(
-        child: layout == DashboardLayout.compact
+        child: isEdit
             ? IconButton(
-                key: const ValueKey('classic-dashboard-icon'),
-                tooltip: context.appLocalizations.classicDashboard,
-                onPressed: () => _setLayout(DashboardLayout.classic),
-                icon: const Icon(Icons.dashboard_customize_outlined),
-              )
-            : isEdit
-            ? IconButton(
+                tooltip: context.appLocalizations.save,
                 key: const ValueKey(true),
                 icon: const Icon(Icons.save, key: ValueKey('save-icon')),
                 onPressed: _handleSaveAndExit,
               )
             : IconButton(
+                tooltip: context.appLocalizations.edit,
                 key: const ValueKey(false),
                 icon: const Icon(Icons.edit, key: ValueKey('edit-icon')),
                 onPressed: _handleEnterEdit,
               ),
       ),
-      if (layout == DashboardLayout.classic && !isEdit)
-        IconButton(
-          key: const ValueKey('compact-dashboard-icon'),
-          tooltip: context.appLocalizations.compactDashboard,
-          onPressed: () => _setLayout(DashboardLayout.compact),
-          icon: const Icon(Icons.space_dashboard_outlined),
-        ),
     ];
-  }
-
-  void _setLayout(DashboardLayout layout) {
-    ref
-        .read(appSettingProvider.notifier)
-        .update((state) => state.copyWith(dashboardLayout: layout));
   }
 
   void _showAddWidgetsModal() {
@@ -181,7 +189,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     if (children.isEmpty) {
       return null;
     }
-    return children.map(DashboardWidget.getDashboardWidget).toList();
+    return children.map(dashboardWidgetOf).toList();
   }
 
   void _saveDashboardWidgets(List<DashboardWidget> dashboardWidgets) {
@@ -192,9 +200,6 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
-    final layout = ref.watch(
-      appSettingProvider.select((state) => state.dashboardLayout),
-    );
     final dashboardState = ref.watch(dashboardStateProvider);
     final spacing = 14.mAp;
     final children = [
@@ -204,67 +209,56 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
           )
           .map((item) => item.widget),
     ];
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _addedWidgetsNotifier.value = DashboardWidget.values
-          .where(
-            (item) =>
-                !children.contains(item.widget) &&
-                item.platforms.contains(SupportPlatform.currentPlatform),
-          )
-          .map((item) => item.widget)
-          .toList();
-    });
     return _buildIsEdit(
       (isEdit) => CommonScaffold(
         title: context.appLocalizations.dashboard,
-        actions: _buildActions(isEdit, layout),
-        floatingActionButton: layout == DashboardLayout.classic
-            ? const StartButton()
-            : null,
-        body: layout == DashboardLayout.compact
-            ? const CompactDashboard()
-            : Align(
+        actions: _buildActions(isEdit),
+        floatingActionButton: const StartButton(),
+        body: Align(
+          alignment: Alignment.topCenter,
+          child: Builder(
+            builder: (context) => SingleChildScrollView(
+              padding: const EdgeInsets.all(
+                16,
+              ).copyWith(bottom: 16 + BottomInsetScope.of(context)),
+              child: Align(
                 alignment: Alignment.topCenter,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16).copyWith(bottom: 88),
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: _maxGridWidth,
-                      ),
-                      child: LayoutBuilder(
-                        builder: (_, constraints) {
-                          final columns = min(
-                            max(4 * ((constraints.maxWidth / 280).ceil()), 8),
-                            _maxCrossAxisCount,
-                          );
-                          return isEdit
-                              ? BackLayerScope(
-                                  onBack: _handleExitEdit,
-                                  child: SuperGrid(
-                                    key: key,
-                                    crossAxisCount: columns,
-                                    crossAxisSpacing: spacing,
-                                    mainAxisSpacing: spacing,
-                                    children: children,
-                                    onUpdate: () {
-                                      _handleSave();
-                                    },
-                                  ),
-                                )
-                              : Grid(
-                                  crossAxisCount: columns,
-                                  crossAxisSpacing: spacing,
-                                  mainAxisSpacing: spacing,
-                                  children: children,
-                                );
-                        },
-                      ),
-                    ),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: _maxGridWidth),
+                  child: LayoutBuilder(
+                    builder: (_, constraints) {
+                      final columns = switch (constraints.maxWidth) {
+                        < _mediumGridBreakpoint => _compactCrossAxisCount,
+                        <= _maxGridBreakpoint => _mediumCrossAxisCount,
+                        _ => _maxCrossAxisCount,
+                      };
+                      return isEdit
+                          ? BackLayerScope(
+                              onBack: _handleExitEdit,
+                              child: SuperGrid(
+                                key: key,
+                                crossAxisCount: columns,
+                                crossAxisSpacing: spacing,
+                                mainAxisSpacing: spacing,
+                                children: children,
+                                onUpdate: () {
+                                  _handleSave();
+                                },
+                              ),
+                            )
+                          : Grid(
+                              crossAxisCount: columns,
+                              crossAxisSpacing: spacing,
+                              mainAxisSpacing: spacing,
+                              children: children,
+                            );
+                    },
                   ),
                 ),
               ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -350,6 +344,7 @@ class _AddedContainerState extends State<_AddedContainer> {
               width: 24,
               height: 24,
               child: IconButton.filled(
+                tooltip: context.appLocalizations.add,
                 iconSize: 20,
                 padding: const EdgeInsets.all(2),
                 onPressed: _handleAdd,

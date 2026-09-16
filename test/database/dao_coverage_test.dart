@@ -357,6 +357,27 @@ void main() {
         isTrue,
       );
 
+      const disabled = Rule(
+        id: 33,
+        ruleAction: RuleAction.DOMAIN,
+        content: 'disabled.example',
+        ruleTarget: 'REJECT',
+        order: 'd',
+      );
+      await database.rulesDao.putProfileDisabledRule(profile.id, disabled);
+      expect(
+        (await database.rulesDao.queryProfileDisabledRules(profile.id).get())
+            .single
+            .id,
+        disabled.id,
+      );
+      expect(
+        (await database.rulesDao.queryAddedRules(profile.id).get()).map(
+          (rule) => rule.id,
+        ),
+        isNot(contains(disabled.id)),
+      );
+
       await database.rulesDao.orderGlobalRule(ruleId: global.id, order: '0');
       await database.rulesDao.orderProfileAddedRule(
         profile.id,
@@ -389,6 +410,103 @@ void main() {
       expect(
         await database.rulesDao.queryProfileCustomRules(profile.id).get(),
         isEmpty,
+      );
+    },
+  );
+
+  test(
+    'a compatible restore keeps records the backup does not carry',
+    () async {
+      const keptProfile = Profile(id: 1, autoUpdateDuration: Duration.zero);
+      const keptRule = Rule(
+        id: 41,
+        content: 'kept.example',
+        ruleTarget: 'DIRECT',
+      );
+      const keptLink = ProfileRuleLink(
+        profileId: 1,
+        ruleId: 41,
+        scene: RuleScene.custom,
+      );
+      const keptGroup = ProxyGroup(
+        id: 42,
+        profileId: 1,
+        name: 'Kept',
+        type: GroupType.Selector,
+      );
+      await database.restore(
+        [keptProfile],
+        const [],
+        [keptRule],
+        [keptLink],
+        [keptGroup],
+        isOverride: true,
+      );
+
+      const backupProfile = Profile(id: 2, autoUpdateDuration: Duration.zero);
+      const backupGroup = ProxyGroup(
+        id: 43,
+        profileId: 2,
+        name: 'Backup',
+        type: GroupType.Selector,
+      );
+      await database.restore(
+        [backupProfile],
+        const [],
+        const [],
+        const [],
+        [backupGroup],
+      );
+
+      expect(
+        (await database.rulesDao.queryProfileCustomRules(1).get()).single.id,
+        keptRule.id,
+      );
+      expect(
+        (await database.proxyGroupsDao.query(1).get()).single.id,
+        keptGroup.id,
+      );
+      expect(
+        (await database.proxyGroupsDao.query(2).get()).single.id,
+        backupGroup.id,
+      );
+    },
+  );
+
+  test(
+    'a groups-only backup does not clear the rules of other profiles',
+    () async {
+      const profile = Profile(id: 1, autoUpdateDuration: Duration.zero);
+      const rule = Rule(id: 41, content: 'kept.example', ruleTarget: 'DIRECT');
+      const link = ProfileRuleLink(
+        profileId: 1,
+        ruleId: 41,
+        scene: RuleScene.custom,
+      );
+      await database.restore(
+        [profile],
+        const [],
+        [rule],
+        [link],
+        const [],
+        isOverride: true,
+      );
+
+      const group = ProxyGroup(
+        id: 42,
+        profileId: 1,
+        name: 'Group',
+        type: GroupType.Selector,
+      );
+      await database.restore(const [], const [], const [], const [], [group]);
+
+      expect(
+        (await database.rulesDao.queryProfileCustomRules(1).get()).single.id,
+        rule.id,
+      );
+      expect(
+        (await database.proxyGroupsDao.query(1).get()).single.id,
+        group.id,
       );
     },
   );
@@ -475,33 +593,6 @@ void main() {
       expect(record?.url, 'https://example.com/a.png');
       expect(await database.iconRecordsDao.get('missing'), null);
       expect(await database.iconRecords.count.getSingle(), 2);
-    },
-  );
-
-  test(
-    'v2board service codes order by recency, touch upserts, and prune oldest',
-    () async {
-      final dao = database.v2boardServiceCodesDao;
-      await dao.touch('AAA');
-      await dao.touch('BBB');
-      await dao.touch('AAA');
-
-      final codes = await dao.query().get();
-      expect(codes.map((record) => record.code), ['AAA', 'BBB']);
-
-      await dao.remove('BBB');
-      expect(await dao.query().get(), hasLength(1));
-
-      for (var i = 0; i < dao.maxCapacity; i++) {
-        await dao.touch('CODE$i');
-      }
-      final afterCapacity = await database.v2boardServiceCodes.count
-          .getSingle();
-      expect(afterCapacity, dao.maxCapacity);
-      expect(
-        (await dao.query().get()).map((record) => record.code),
-        isNot(contains('AAA')),
-      );
     },
   );
 }

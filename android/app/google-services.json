@@ -1,13 +1,12 @@
 {
   "project_info": {
-    "project_number": "439412551112",
-    "project_id": "yucloud-clash",
-    "storage_bucket": "yucloud-clash.firebasestorage.app"
+    "project_number": "000000000000",
+    "project_id": "dev"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:439412551112:android:c0534ec71d69362ae964fd",
+        "mobilesdk_app_id": "1:000000000000:android:0000000000000000",
         "android_client_info": {
           "package_name": "com.yucloud.clash"
         }
@@ -15,7 +14,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAeNt3R9yvuZp8KPLq7utbsFAgWwbJ7vO4"
+          "current_key": "0"
         }
       ],
       "services": {
@@ -26,7 +25,26 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:439412551112:android:a904d51d20e129eee964fd",
+        "mobilesdk_app_id": "1:000000000000:android:0000000000000000",
+        "android_client_info": {
+          "package_name": "com.yucloud.clash.debug"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:000000000000:android:0000000000000000",
         "android_client_info": {
           "package_name": "com.yucloud.clash.dev"
         }
@@ -34,7 +52,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAeNt3R9yvuZp8KPLq7utbsFAgWwbJ7vO4"
+          "current_key": "0"
         }
       ],
       "services": {
@@ -43,6 +61,5 @@
         }
       }
     }
-  ],
-  "configuration_version": "1"
+  ]
 }

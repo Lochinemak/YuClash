@@ -2,6 +2,11 @@ display_name: YuClash
 
 icon: ./assets/images/icon.png
 
+supported_mime_type:
+  - x-scheme-handler/clash
+  - x-scheme-handler/clashmeta
+  - x-scheme-handler/yuclash
+
 keywords:
   - YuClash
   - Clash

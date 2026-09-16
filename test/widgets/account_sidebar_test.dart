@@ -1,17 +1,15 @@
-import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/common/theme.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/manager/app_manager.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/v2board/account.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../helpers/test_app.dart';
 
 void main() {
   testWidgets('mobile root scaffold opens the account drawer', (tester) async {
@@ -26,7 +24,8 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const _TestApp(
+        child: const TestApp(
+          wrapInProviderScope: false,
           child: AppSidebarContainer(
             child: CommonScaffold(title: 'Page', body: SizedBox.expand()),
           ),
@@ -58,7 +57,8 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const _TestApp(
+        child: const TestApp(
+          wrapInProviderScope: false,
           child: AppSidebarContainer(child: SizedBox.expand()),
         ),
       ),
@@ -101,7 +101,8 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const _TestApp(
+        child: const TestApp(
+          wrapInProviderScope: false,
           child: AppSidebarContainer(child: SizedBox.expand()),
         ),
       ),
@@ -164,30 +165,4 @@ V2boardSession _session() {
       deviceLimit: 3,
     ),
   );
-}
-
-class _TestApp extends StatelessWidget {
-  final Widget child;
-
-  const _TestApp({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: globalState.navigatorKey,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.delegate.supportedLocales,
-      builder: (context, child) {
-        globalState.measure = Measure.of(context, 1);
-        globalState.theme = CommonTheme.of(context, 1);
-        return child!;
-      },
-      home: child,
-    );
-  }
 }
