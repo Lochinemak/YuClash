@@ -219,14 +219,22 @@ class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
   }
 
   Widget _buildAccountButton(V2boardSession? session) {
-    if (session == null) {
-      return const SizedBox.shrink();
+    if (session != null) {
+      return IconButton(
+        tooltip: Intl.message('account'),
+        onPressed: _toggleAccountPanel,
+        icon: V2boardAccountAvatar(session: session, radius: 14),
+      );
     }
-    return IconButton(
-      tooltip: Intl.message('account'),
-      onPressed: _toggleAccountPanel,
-      icon: V2boardAccountAvatar(session: session, radius: 14),
-    );
+    if (ref.watch(v2boardActionProvider.select((state) => state.skipped))) {
+      return IconButton(
+        tooltip: context.appLocalizations.login,
+        onPressed: () =>
+            ref.read(v2boardActionProvider.notifier).resetSkip(),
+        icon: const Icon(Icons.login),
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   Widget _buildRail({
