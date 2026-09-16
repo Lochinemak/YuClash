@@ -264,8 +264,8 @@ consumers below hardcode the matching `YuClash*` names, so changing one side alo
 Android keeps working — Android's artifact name comes from `lib_name` and never goes through `core_name`.
 
 `plugins/setup/buildkit/build_tool/` is the older standalone Dart CLI. It no longer participates in any platform build
-and survives only behind the manual `make core-<platform>` entry points; the `buildkit/cmake`, `buildkit/gradle` and
-`buildkit/build_pod.sh` glue it used to be driven by is now unreferenced.
+and survives only behind the manual `make core-<platform>` entry points, reached through `buildkit/run_build_tool.sh`.
+It duplicates what `setup_hooks/` does, so a change to one is not a change to the other.
 
 ### Setup Build Harness Plugin
 

@@ -1,5 +1,5 @@
-// YuClash Go core build harness.
+// YuClash Go core and Rust helper build harness.
 //
-// This plugin does not expose any Dart API. It exists purely to integrate
-// the Go core build into each platform's native build system via FFI plugin
-// hooks (CocoaPods script phases, Gradle tasks, CMake custom commands).
+// This package exposes no Dart API. It exists so that depending on it makes
+// Flutter run `hook/build.dart`, which builds the Core (and, on Linux and
+// Windows, the Helper) as part of the native asset pipeline.
