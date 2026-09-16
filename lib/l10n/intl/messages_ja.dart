@@ -227,6 +227,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "createProfile": MessageLookupByLibrary.simpleMessage("Create Profile"),
     "creationTime": MessageLookupByLibrary.simpleMessage("作成時間"),
     "custom": MessageLookupByLibrary.simpleMessage("カスタム"),
+    "customSetup": MessageLookupByLibrary.simpleMessage("カスタム"),
+    "customSetupHint": MessageLookupByLibrary.simpleMessage(
+      "ログインをスキップして自分でサブスクリプションを追加",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("切り取り"),
     "dark": MessageLookupByLibrary.simpleMessage("ダーク"),
     "dashboard": MessageLookupByLibrary.simpleMessage("ダッシュボード"),

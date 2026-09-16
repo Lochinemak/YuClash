@@ -254,10 +254,15 @@ class V2boardAccountPanel extends ConsumerWidget {
     }
   }
 
+  Future<void> _signIn(WidgetRef ref) async {
+    await ref.read(v2boardActionProvider.notifier).resetSkip();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(v2boardActionProvider);
     final appLocalizations = context.appLocalizations;
+    final signedIn = state.session != null;
     return Material(
       color: context.colorScheme.surfaceContainer,
       child: SafeArea(
@@ -287,39 +292,54 @@ class V2boardAccountPanel extends ConsumerWidget {
               ),
             ),
             const Divider(height: 1),
-            const Expanded(
+            Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(20),
-                child: V2boardAccountOverviewView(),
+                padding: const EdgeInsets.all(20),
+                child: signedIn
+                    ? const V2boardAccountOverviewView()
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          FilledButton.icon(
+                            onPressed: () => _signIn(ref),
+                            icon: const Icon(Icons.login),
+                            label: Text(
+                              appLocalizations.login,
+                            ),
+                          ),
+                        ],
+                      ),
               ),
             ),
-            const Divider(height: 1),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextButton.icon(
-                      onPressed: state.loading
-                          ? null
-                          : () => _logout(context, ref),
-                      icon: const Icon(Icons.logout),
-                      label: Text(appLocalizations.logout),
+            if (signedIn) ...[
+              const Divider(height: 1),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextButton.icon(
+                        onPressed: state.loading
+                            ? null
+                            : () => _logout(context, ref),
+                        icon: const Icon(Icons.logout),
+                        label: Text(appLocalizations.logout),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: FilledButton.icon(
-                      onPressed: state.loading
-                          ? null
-                          : () => _refresh(context, ref),
-                      icon: const Icon(Icons.sync),
-                      label: Text(appLocalizations.update),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: state.loading
+                            ? null
+                            : () => _refresh(context, ref),
+                        icon: const Icon(Icons.sync),
+                        label: Text(appLocalizations.update),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

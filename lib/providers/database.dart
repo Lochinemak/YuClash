@@ -34,6 +34,13 @@ Stream<List<Rule>> addedRulesStream(Ref ref, int profileId) {
 }
 
 @riverpod
+Stream<List<String>> v2boardServiceCodeHistoryStream(Ref ref) {
+  return database.v2boardServiceCodesDao.query().watch().map(
+    (records) => records.map((record) => record.code).toList(),
+  );
+}
+
+@riverpod
 Stream<int> customRulesCount(Ref ref, int profileId) {
   return database.rulesDao.profileCustomRulesCount(profileId).watchSingle();
 }

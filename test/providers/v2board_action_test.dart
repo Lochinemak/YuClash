@@ -116,6 +116,38 @@ void main() {
       expect(store.value, null);
     },
   );
+
+  test('skipLogin persists the choice and resetSkip clears it', () async {
+    final store = _MemorySessionStore(null);
+    final container = ProviderContainer(
+      overrides: [v2boardSessionStoreProvider.overrideWithValue(store)],
+    );
+    addTearDown(container.dispose);
+    final action = container.read(v2boardActionProvider.notifier);
+
+    await action.initialize();
+    expect(container.read(v2boardActionProvider).skipped, false);
+
+    await action.skipLogin();
+    expect(container.read(v2boardActionProvider).skipped, true);
+    expect(store.skipped, true);
+
+    await action.resetSkip();
+    expect(container.read(v2boardActionProvider).skipped, false);
+    expect(store.skipped, false);
+  });
+
+  test('initialize restores a persisted skip choice', () async {
+    final store = _MemorySessionStore(null)..skipped = true;
+    final container = ProviderContainer(
+      overrides: [v2boardSessionStoreProvider.overrideWithValue(store)],
+    );
+    addTearDown(container.dispose);
+
+    await container.read(v2boardActionProvider.notifier).initialize();
+
+    expect(container.read(v2boardActionProvider).skipped, true);
+  });
 }
 
 V2boardSession _session({required String planName}) {
@@ -164,6 +196,7 @@ ResponseBody _jsonResponse(Object value, [int statusCode = 200]) {
 
 class _MemorySessionStore extends V2boardSessionStore {
   V2boardSession? value;
+  bool skipped = false;
 
   _MemorySessionStore(this.value);
 
@@ -178,6 +211,19 @@ class _MemorySessionStore extends V2boardSessionStore {
   @override
   Future<void> clear() async {
     value = null;
+  }
+
+  @override
+  Future<bool> loadSkip() async => skipped;
+
+  @override
+  Future<void> saveSkip() async {
+    skipped = true;
+  }
+
+  @override
+  Future<void> clearSkip() async {
+    skipped = false;
   }
 }
 

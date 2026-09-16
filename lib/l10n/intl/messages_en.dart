@@ -291,6 +291,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "createProfile": MessageLookupByLibrary.simpleMessage("Create Profile"),
     "creationTime": MessageLookupByLibrary.simpleMessage("Creation time"),
     "custom": MessageLookupByLibrary.simpleMessage("Custom"),
+    "customSetup": MessageLookupByLibrary.simpleMessage("Custom"),
+    "customSetupHint": MessageLookupByLibrary.simpleMessage(
+      "Skip sign-in and add a subscription yourself",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("Cut"),
     "dark": MessageLookupByLibrary.simpleMessage("Dark"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Dashboard"),

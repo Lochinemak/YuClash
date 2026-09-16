@@ -568,6 +568,8 @@
   "emailTip": "有効なメールアドレスを入力してください",
   "login": "ログイン",
   "logout": "ログアウト",
+  "customSetup": "カスタム",
+  "customSetupHint": "ログインをスキップして自分でサブスクリプションを追加",
   "hide": "非表示",
   "refreshSubscription": "サブスクリプションを更新",
   "subscriptionUpdated": "サブスクリプションを更新しました",

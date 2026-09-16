@@ -568,6 +568,8 @@
   "emailTip": "请输入有效的邮箱地址",
   "login": "登录",
   "logout": "退出登录",
+  "customSetup": "自定义",
+  "customSetupHint": "跳过登录，自行添加订阅",
   "hide": "隐藏",
   "refreshSubscription": "刷新订阅",
   "subscriptionUpdated": "订阅已更新",

@@ -119,11 +119,13 @@ final class V2boardAccountState {
   final bool loading;
   final V2boardSession? session;
   final Object? error;
+  final bool skipped;
 
   const V2boardAccountState({
     this.initialized = false,
     this.loading = false,
     this.session,
     this.error,
+    this.skipped = false,
   });
 }

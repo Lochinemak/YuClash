@@ -477,4 +477,31 @@ void main() {
       expect(await database.iconRecords.count.getSingle(), 2);
     },
   );
+
+  test(
+    'v2board service codes order by recency, touch upserts, and prune oldest',
+    () async {
+      final dao = database.v2boardServiceCodesDao;
+      await dao.touch('AAA');
+      await dao.touch('BBB');
+      await dao.touch('AAA');
+
+      final codes = await dao.query().get();
+      expect(codes.map((record) => record.code), ['AAA', 'BBB']);
+
+      await dao.remove('BBB');
+      expect(await dao.query().get(), hasLength(1));
+
+      for (var i = 0; i < dao.maxCapacity; i++) {
+        await dao.touch('CODE$i');
+      }
+      final afterCapacity = await database.v2boardServiceCodes.count
+          .getSingle();
+      expect(afterCapacity, dao.maxCapacity);
+      expect(
+        (await dao.query().get()).map((record) => record.code),
+        isNot(contains('AAA')),
+      );
+    },
+  );
 }

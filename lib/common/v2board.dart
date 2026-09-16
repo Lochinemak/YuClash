@@ -50,9 +50,11 @@ final class V2boardApiClient {
   }) async {
     final normalizedBaseUrl = normalizeV2boardBaseUrl(baseUrl);
     try {
-      final loginResponse = await _dio.post<Object?>(
-        _endpoint(normalizedBaseUrl, 'api/v1/passport/auth/login'),
-        data: {'email': email.trim(), 'password': password},
+      final loginResponse = await _withTransientRetry(
+        () => _dio.post<Object?>(
+          _endpoint(normalizedBaseUrl, 'api/v1/passport/auth/login'),
+          data: {'email': email.trim(), 'password': password},
+        ),
       );
       final authData = _readAuthData(loginResponse.data);
       final snapshot = await getSubscriptionSnapshot(
@@ -89,9 +91,11 @@ final class V2boardApiClient {
     String fallbackEmail = '',
   }) async {
     try {
-      final response = await _dio.get<Object?>(
-        _endpoint(baseUrl, 'api/v1/user/getSubscribe'),
-        options: Options(headers: {'Authorization': authData}),
+      final response = await _withTransientRetry(
+        () => _dio.get<Object?>(
+          _endpoint(baseUrl, 'api/v1/user/getSubscribe'),
+          options: Options(headers: {'Authorization': authData}),
+        ),
       );
       return _readSubscriptionSnapshot(
         response.data,
@@ -104,6 +108,27 @@ final class V2boardApiClient {
 
   String _endpoint(String baseUrl, String path) {
     return Uri.parse(baseUrl).resolve(path).toString();
+  }
+
+  // Right after cold start (or right after the VPN tunnel comes up), Android's
+  // DNS resolver can transiently fail lookups for a second or two before the
+  // network stack settles, which otherwise surfaces as a one-off connection
+  // error to the user even though a manual retry a moment later succeeds.
+  Future<T> _withTransientRetry<T>(
+    Future<T> Function() action, {
+    int retries = 2,
+    Duration delay = const Duration(seconds: 1),
+  }) async {
+    for (var attempt = 0; ; attempt++) {
+      try {
+        return await action();
+      } on DioException catch (error) {
+        if (attempt >= retries || error.type != DioExceptionType.connectionError) {
+          rethrow;
+        }
+        await Future.delayed(delay);
+      }
+    }
   }
 
   String _readAuthData(Object? responseData) {
@@ -206,6 +231,19 @@ final class V2boardApiClient {
 
 class V2boardSessionStore {
   static const _key = 'v2boardSession';
+  static const _skipKey = 'v2boardSkipLogin';
+
+  Future<bool> loadSkip() async {
+    return await preferences.getString(_skipKey) == '1';
+  }
+
+  Future<void> saveSkip() async {
+    await preferences.setString(_skipKey, '1');
+  }
+
+  Future<void> clearSkip() async {
+    await preferences.remove(_skipKey);
+  }
 
   Future<V2boardSession?> load() async {
     try {
@@ -245,11 +283,13 @@ String normalizeV2boardBaseUrl(String value) {
   return uri.replace(path: path, query: null, fragment: null).toString();
 }
 
+String normalizeV2boardServiceCode(String code) => code.trim().toUpperCase();
+
 String resolveV2boardBaseUrl(
   String code, {
   String serverMapJson = v2boardServerMapJson,
 }) {
-  final normalizedCode = code.trim().toUpperCase();
+  final normalizedCode = normalizeV2boardServiceCode(code);
   if (normalizedCode.isEmpty) {
     throw const V2boardException(V2boardErrorType.invalidServerCode);
   }
