@@ -12,7 +12,7 @@ on:
       - 'v*'
 env:
   IS_STABLE: ${{ !contains(github.ref, '-') }}
-  FLUTTER_VERSION: '3.47.4'
+  FLUTTER_VERSION: '3.47.1'
 
 jobs:
   test:
@@ -189,6 +189,7 @@ jobs:
 
       - name: Setup NDK
         if: startsWith(matrix.platform,'android')
+        id: ndk
         uses: nttld/setup-ndk@v1
         with:
           ndk-version: r28c
@@ -203,6 +204,7 @@ jobs:
       - name: Setup
         env:
           V2BOARD_BASE_URL: ${{ secrets.V2BOARD_BASE_URL }}
+          ANDROID_NDK_HOME: ${{ steps.ndk.outputs.ndk-path }}
         run: dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} -v
 
       - name: Upload
