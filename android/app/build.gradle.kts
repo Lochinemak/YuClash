@@ -35,7 +35,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.yucloud.clash"
+        applicationId = "com.follow.clash"
         minSdk = flutter.minSdkVersion
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = flutter.versionCode
@@ -81,6 +81,11 @@ android {
             )
         }
     }
+
+    sourceSets {
+        // Unit tests live under android/tests/ instead of each module's src/test.
+        getByName("test").java.setSrcDirs(listOf("../tests/app"))
+    }
 }
 
 kotlin {
@@ -105,4 +110,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics.ndk)
     implementation(libs.firebase.analytics)
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

@@ -1,8 +1,8 @@
 export 'app.dart';
+export 'changelog.dart';
 export 'clash_config.dart';
 export 'common.dart';
 export 'config.dart';
 export 'core.dart';
 export 'profile.dart';
 export 'state.dart';
-export 'v2board.dart';

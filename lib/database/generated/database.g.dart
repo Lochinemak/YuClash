@@ -79,6 +79,17 @@ class $ProfilesTable extends Profiles
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _matchTargetMeta = const VerificationMeta(
+    'matchTarget',
+  );
+  @override
+  late final GeneratedColumn<String> matchTarget = GeneratedColumn<String>(
+    'match_target',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _autoUpdateDurationMillisMeta =
       const VerificationMeta('autoUpdateDurationMillis');
   @override
@@ -149,6 +160,7 @@ class $ProfilesTable extends Profiles
     lastUpdateDate,
     overwriteType,
     scriptId,
+    matchTarget,
     autoUpdateDurationMillis,
     subscriptionInfo,
     autoUpdate,
@@ -209,6 +221,15 @@ class $ProfilesTable extends Profiles
       context.handle(
         _scriptIdMeta,
         scriptId.isAcceptableOrUnknown(data['script_id']!, _scriptIdMeta),
+      );
+    }
+    if (data.containsKey('match_target')) {
+      context.handle(
+        _matchTargetMeta,
+        matchTarget.isAcceptableOrUnknown(
+          data['match_target']!,
+          _matchTargetMeta,
+        ),
       );
     }
     if (data.containsKey('auto_update_duration_millis')) {
@@ -275,6 +296,10 @@ class $ProfilesTable extends Profiles
         DriftSqlType.int,
         data['${effectivePrefix}script_id'],
       ),
+      matchTarget: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}match_target'],
+      ),
       autoUpdateDurationMillis: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}auto_update_duration_millis'],
@@ -333,6 +358,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
   final DateTime? lastUpdateDate;
   final OverwriteType overwriteType;
   final int? scriptId;
+  final String? matchTarget;
   final int autoUpdateDurationMillis;
   final SubscriptionInfo? subscriptionInfo;
   final bool autoUpdate;
@@ -347,6 +373,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     this.lastUpdateDate,
     required this.overwriteType,
     this.scriptId,
+    this.matchTarget,
     required this.autoUpdateDurationMillis,
     this.subscriptionInfo,
     required this.autoUpdate,
@@ -373,6 +400,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     }
     if (!nullToAbsent || scriptId != null) {
       map['script_id'] = Variable<int>(scriptId);
+    }
+    if (!nullToAbsent || matchTarget != null) {
+      map['match_target'] = Variable<String>(matchTarget);
     }
     map['auto_update_duration_millis'] = Variable<int>(
       autoUpdateDurationMillis,
@@ -414,6 +444,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       scriptId: scriptId == null && nullToAbsent
           ? const Value.absent()
           : Value(scriptId),
+      matchTarget: matchTarget == null && nullToAbsent
+          ? const Value.absent()
+          : Value(matchTarget),
       autoUpdateDurationMillis: Value(autoUpdateDurationMillis),
       subscriptionInfo: subscriptionInfo == null && nullToAbsent
           ? const Value.absent()
@@ -442,6 +475,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
         serializer.fromJson<String>(json['overwriteType']),
       ),
       scriptId: serializer.fromJson<int?>(json['scriptId']),
+      matchTarget: serializer.fromJson<String?>(json['matchTarget']),
       autoUpdateDurationMillis: serializer.fromJson<int>(
         json['autoUpdateDurationMillis'],
       ),
@@ -469,6 +503,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
         $ProfilesTable.$converteroverwriteType.toJson(overwriteType),
       ),
       'scriptId': serializer.toJson<int?>(scriptId),
+      'matchTarget': serializer.toJson<String?>(matchTarget),
       'autoUpdateDurationMillis': serializer.toJson<int>(
         autoUpdateDurationMillis,
       ),
@@ -490,6 +525,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     Value<DateTime?> lastUpdateDate = const Value.absent(),
     OverwriteType? overwriteType,
     Value<int?> scriptId = const Value.absent(),
+    Value<String?> matchTarget = const Value.absent(),
     int? autoUpdateDurationMillis,
     Value<SubscriptionInfo?> subscriptionInfo = const Value.absent(),
     bool? autoUpdate,
@@ -508,6 +544,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
         : this.lastUpdateDate,
     overwriteType: overwriteType ?? this.overwriteType,
     scriptId: scriptId.present ? scriptId.value : this.scriptId,
+    matchTarget: matchTarget.present ? matchTarget.value : this.matchTarget,
     autoUpdateDurationMillis:
         autoUpdateDurationMillis ?? this.autoUpdateDurationMillis,
     subscriptionInfo: subscriptionInfo.present
@@ -533,6 +570,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
           ? data.overwriteType.value
           : this.overwriteType,
       scriptId: data.scriptId.present ? data.scriptId.value : this.scriptId,
+      matchTarget: data.matchTarget.present
+          ? data.matchTarget.value
+          : this.matchTarget,
       autoUpdateDurationMillis: data.autoUpdateDurationMillis.present
           ? data.autoUpdateDurationMillis.value
           : this.autoUpdateDurationMillis,
@@ -560,6 +600,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
           ..write('lastUpdateDate: $lastUpdateDate, ')
           ..write('overwriteType: $overwriteType, ')
           ..write('scriptId: $scriptId, ')
+          ..write('matchTarget: $matchTarget, ')
           ..write('autoUpdateDurationMillis: $autoUpdateDurationMillis, ')
           ..write('subscriptionInfo: $subscriptionInfo, ')
           ..write('autoUpdate: $autoUpdate, ')
@@ -579,6 +620,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     lastUpdateDate,
     overwriteType,
     scriptId,
+    matchTarget,
     autoUpdateDurationMillis,
     subscriptionInfo,
     autoUpdate,
@@ -597,6 +639,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
           other.lastUpdateDate == this.lastUpdateDate &&
           other.overwriteType == this.overwriteType &&
           other.scriptId == this.scriptId &&
+          other.matchTarget == this.matchTarget &&
           other.autoUpdateDurationMillis == this.autoUpdateDurationMillis &&
           other.subscriptionInfo == this.subscriptionInfo &&
           other.autoUpdate == this.autoUpdate &&
@@ -613,6 +656,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
   final Value<DateTime?> lastUpdateDate;
   final Value<OverwriteType> overwriteType;
   final Value<int?> scriptId;
+  final Value<String?> matchTarget;
   final Value<int> autoUpdateDurationMillis;
   final Value<SubscriptionInfo?> subscriptionInfo;
   final Value<bool> autoUpdate;
@@ -627,6 +671,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     this.lastUpdateDate = const Value.absent(),
     this.overwriteType = const Value.absent(),
     this.scriptId = const Value.absent(),
+    this.matchTarget = const Value.absent(),
     this.autoUpdateDurationMillis = const Value.absent(),
     this.subscriptionInfo = const Value.absent(),
     this.autoUpdate = const Value.absent(),
@@ -642,6 +687,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     this.lastUpdateDate = const Value.absent(),
     required OverwriteType overwriteType,
     this.scriptId = const Value.absent(),
+    this.matchTarget = const Value.absent(),
     required int autoUpdateDurationMillis,
     this.subscriptionInfo = const Value.absent(),
     required bool autoUpdate,
@@ -663,6 +709,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     Expression<DateTime>? lastUpdateDate,
     Expression<String>? overwriteType,
     Expression<int>? scriptId,
+    Expression<String>? matchTarget,
     Expression<int>? autoUpdateDurationMillis,
     Expression<String>? subscriptionInfo,
     Expression<bool>? autoUpdate,
@@ -678,6 +725,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
       if (lastUpdateDate != null) 'last_update_date': lastUpdateDate,
       if (overwriteType != null) 'overwrite_type': overwriteType,
       if (scriptId != null) 'script_id': scriptId,
+      if (matchTarget != null) 'match_target': matchTarget,
       if (autoUpdateDurationMillis != null)
         'auto_update_duration_millis': autoUpdateDurationMillis,
       if (subscriptionInfo != null) 'subscription_info': subscriptionInfo,
@@ -696,6 +744,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     Value<DateTime?>? lastUpdateDate,
     Value<OverwriteType>? overwriteType,
     Value<int?>? scriptId,
+    Value<String?>? matchTarget,
     Value<int>? autoUpdateDurationMillis,
     Value<SubscriptionInfo?>? subscriptionInfo,
     Value<bool>? autoUpdate,
@@ -711,6 +760,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
       overwriteType: overwriteType ?? this.overwriteType,
       scriptId: scriptId ?? this.scriptId,
+      matchTarget: matchTarget ?? this.matchTarget,
       autoUpdateDurationMillis:
           autoUpdateDurationMillis ?? this.autoUpdateDurationMillis,
       subscriptionInfo: subscriptionInfo ?? this.subscriptionInfo,
@@ -746,6 +796,9 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     }
     if (scriptId.present) {
       map['script_id'] = Variable<int>(scriptId.value);
+    }
+    if (matchTarget.present) {
+      map['match_target'] = Variable<String>(matchTarget.value);
     }
     if (autoUpdateDurationMillis.present) {
       map['auto_update_duration_millis'] = Variable<int>(
@@ -786,6 +839,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
           ..write('lastUpdateDate: $lastUpdateDate, ')
           ..write('overwriteType: $overwriteType, ')
           ..write('scriptId: $scriptId, ')
+          ..write('matchTarget: $matchTarget, ')
           ..write('autoUpdateDurationMillis: $autoUpdateDurationMillis, ')
           ..write('subscriptionInfo: $subscriptionInfo, ')
           ..write('autoUpdate: $autoUpdate, ')
@@ -3391,228 +3445,6 @@ class IconRecordsCompanion extends UpdateCompanion<IconRecord> {
   }
 }
 
-class $V2boardServiceCodesTable extends V2boardServiceCodes
-    with TableInfo<$V2boardServiceCodesTable, ServiceCodeRecord> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $V2boardServiceCodesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _codeMeta = const VerificationMeta('code');
-  @override
-  late final GeneratedColumn<String> code = GeneratedColumn<String>(
-    'code',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _lastUsedAtMeta = const VerificationMeta(
-    'lastUsedAt',
-  );
-  @override
-  late final GeneratedColumn<int> lastUsedAt = GeneratedColumn<int>(
-    'last_used_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [code, lastUsedAt];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'v2board_service_codes';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<ServiceCodeRecord> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('code')) {
-      context.handle(
-        _codeMeta,
-        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_codeMeta);
-    }
-    if (data.containsKey('last_used_at')) {
-      context.handle(
-        _lastUsedAtMeta,
-        lastUsedAt.isAcceptableOrUnknown(
-          data['last_used_at']!,
-          _lastUsedAtMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_lastUsedAtMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {code};
-  @override
-  ServiceCodeRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return ServiceCodeRecord(
-      code: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}code'],
-      )!,
-      lastUsedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}last_used_at'],
-      )!,
-    );
-  }
-
-  @override
-  $V2boardServiceCodesTable createAlias(String alias) {
-    return $V2boardServiceCodesTable(attachedDatabase, alias);
-  }
-}
-
-class ServiceCodeRecord extends DataClass
-    implements Insertable<ServiceCodeRecord> {
-  final String code;
-  final int lastUsedAt;
-  const ServiceCodeRecord({required this.code, required this.lastUsedAt});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['code'] = Variable<String>(code);
-    map['last_used_at'] = Variable<int>(lastUsedAt);
-    return map;
-  }
-
-  V2boardServiceCodesCompanion toCompanion(bool nullToAbsent) {
-    return V2boardServiceCodesCompanion(
-      code: Value(code),
-      lastUsedAt: Value(lastUsedAt),
-    );
-  }
-
-  factory ServiceCodeRecord.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return ServiceCodeRecord(
-      code: serializer.fromJson<String>(json['code']),
-      lastUsedAt: serializer.fromJson<int>(json['lastUsedAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'code': serializer.toJson<String>(code),
-      'lastUsedAt': serializer.toJson<int>(lastUsedAt),
-    };
-  }
-
-  ServiceCodeRecord copyWith({String? code, int? lastUsedAt}) =>
-      ServiceCodeRecord(
-        code: code ?? this.code,
-        lastUsedAt: lastUsedAt ?? this.lastUsedAt,
-      );
-  ServiceCodeRecord copyWithCompanion(V2boardServiceCodesCompanion data) {
-    return ServiceCodeRecord(
-      code: data.code.present ? data.code.value : this.code,
-      lastUsedAt: data.lastUsedAt.present
-          ? data.lastUsedAt.value
-          : this.lastUsedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('ServiceCodeRecord(')
-          ..write('code: $code, ')
-          ..write('lastUsedAt: $lastUsedAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(code, lastUsedAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is ServiceCodeRecord &&
-          other.code == this.code &&
-          other.lastUsedAt == this.lastUsedAt);
-}
-
-class V2boardServiceCodesCompanion extends UpdateCompanion<ServiceCodeRecord> {
-  final Value<String> code;
-  final Value<int> lastUsedAt;
-  final Value<int> rowid;
-  const V2boardServiceCodesCompanion({
-    this.code = const Value.absent(),
-    this.lastUsedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  V2boardServiceCodesCompanion.insert({
-    required String code,
-    required int lastUsedAt,
-    this.rowid = const Value.absent(),
-  }) : code = Value(code),
-       lastUsedAt = Value(lastUsedAt);
-  static Insertable<ServiceCodeRecord> custom({
-    Expression<String>? code,
-    Expression<int>? lastUsedAt,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (code != null) 'code': code,
-      if (lastUsedAt != null) 'last_used_at': lastUsedAt,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  V2boardServiceCodesCompanion copyWith({
-    Value<String>? code,
-    Value<int>? lastUsedAt,
-    Value<int>? rowid,
-  }) {
-    return V2boardServiceCodesCompanion(
-      code: code ?? this.code,
-      lastUsedAt: lastUsedAt ?? this.lastUsedAt,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (code.present) {
-      map['code'] = Variable<String>(code.value);
-    }
-    if (lastUsedAt.present) {
-      map['last_used_at'] = Variable<int>(lastUsedAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('V2boardServiceCodesCompanion(')
-          ..write('code: $code, ')
-          ..write('lastUsedAt: $lastUsedAt, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(e);
   $DatabaseManager get managers => $DatabaseManager(this);
@@ -3624,8 +3456,6 @@ abstract class _$Database extends GeneratedDatabase {
   );
   late final $ProxyGroupsTable proxyGroups = $ProxyGroupsTable(this);
   late final $IconRecordsTable iconRecords = $IconRecordsTable(this);
-  late final $V2boardServiceCodesTable v2boardServiceCodes =
-      $V2boardServiceCodesTable(this);
   late final Index idxRuleTarget = Index(
     'idx_rule_target',
     'CREATE INDEX idx_rule_target ON rules (rule_target)',
@@ -3647,8 +3477,6 @@ abstract class _$Database extends GeneratedDatabase {
   late final RulesDao rulesDao = RulesDao(this as Database);
   late final ProxyGroupsDao proxyGroupsDao = ProxyGroupsDao(this as Database);
   late final IconRecordsDao iconRecordsDao = IconRecordsDao(this as Database);
-  late final V2boardServiceCodesDao v2boardServiceCodesDao =
-      V2boardServiceCodesDao(this as Database);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3660,7 +3488,6 @@ abstract class _$Database extends GeneratedDatabase {
     profileRuleLinks,
     proxyGroups,
     iconRecords,
-    v2boardServiceCodes,
     idxRuleTarget,
     idxProfileSceneOrder,
     idxProfileNameOrder,
@@ -3701,6 +3528,7 @@ typedef $$ProfilesTableCreateCompanionBuilder =
       Value<DateTime?> lastUpdateDate,
       required OverwriteType overwriteType,
       Value<int?> scriptId,
+      Value<String?> matchTarget,
       required int autoUpdateDurationMillis,
       Value<SubscriptionInfo?> subscriptionInfo,
       required bool autoUpdate,
@@ -3717,6 +3545,7 @@ typedef $$ProfilesTableUpdateCompanionBuilder =
       Value<DateTime?> lastUpdateDate,
       Value<OverwriteType> overwriteType,
       Value<int?> scriptId,
+      Value<String?> matchTarget,
       Value<int> autoUpdateDurationMillis,
       Value<SubscriptionInfo?> subscriptionInfo,
       Value<bool> autoUpdate,
@@ -3810,6 +3639,11 @@ class $$ProfilesTableFilterComposer
 
   ColumnFilters<int> get scriptId => $composableBuilder(
     column: $table.scriptId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get matchTarget => $composableBuilder(
+    column: $table.matchTarget,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3945,6 +3779,11 @@ class $$ProfilesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get matchTarget => $composableBuilder(
+    column: $table.matchTarget,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get autoUpdateDurationMillis => $composableBuilder(
     column: $table.autoUpdateDurationMillis,
     builder: (column) => ColumnOrderings(column),
@@ -4012,6 +3851,11 @@ class $$ProfilesTableAnnotationComposer
 
   GeneratedColumn<int> get scriptId =>
       $composableBuilder(column: $table.scriptId, builder: (column) => column);
+
+  GeneratedColumn<String> get matchTarget => $composableBuilder(
+    column: $table.matchTarget,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get autoUpdateDurationMillis => $composableBuilder(
     column: $table.autoUpdateDurationMillis,
@@ -4130,6 +3974,7 @@ class $$ProfilesTableTableManager
                 Value<DateTime?> lastUpdateDate = const Value.absent(),
                 Value<OverwriteType> overwriteType = const Value.absent(),
                 Value<int?> scriptId = const Value.absent(),
+                Value<String?> matchTarget = const Value.absent(),
                 Value<int> autoUpdateDurationMillis = const Value.absent(),
                 Value<SubscriptionInfo?> subscriptionInfo =
                     const Value.absent(),
@@ -4145,6 +3990,7 @@ class $$ProfilesTableTableManager
                 lastUpdateDate: lastUpdateDate,
                 overwriteType: overwriteType,
                 scriptId: scriptId,
+                matchTarget: matchTarget,
                 autoUpdateDurationMillis: autoUpdateDurationMillis,
                 subscriptionInfo: subscriptionInfo,
                 autoUpdate: autoUpdate,
@@ -4161,6 +4007,7 @@ class $$ProfilesTableTableManager
                 Value<DateTime?> lastUpdateDate = const Value.absent(),
                 required OverwriteType overwriteType,
                 Value<int?> scriptId = const Value.absent(),
+                Value<String?> matchTarget = const Value.absent(),
                 required int autoUpdateDurationMillis,
                 Value<SubscriptionInfo?> subscriptionInfo =
                     const Value.absent(),
@@ -4176,6 +4023,7 @@ class $$ProfilesTableTableManager
                 lastUpdateDate: lastUpdateDate,
                 overwriteType: overwriteType,
                 scriptId: scriptId,
+                matchTarget: matchTarget,
                 autoUpdateDurationMillis: autoUpdateDurationMillis,
                 subscriptionInfo: subscriptionInfo,
                 autoUpdate: autoUpdate,
@@ -5984,167 +5832,6 @@ typedef $$IconRecordsTableProcessedTableManager =
       IconRecord,
       PrefetchHooks Function()
     >;
-typedef $$V2boardServiceCodesTableCreateCompanionBuilder =
-    V2boardServiceCodesCompanion Function({
-      required String code,
-      required int lastUsedAt,
-      Value<int> rowid,
-    });
-typedef $$V2boardServiceCodesTableUpdateCompanionBuilder =
-    V2boardServiceCodesCompanion Function({
-      Value<String> code,
-      Value<int> lastUsedAt,
-      Value<int> rowid,
-    });
-
-class $$V2boardServiceCodesTableFilterComposer
-    extends Composer<_$Database, $V2boardServiceCodesTable> {
-  $$V2boardServiceCodesTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get code => $composableBuilder(
-    column: $table.code,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get lastUsedAt => $composableBuilder(
-    column: $table.lastUsedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$V2boardServiceCodesTableOrderingComposer
-    extends Composer<_$Database, $V2boardServiceCodesTable> {
-  $$V2boardServiceCodesTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get code => $composableBuilder(
-    column: $table.code,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get lastUsedAt => $composableBuilder(
-    column: $table.lastUsedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$V2boardServiceCodesTableAnnotationComposer
-    extends Composer<_$Database, $V2boardServiceCodesTable> {
-  $$V2boardServiceCodesTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get code =>
-      $composableBuilder(column: $table.code, builder: (column) => column);
-
-  GeneratedColumn<int> get lastUsedAt => $composableBuilder(
-    column: $table.lastUsedAt,
-    builder: (column) => column,
-  );
-}
-
-class $$V2boardServiceCodesTableTableManager
-    extends
-        RootTableManager<
-          _$Database,
-          $V2boardServiceCodesTable,
-          ServiceCodeRecord,
-          $$V2boardServiceCodesTableFilterComposer,
-          $$V2boardServiceCodesTableOrderingComposer,
-          $$V2boardServiceCodesTableAnnotationComposer,
-          $$V2boardServiceCodesTableCreateCompanionBuilder,
-          $$V2boardServiceCodesTableUpdateCompanionBuilder,
-          (
-            ServiceCodeRecord,
-            BaseReferences<
-              _$Database,
-              $V2boardServiceCodesTable,
-              ServiceCodeRecord
-            >,
-          ),
-          ServiceCodeRecord,
-          PrefetchHooks Function()
-        > {
-  $$V2boardServiceCodesTableTableManager(
-    _$Database db,
-    $V2boardServiceCodesTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$V2boardServiceCodesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$V2boardServiceCodesTableOrderingComposer(
-                $db: db,
-                $table: table,
-              ),
-          createComputedFieldComposer: () =>
-              $$V2boardServiceCodesTableAnnotationComposer(
-                $db: db,
-                $table: table,
-              ),
-          updateCompanionCallback:
-              ({
-                Value<String> code = const Value.absent(),
-                Value<int> lastUsedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => V2boardServiceCodesCompanion(
-                code: code,
-                lastUsedAt: lastUsedAt,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                required String code,
-                required int lastUsedAt,
-                Value<int> rowid = const Value.absent(),
-              }) => V2boardServiceCodesCompanion.insert(
-                code: code,
-                lastUsedAt: lastUsedAt,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$V2boardServiceCodesTableProcessedTableManager =
-    ProcessedTableManager<
-      _$Database,
-      $V2boardServiceCodesTable,
-      ServiceCodeRecord,
-      $$V2boardServiceCodesTableFilterComposer,
-      $$V2boardServiceCodesTableOrderingComposer,
-      $$V2boardServiceCodesTableAnnotationComposer,
-      $$V2boardServiceCodesTableCreateCompanionBuilder,
-      $$V2boardServiceCodesTableUpdateCompanionBuilder,
-      (
-        ServiceCodeRecord,
-        BaseReferences<
-          _$Database,
-          $V2boardServiceCodesTable,
-          ServiceCodeRecord
-        >,
-      ),
-      ServiceCodeRecord,
-      PrefetchHooks Function()
-    >;
 
 class $DatabaseManager {
   final _$Database _db;
@@ -6161,8 +5848,6 @@ class $DatabaseManager {
       $$ProxyGroupsTableTableManager(_db, _db.proxyGroups);
   $$IconRecordsTableTableManager get iconRecords =>
       $$IconRecordsTableTableManager(_db, _db.iconRecords);
-  $$V2boardServiceCodesTableTableManager get v2boardServiceCodes =>
-      $$V2boardServiceCodesTableTableManager(_db, _db.v2boardServiceCodes);
 }
 
 mixin _$ProfilesDaoMixin on DatabaseAccessor<Database> {
@@ -6236,21 +5921,4 @@ class IconRecordsDaoManager {
   IconRecordsDaoManager(this._db);
   $$IconRecordsTableTableManager get iconRecords =>
       $$IconRecordsTableTableManager(_db.attachedDatabase, _db.iconRecords);
-}
-
-mixin _$V2boardServiceCodesDaoMixin on DatabaseAccessor<Database> {
-  $V2boardServiceCodesTable get v2boardServiceCodes =>
-      attachedDatabase.v2boardServiceCodes;
-  V2boardServiceCodesDaoManager get managers =>
-      V2boardServiceCodesDaoManager(this);
-}
-
-class V2boardServiceCodesDaoManager {
-  final _$V2boardServiceCodesDaoMixin _db;
-  V2boardServiceCodesDaoManager(this._db);
-  $$V2boardServiceCodesTableTableManager get v2boardServiceCodes =>
-      $$V2boardServiceCodesTableTableManager(
-        _db.attachedDatabase,
-        _db.v2boardServiceCodes,
-      );
 }

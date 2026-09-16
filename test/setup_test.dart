@@ -25,16 +25,6 @@ void main() {
       expect(setup.createBuildEnvironment('dev'), {'APP_ENV': 'dev'});
     });
 
-    test('adds the V2Board URL to the Flutter build environment', () {
-      expect(
-        setup.createBuildEnvironment(
-          'stable',
-          v2boardBaseUrl: ' https://panel.example ',
-        ),
-        {'APP_ENV': 'stable', 'V2BOARD_BASE_URL': 'https://panel.example'},
-      );
-    });
-
     test('omits verbose from flutter build args by default', () {
       final args = setup.createFlutterBuildArgs(
         platform: 'android',
@@ -55,6 +45,31 @@ void main() {
         'dart-define-from-file=env.json',
         'split-per-abi',
       ]);
+    });
+
+    test('refuses to package while a native build hook is skipped', () {
+      const pubspec = '''
+hooks:
+  user_defines:
+    setup:
+      build_assets: false
+    rust_api:
+      build_assets: true
+''';
+
+      expect(setup.packagesNotBuildingAssets(pubspec), ['setup']);
+      expect(setup.packagesNotBuildingAssets('name: x\n'), isEmpty);
+    });
+
+    test('packages every Linux format on every architecture', () {
+      expect(setup.createPackageTargets('linux', null), 'deb,appimage,rpm');
+      expect(setup.createPackageTargets('linux', 'deb'), 'deb');
+      expect(setup.createPackageTargets('macos', null), 'dmg');
+    });
+
+    test('downloads the appimagetool build matching the host', () {
+      expect(setup.appImageToolArch('arm64'), 'aarch64');
+      expect(setup.appImageToolArch('amd64'), 'x86_64');
     });
   });
 }

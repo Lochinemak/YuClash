@@ -1,6 +1,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/theme.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/views/dashboard/widget_registry.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -9,8 +10,7 @@ import 'package:fl_clash/views/access.dart';
 import 'package:fl_clash/views/dashboard/dashboard.dart';
 import 'package:fl_clash/views/logs.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -182,9 +182,7 @@ void main() {
         child: MaterialApp(
           localizationsDelegates: const [
             AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
+            ...GlobalMaterialLocalizations.delegates,
           ],
           supportedLocales: AppLocalizations.delegate.supportedLocales,
           home: CommonPopScope(
@@ -228,9 +226,7 @@ void main() {
         child: MaterialApp(
           localizationsDelegates: const [
             AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
+            ...GlobalMaterialLocalizations.delegates,
           ],
           supportedLocales: AppLocalizations.delegate.supportedLocales,
           home: _PageActivityTestScope(
@@ -254,10 +250,6 @@ void main() {
   testWidgets('inactive page scope exits dashboard edit layer', (tester) async {
     final container = ProviderContainer(
       overrides: [
-        appSettingProvider.overrideWithBuild(
-          (_, _) =>
-              const AppSettingProps(dashboardLayout: DashboardLayout.classic),
-        ),
         dashboardStateProvider.overrideWithValue(
           const DashboardState(dashboardWidgets: []),
         ),
@@ -329,10 +321,6 @@ void main() {
   ) async {
     final container = ProviderContainer(
       overrides: [
-        appSettingProvider.overrideWithBuild(
-          (_, _) =>
-              const AppSettingProps(dashboardLayout: DashboardLayout.classic),
-        ),
         dashboardStateProvider.overrideWithValue(
           const DashboardState(dashboardWidgets: []),
         ),
@@ -365,10 +353,6 @@ void main() {
   ) async {
     final container = ProviderContainer(
       overrides: [
-        appSettingProvider.overrideWithBuild(
-          (_, _) =>
-              const AppSettingProps(dashboardLayout: DashboardLayout.classic),
-        ),
         dashboardStateProvider.overrideWithValue(
           const DashboardState(
             dashboardWidgets: [
@@ -431,9 +415,7 @@ class _DashboardTestApp extends StatelessWidget {
     return MaterialApp(
       localizationsDelegates: const [
         AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
       ],
       supportedLocales: AppLocalizations.delegate.supportedLocales,
       builder: (context, child) {

@@ -7,24 +7,20 @@ import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
-const appName = 'YuClash';
-const v2boardServerMapJson = String.fromEnvironment('V2BOARD_BASE_URL');
-const v2boardProfileName = String.fromEnvironment(
-  'V2BOARD_PROFILE_NAME',
-  defaultValue: 'YuCloud',
-);
-const appHelperService = 'YuClashHelperService';
+const appName = 'FlClash';
+const appHelperService = 'FlClashHelperService';
 const coreManifestName = 'manifest.json';
 const coreName = 'clash.meta';
 const browserUa =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
-const packageName = 'com.yucloud.clash';
-final unixSocketPath = '/tmp/YuClashSocket_${Random().nextInt(10000)}.sock';
-final windowsPipeName = '\\\\.\\pipe\\YuClashCore_${_randomPipeId()}';
-const helperPort = 47891;
-const helperProtocolVersionHeader = 'x-yuclash-helper-protocol';
+const packageName = 'com.follow.clash';
+final unixSocketPath = '/tmp/FlClashSocket_${Random().nextInt(10000)}.sock';
+final windowsPipeName = '\\\\.\\pipe\\FlClashCore_${_randomPipeId()}';
+const helperPort = 47890;
+const helperSocketPath = '/run/flclash/helper.sock';
+const helperProtocolVersionHeader = 'x-flclash-helper-protocol';
 const helperProtocolVersion = '6';
 const maxTextScale = 1.4;
 const minTextScale = 0.8;
@@ -52,13 +48,19 @@ String _randomPipeId() {
 
 final defaultTextScaleFactor =
     WidgetsBinding.instance.platformDispatcher.textScaleFactor;
-const httpTimeoutDuration = Duration(milliseconds: 5000);
 
-/// Keep at or below the Core's delay-test concurrency (`mBatch` in
-/// core/common.go). Surplus requests queue inside the Core behind a full wave
-/// of 5s timeouts, which no RPC timeout can cover.
-const maxConcurrentDelayTests = 50;
-const moreDuration = Duration(milliseconds: 100);
+/// How long the Core may spend on one delay test. It spends this twice in the
+/// worst case - once queueing for a slot, once on the probe itself - so the
+/// guard below has to outlast twice this value.
+const delayTestTimeoutDuration = Duration(seconds: 8);
+
+const delayTestGuardDuration = Duration(seconds: 30);
+
+const coreConnectionWaitDuration = Duration(seconds: 10);
+
+/// Keep at or below the Core's delay-test concurrency (`delayTestConcurrency`
+/// in core/common.go).
+const maxConcurrentDelayTests = 16;
 const animateDuration = Duration(milliseconds: 100);
 const midDuration = Duration(milliseconds: 200);
 const commonDuration = Duration(milliseconds: 300);
@@ -67,18 +69,22 @@ const MMDB = 'GEOIP.metadb';
 const ASN = 'ASN.mmdb';
 const GEOIP = 'GEOIP.dat';
 const GEOSITE = 'GEOSITE.dat';
-final double kHeaderHeight = system.isDesktop
-    ? !system.isMacOS
-          ? 40
-          : 28
-    : 0;
+final double kHeaderHeight = getWindowHeaderHeight(
+  isDesktop: system.isDesktop,
+  isMacOS: system.isMacOS,
+);
 const profilesDirectoryName = 'profiles';
+const providersDirectoryName = 'providers';
+const proxiesProviderDirectoryName = 'proxies';
+const rulesProviderDirectoryName = 'rules';
 const localhost = '127.0.0.1';
 const clashConfigKey = 'clash_config';
 const configKey = 'config';
+const systemDnsRecordKey = 'system_dns_record';
+const bootRecordKey = 'boot_record';
+const defaultSystemDnsFallback = '223.5.5.5';
 const double dialogCommonWidth = 300;
-const repository = 'Little-Orange-Limited/YuClash';
-const defaultExternalController = '127.0.0.1:9090';
+const repository = 'chen08209/FlClash';
 const maxMobileWidth = 600;
 const maxLaptopWidth = 840;
 const defaultTestUrl = 'https://www.gstatic.com/generate_204';
@@ -88,36 +94,16 @@ final commonFilter = ImageFilter.blur(
   tileMode: TileMode.clamp,
 );
 
-const listEquality = ListEquality();
-const navigationItemListEquality = ListEquality<NavigationItem>();
-const trackerInfoListEquality = ListEquality<TrackerInfo>();
 const stringListEquality = ListEquality<String>();
 const intListEquality = ListEquality<int>();
-const logListEquality = ListEquality<Log>();
-const groupListEquality = ListEquality<Group>();
 const ruleListEquality = ListEquality<Rule>();
 const scriptListEquality = ListEquality<Script>();
-const externalProviderListEquality = ListEquality<ExternalProvider>();
-const packageListEquality = ListEquality<Package>();
 const profileListEquality = ListEquality<Profile>();
 const proxyGroupsEquality = ListEquality<ProxyGroup>();
 const hotKeyActionListEquality = ListEquality<HotKeyAction>();
-const stringAndStringMapEquality = MapEquality<String, String>();
 const stringAndStringMapEntryListEquality =
     ListEquality<MapEntry<String, String>>();
-const stringAndStringMapEntryIterableEquality =
-    IterableEquality<MapEntry<String, String>>();
-const stringAndObjectMapEntryIterableEquality =
-    IterableEquality<MapEntry<String, Object?>>();
-const delayMapEquality = MapEquality<String, Map<String, int?>>();
-const stringSetEquality = SetEquality<String>();
 const keyboardModifierListEquality = SetEquality<KeyboardModifier>();
-
-const viewModeColumnsMap = {
-  ViewMode.mobile: [2, 1],
-  ViewMode.laptop: [3, 2],
-  ViewMode.desktop: [4, 3],
-};
 
 const proxiesListStoreKey = PageStorageKey<String>('proxies_list');
 const toolsStoreKey = PageStorageKey<String>('tools');
@@ -130,11 +116,12 @@ double getWidgetHeight(num lines) {
   return max(lines * (80.ap + space) - space, 0);
 }
 
-const maxLength = 1000;
+const maxLogsLength = 5000;
+const maxRequestsLength = 2000;
+const pausedMaxLogsLength = maxLogsLength * 2;
+const pausedMaxRequestsLength = maxRequestsLength * 2;
 
-const mainIsolate = 'YuClashMainIsolate';
-
-const serviceIsolate = 'YuClashServiceIsolate';
+const trafficSampleLength = 30;
 
 const defaultPrimaryColors = [
   0xFF795548,
