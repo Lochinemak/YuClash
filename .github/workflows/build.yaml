@@ -306,6 +306,11 @@ jobs:
             curl --silent "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/latest" |
               sed -nE 's/.*"tag_name": "([^"]+)".*/\1/p'
           )
+          # With no published release the notes script never reaches its stop
+          # tag and walks the whole history; fall back to the tag before this one.
+          if [ -z "$pre_tag" ]; then
+            pre_tag=$(git tag --merged HEAD --sort=-creatordate | grep -vFx "${GITHUB_REF_NAME}" | head -1)
+          fi
           bash .github/scripts/generate_release_notes.sh "$pre_tag" release.md
       - name: Push to telegram
         if: ${{ env.IS_STABLE == 'true' }}
