@@ -251,46 +251,54 @@ Shared:
 3. Relies on the platform build hook to build the required Core artifacts before
    the native application is linked.
 
-Go core building is handled by `build_tool`, a standalone Dart CLI in `plugins/setup/buildkit/build_tool/`.
+Go core and Rust helper building is handled by the Dart build hook at `plugins/setup/hook/build.dart`, which delegates to
+the `setup_hooks` package in `plugins/setup/setup_hooks/`.
 
-Platform build hooks inside `flutter build` trigger `build_tool` automatically:
+Flutter runs that hook itself, once per target architecture, before every `flutter build` and `flutter test`. There is no
+per-platform CocoaPods, Gradle or CMake glue scheduling it any more. `CoreBuilder` turns the hook input into a
+`BuildRequest` (target OS and architecture, repository root, Android NDK toolchain) and reports the files it read and the
+directories it wrote back to Flutter as hook dependencies.
 
-- macOS: podspec script phase, `build_pod.sh`, `build_tool macos`.
-- Linux: CMake include, `buildkit/cmake/buildkit.cmake`, `build_tool linux`.
-- Windows: CMake include, `buildkit/cmake/buildkit.cmake`, `build_tool windows`. CMake forwards the active configuration through `BUILDKIT_CONFIGURATION`.
-- Android: Gradle include, `buildkit/gradle/plugin.gradle`, `build_tool android`.
+Artifact names come from `build_config.yaml` at the repository root (`core_name`, `helper_name`, `lib_name`). The desktop
+consumers below hardcode the matching `YuClash*` names, so changing one side alone breaks every desktop build while
+Android keeps working — Android's artifact name comes from `lib_name` and never goes through `core_name`.
+
+`plugins/setup/buildkit/build_tool/` is the older standalone Dart CLI. It no longer participates in any platform build
+and survives only behind the manual `make core-<platform>` entry points; the `buildkit/cmake`, `buildkit/gradle` and
+`buildkit/build_pod.sh` glue it used to be driven by is now unreferenced.
 
 ### Setup Build Harness Plugin
 
-`plugins/setup/` is a build-time Flutter plugin, not a runtime Dart or FFI API. Its plugin shape exists so Flutter's native
-build graphs can run the Go/Rust build harness before platform consumers need the generated artifacts. Application code
-must not import or call it.
+`plugins/setup/` is a build-time package, not a runtime Dart or FFI API. It declares no `flutter: plugin: platforms:`
+block, so Flutter treats it as a plain Dart dependency whose `hook/build.dart` runs as part of the native-asset pipeline.
+Application code must not import or call it.
 
 Responsibilities are deliberately split:
 
-- CocoaPods, Gradle, and CMake hooks schedule a lightweight check on every native build. They do not decide which Go or
-  Rust files are stale.
-- `buildkit/build_tool/` owns target resolution, input fingerprinting, compilation, output copying, and cache validation.
+- Flutter schedules the hook on every native build and `flutter test`. The hook does not itself decide which Go or Rust
+  files are stale; it always runs and lets the fingerprint cache answer that.
+- `setup_hooks/` owns target resolution, input fingerprinting, compilation, output copying, and cache validation.
 - `core/` and `services/helper/` remain source owners; `libclash/` and Android `jniLibs`/header directories are generated
   output locations.
 - `setup.dart` remains the release/package orchestrator and does not pre-build
-  platform artifacts or use `dart-define` for Core integrity data. The Windows
-  build tool writes the runtime `manifest.json` beside the Core output, and the
-  Windows bundle copies it beside the application executable.
+  platform artifacts or use `dart-define` for Core integrity data. On Linux and
+  Windows the hook writes the runtime `manifest.json` beside the Core output,
+  and the bundle copies it beside the application executable.
 
 Platform outputs remain explicit:
 
 - Android builds the Go core as `c-shared`, then copies `libclash.so` and generated headers into the `:core` Android module.
-- macOS and Linux build a standalone `YuClashCore` process used by the desktop socket integration.
-- Windows builds `YuClashCore.exe`, the Rust `YuClashHelperService.exe` privileged helper, and a
-  `manifest.json` containing only `coreSha256`.
+- macOS builds a standalone `YuClashCore` process used by the desktop socket integration.
+- Linux builds `YuClashCore`, the Rust `YuClashHelperService` privileged helper, and a `manifest.json` containing only
+  `coreSha256`.
+- Windows builds `YuClashCore.exe`, `YuClashHelperService.exe`, and the same `manifest.json`.
 
-The hooks follow rust_api/Cargokit's phony-output scheduling pattern, but setup uses its own cache because it builds both a
-Go core and, on Windows, a separate Rust helper. Per-target records live under `.dart_tool/setup_build_cache/v1/`:
+setup keeps its own cache because it builds both a Go core and, on Linux and Windows, a separate Rust helper. Per-target
+records live under `.dart_tool/setup_build_cache/v1/`:
 
 - Go fingerprints cover the target-specific `go list -deps` inputs inside `core/` and `Clash.Meta`, module files, effective
-  build configuration, build-tool sources, target flags, Go environment/toolchain, and Android NDK compiler details.
-- Windows helper fingerprints cover its Rust sources and manifests, Cargo/Rust
+  build configuration, harness sources, target flags, Go environment/toolchain, and Android NDK compiler details.
+- Helper fingerprints cover its Rust sources and manifests, Cargo/Rust
   toolchains and flags, and the expected Core SHA256.
 - A cache hit requires the fingerprint and every recorded output's path, size, and modification state to match. It exits
   silently without Go/Cargo compilation, output copying, or Windows `taskkill`.
