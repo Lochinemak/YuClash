@@ -3740,30 +3740,30 @@ class AppLocalizations {
     );
   }
 
-  /// `Helper service unavailable; TUN mode cannot be enabled. Reinstall FlClash to restore it.`
+  /// `Helper service unavailable; TUN mode cannot be enabled. Reinstall YuClash to restore it.`
   String get helperCorruptTip {
     return Intl.message(
-      'Helper service unavailable; TUN mode cannot be enabled. Reinstall FlClash to restore it.',
+      'Helper service unavailable; TUN mode cannot be enabled. Reinstall YuClash to restore it.',
       name: 'helperCorruptTip',
       desc: '',
       args: [],
     );
   }
 
-  /// `Windows refused to run FlClashCore.exe (error {code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow FlClash in that policy or turn it off, then try again.`
+  /// `Windows refused to run YuClashCore.exe (error {code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow YuClash in that policy or turn it off, then try again.`
   String coreBlockedByPolicyTip(Object code) {
     return Intl.message(
-      'Windows refused to run FlClashCore.exe (error $code). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow FlClash in that policy or turn it off, then try again.',
+      'Windows refused to run YuClashCore.exe (error $code). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow YuClash in that policy or turn it off, then try again.',
       name: 'coreBlockedByPolicyTip',
       desc: '',
       args: [code],
     );
   }
 
-  /// `Windows Smart App Control blocked FlClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start FlClash again. Smart App Control cannot be turned back on without reinstalling Windows.`
+  /// `Windows Smart App Control blocked YuClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start YuClash again. Smart App Control cannot be turned back on without reinstalling Windows.`
   String get coreBlockedBySmartAppControlTip {
     return Intl.message(
-      'Windows Smart App Control blocked FlClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start FlClash again. Smart App Control cannot be turned back on without reinstalling Windows.',
+      'Windows Smart App Control blocked YuClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start YuClash again. Smart App Control cannot be turned back on without reinstalling Windows.',
       name: 'coreBlockedBySmartAppControlTip',
       desc: '',
       args: [],
@@ -5110,6 +5110,346 @@ class AppLocalizations {
     return Intl.message(
       'The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.',
       name: 'installedAppsPermissionDeniedMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subscription plan`
+  String get subscriptionPlan {
+    return Intl.message(
+      'Subscription plan',
+      name: 'subscriptionPlan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expiration`
+  String get expiration {
+    return Intl.message('Expiration', name: 'expiration', desc: '', args: []);
+  }
+
+  /// `Device limit`
+  String get deviceUsage {
+    return Intl.message(
+      'Device limit',
+      name: 'deviceUsage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Compact dashboard`
+  String get compactDashboard {
+    return Intl.message(
+      'Compact dashboard',
+      name: 'compactDashboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Classic dashboard`
+  String get classicDashboard {
+    return Intl.message(
+      'Classic dashboard',
+      name: 'classicDashboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select node`
+  String get selectNode {
+    return Intl.message('Select node', name: 'selectNode', desc: '', args: []);
+  }
+
+  /// `No available proxies`
+  String get noAvailableProxies {
+    return Intl.message(
+      'No available proxies',
+      name: 'noAvailableProxies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Simplified Chinese`
+  String get zh_CN {
+    return Intl.message(
+      'Simplified Chinese',
+      name: 'zh_CN',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do you want to pass`
+  String get doYouWantToPass {
+    return Intl.message(
+      'Do you want to pass',
+      name: 'doYouWantToPass',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ProxyPort`
+  String get proxyPort {
+    return Intl.message('ProxyPort', name: 'proxyPort', desc: '', args: []);
+  }
+
+  /// `Rule providers`
+  String get ruleProviders {
+    return Intl.message(
+      'Rule providers',
+      name: 'ruleProviders',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show/Hide`
+  String get action_view {
+    return Intl.message('Show/Hide', name: 'action_view', desc: '', args: []);
+  }
+
+  /// `Start/Stop`
+  String get action_start {
+    return Intl.message('Start/Stop', name: 'action_start', desc: '', args: []);
+  }
+
+  /// `Switch mode`
+  String get action_mode {
+    return Intl.message('Switch mode', name: 'action_mode', desc: '', args: []);
+  }
+
+  /// `System proxy`
+  String get action_proxy {
+    return Intl.message(
+      'System proxy',
+      name: 'action_proxy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TUN`
+  String get action_tun {
+    return Intl.message('TUN', name: 'action_tun', desc: '', args: []);
+  }
+
+  /// `Bypass private route address`
+  String get routeMode_bypassPrivate {
+    return Intl.message(
+      'Bypass private route address',
+      name: 'routeMode_bypassPrivate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use config`
+  String get routeMode_config {
+    return Intl.message(
+      'Use config',
+      name: 'routeMode_config',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the admin password`
+  String get pleaseInputAdminPassword {
+    return Intl.message(
+      'Please enter the admin password',
+      name: 'pleaseInputAdminPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Override`
+  String get restoreStrategy_override {
+    return Intl.message(
+      'Override',
+      name: 'restoreStrategy_override',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Compatible`
+  String get restoreStrategy_compatible {
+    return Intl.message(
+      'Compatible',
+      name: 'restoreStrategy_compatible',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rename`
+  String get rename {
+    return Intl.message('Rename', name: 'rename', desc: '', args: []);
+  }
+
+  /// `Load test`
+  String get loadTest {
+    return Intl.message('Load test', name: 'loadTest', desc: '', args: []);
+  }
+
+  /// `Updating {name}...`
+  String geoUpdating(Object name) {
+    return Intl.message(
+      'Updating $name...',
+      name: 'geoUpdating',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `V2Board account`
+  String get v2boardAccount {
+    return Intl.message(
+      'V2Board account',
+      name: 'v2boardAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Server address`
+  String get serverAddress {
+    return Intl.message(
+      'Server address',
+      name: 'serverAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service code`
+  String get serviceCode {
+    return Intl.message(
+      'Service code',
+      name: 'serviceCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get email {
+    return Intl.message('Email', name: 'email', desc: '', args: []);
+  }
+
+  /// `Enter a valid email address`
+  String get emailTip {
+    return Intl.message(
+      'Enter a valid email address',
+      name: 'emailTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign in`
+  String get login {
+    return Intl.message('Sign in', name: 'login', desc: '', args: []);
+  }
+
+  /// `Sign out`
+  String get logout {
+    return Intl.message('Sign out', name: 'logout', desc: '', args: []);
+  }
+
+  /// `Custom`
+  String get customSetup {
+    return Intl.message('Custom', name: 'customSetup', desc: '', args: []);
+  }
+
+  /// `Skip sign-in and add a subscription yourself`
+  String get customSetupHint {
+    return Intl.message(
+      'Skip sign-in and add a subscription yourself',
+      name: 'customSetupHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hide`
+  String get hide {
+    return Intl.message('Hide', name: 'hide', desc: '', args: []);
+  }
+
+  /// `Refresh subscription`
+  String get refreshSubscription {
+    return Intl.message(
+      'Refresh subscription',
+      name: 'refreshSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subscription updated`
+  String get subscriptionUpdated {
+    return Intl.message(
+      'Subscription updated',
+      name: 'subscriptionUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service configuration is unavailable`
+  String get invalidV2boardServerConfiguration {
+    return Intl.message(
+      'Service configuration is unavailable',
+      name: 'invalidV2boardServerConfiguration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a valid service code`
+  String get invalidV2boardServerCode {
+    return Intl.message(
+      'Enter a valid service code',
+      name: 'invalidV2boardServerCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `V2Board returned an invalid subscription URL`
+  String get invalidV2boardSubscriptionUrl {
+    return Intl.message(
+      'V2Board returned an invalid subscription URL',
+      name: 'invalidV2boardSubscriptionUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The V2Board server returned an invalid response`
+  String get invalidV2boardResponse {
+    return Intl.message(
+      'The V2Board server returned an invalid response',
+      name: 'invalidV2boardResponse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The V2Board account has no subscription URL`
+  String get missingV2boardSubscriptionUrl {
+    return Intl.message(
+      'The V2Board account has no subscription URL',
+      name: 'missingV2boardSubscriptionUrl',
       desc: '',
       args: [],
     );

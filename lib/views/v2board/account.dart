@@ -1,7 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
-import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'error.dart';
 
 Future<void> showV2boardAccountDialog(BuildContext context) async {
-  await globalState.showCommonDialog<void>(
+  await dialogs.showCommonDialog<void>(
     context: context,
     child: const V2boardAccountDialog(),
   );

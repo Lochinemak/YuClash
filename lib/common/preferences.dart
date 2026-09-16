@@ -155,6 +155,21 @@ class Preferences {
     final sharedPreferencesIns = await sharedPreferencesCompleter.future;
     await sharedPreferencesIns?.clear();
   }
+
+  Future<String?> getString(String key) async {
+    final sharedPreferencesIns = await sharedPreferencesCompleter.future;
+    return sharedPreferencesIns?.getString(key);
+  }
+
+  Future<bool> setString(String key, String value) async {
+    final sharedPreferencesIns = await sharedPreferencesCompleter.future;
+    return sharedPreferencesIns?.setString(key, value) ?? false;
+  }
+
+  Future<bool> remove(String key) async {
+    final sharedPreferencesIns = await sharedPreferencesCompleter.future;
+    return sharedPreferencesIns?.remove(key) ?? false;
+  }
 }
 
 final preferences = Preferences();

@@ -122,6 +122,47 @@ final class AddedRulesStreamFamily extends $Family
   String toString() => r'addedRulesStreamProvider';
 }
 
+@ProviderFor(v2boardServiceCodeHistoryStream)
+final v2boardServiceCodeHistoryStreamProvider =
+    V2boardServiceCodeHistoryStreamProvider._();
+
+final class V2boardServiceCodeHistoryStreamProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<String>>,
+          List<String>,
+          Stream<List<String>>
+        >
+    with $FutureModifier<List<String>>, $StreamProvider<List<String>> {
+  V2boardServiceCodeHistoryStreamProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'v2boardServiceCodeHistoryStreamProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$v2boardServiceCodeHistoryStreamHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<List<String>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<String>> create(Ref ref) {
+    return v2boardServiceCodeHistoryStream(ref);
+  }
+}
+
+String _$v2boardServiceCodeHistoryStreamHash() =>
+    r'65981421a80597be3534c6b5e68a246e75300b1d';
+
 @ProviderFor(customRulesCount)
 final customRulesCountProvider = CustomRulesCountFamily._();
 

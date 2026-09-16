@@ -9,18 +9,23 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:material_ui/material_ui.dart';
 
-const appName = 'FlClash';
-const appHelperService = 'FlClashHelperService';
+const appName = 'YuClash';
+const v2boardServerMapJson = String.fromEnvironment('V2BOARD_BASE_URL');
+const v2boardProfileName = String.fromEnvironment(
+  'V2BOARD_PROFILE_NAME',
+  defaultValue: 'YuCloud',
+);
+const appHelperService = 'YuClashHelperService';
 const coreManifestName = 'manifest.json';
 const coreName = 'clash.meta';
 const browserUa =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
-const packageName = 'com.follow.clash';
-final unixSocketPath = '/tmp/FlClashSocket_${Random().nextInt(10000)}.sock';
-final windowsPipeName = '\\\\.\\pipe\\FlClashCore_${_randomPipeId()}';
-const helperPort = 47890;
-const helperSocketPath = '/run/flclash/helper.sock';
-const helperProtocolVersionHeader = 'x-flclash-helper-protocol';
+const packageName = 'com.yucloud.clash';
+final unixSocketPath = '/tmp/YuClashSocket_${Random().nextInt(10000)}.sock';
+final windowsPipeName = '\\\\.\\pipe\\YuClashCore_${_randomPipeId()}';
+const helperPort = 47891;
+const helperSocketPath = '/run/yuclash/helper.sock';
+const helperProtocolVersionHeader = 'x-yuclash-helper-protocol';
 const helperProtocolVersion = '6';
 const maxTextScale = 1.4;
 const minTextScale = 0.8;
@@ -84,7 +89,7 @@ const systemDnsRecordKey = 'system_dns_record';
 const bootRecordKey = 'boot_record';
 const defaultSystemDnsFallback = '223.5.5.5';
 const double dialogCommonWidth = 300;
-const repository = 'chen08209/FlClash';
+const repository = 'Lochinemak/YuClash';
 const maxMobileWidth = 600;
 const maxLaptopWidth = 840;
 const defaultTestUrl = 'https://www.gstatic.com/generate_204';

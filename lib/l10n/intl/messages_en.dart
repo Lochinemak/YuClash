@@ -21,7 +21,7 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
   static String m0(code) =>
-      "Windows refused to run FlClashCore.exe (error ${code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow FlClash in that policy or turn it off, then try again.";
+      "Windows refused to run YuClashCore.exe (error ${code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow YuClash in that policy or turn it off, then try again.";
 
   static String m1(name) =>
       "The app failed to finish launching twice in a row. To break the loop, the profile ${name} has been deselected and automatic setup was skipped. You can select it again at any time.";
@@ -49,52 +49,54 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m11(name) => "${name} updated";
 
-  static String m12(count) =>
-      "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
+  static String m12(name) => "Updating ${name}...";
 
   static String m13(count) =>
+      "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
+
+  static String m14(count) =>
       "${Intl.plural(count, one: '1 hour', other: '${count} hours')}";
 
-  static String m14(target) => "${target} is an invalid policy";
+  static String m15(target) => "${target} is an invalid policy";
 
-  static String m15(proxyName) => "${proxyName} is an invalid proxy";
+  static String m16(proxyName) => "${proxyName} is an invalid proxy";
 
-  static String m16(providerName) =>
+  static String m17(providerName) =>
       "${providerName} is an invalid proxy provider";
 
-  static String m17(subRule) => "${subRule} is an invalid SUB_RULE";
+  static String m18(subRule) => "${subRule} is an invalid SUB_RULE";
 
-  static String m18(appName) =>
+  static String m19(appName) =>
       "1. Open System Settings > Privacy & Security\n2. Choose Location Services\n3. Find and check ${appName} in the list\n\nWhen you are done, return to the app to continue. Thank you for your cooperation.";
 
-  static String m19(label, max) => "${label} must be at most ${max} characters";
-
-  static String m20(count) =>
-      "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
+  static String m20(label, max) => "${label} must be at most ${max} characters";
 
   static String m21(count) =>
+      "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
+
+  static String m22(count) =>
       "${Intl.plural(count, one: '1 month ago', other: '${count} months ago')}";
 
-  static String m22(label) => "No ${label} yet";
+  static String m23(label) => "No ${label} yet";
 
-  static String m23(label) => "${label} must be a number";
+  static String m24(label) => "${label} must be a number";
 
-  static String m24(label) => "${label} must be between 1024 and 49151";
-
-  static String m25(count) =>
-      "${Intl.plural(count, one: '1 proxy', other: '${count} proxies')}";
+  static String m25(label) => "${label} must be between 1024 and 49151";
 
   static String m26(count) =>
-      "${Intl.plural(count, one: '1 rule', other: '${count} rules')}";
+      "${Intl.plural(count, one: '1 proxy', other: '${count} proxies')}";
 
   static String m27(count) =>
+      "${Intl.plural(count, one: '1 rule', other: '${count} rules')}";
+
+  static String m28(count) =>
       "${Intl.plural(count, one: '1 second', other: '${count} seconds')}";
 
-  static String m28(count) => "${count} selected";
+  static String m29(count) => "${count} selected";
 
-  static String m29(label) => "${label} must be a URL";
+  static String m30(label) => "${label} must be a URL";
 
-  static String m30(count) =>
+  static String m31(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -123,6 +125,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionStart": MessageLookupByLibrary.simpleMessage("Start/Stop"),
     "actionTun": MessageLookupByLibrary.simpleMessage("TUN"),
     "actionView": MessageLookupByLibrary.simpleMessage("Show/Hide"),
+    "action_mode": MessageLookupByLibrary.simpleMessage("Switch mode"),
+    "action_proxy": MessageLookupByLibrary.simpleMessage("System proxy"),
+    "action_start": MessageLookupByLibrary.simpleMessage("Start/Stop"),
+    "action_tun": MessageLookupByLibrary.simpleMessage("TUN"),
+    "action_view": MessageLookupByLibrary.simpleMessage("Show/Hide"),
     "add": MessageLookupByLibrary.simpleMessage("Add"),
     "addProfile": MessageLookupByLibrary.simpleMessage("Add profile"),
     "addProxies": MessageLookupByLibrary.simpleMessage("Add proxies"),
@@ -265,6 +272,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdateError": MessageLookupByLibrary.simpleMessage(
       "The app is already up to date",
     ),
+    "classicDashboard": MessageLookupByLibrary.simpleMessage(
+      "Classic dashboard",
+    ),
     "clearData": MessageLookupByLibrary.simpleMessage("Clear data"),
     "clearSearch": MessageLookupByLibrary.simpleMessage("Clear search"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage(
@@ -280,6 +290,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "color": MessageLookupByLibrary.simpleMessage("Color"),
     "colorSchemes": MessageLookupByLibrary.simpleMessage("Color schemes"),
     "columns": MessageLookupByLibrary.simpleMessage("Columns"),
+    "compactDashboard": MessageLookupByLibrary.simpleMessage(
+      "Compact dashboard",
+    ),
     "compatible": MessageLookupByLibrary.simpleMessage("Compatibility mode"),
     "configDataDetected": MessageLookupByLibrary.simpleMessage(
       "Data detected in the configuration",
@@ -325,7 +338,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "core": MessageLookupByLibrary.simpleMessage("Core"),
     "coreBlockedByPolicyTip": m0,
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
-      "Windows Smart App Control blocked FlClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start FlClash again. Smart App Control cannot be turned back on without reinstalling Windows.",
+      "Windows Smart App Control blocked YuClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start YuClash again. Smart App Control cannot be turned back on without reinstalling Windows.",
     ),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Core status"),
     "country": MessageLookupByLibrary.simpleMessage("Region"),
@@ -341,6 +354,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "createProfileFromUrlTip": m2,
     "creationTime": MessageLookupByLibrary.simpleMessage("Creation time"),
     "custom": MessageLookupByLibrary.simpleMessage("Custom"),
+    "customSetup": MessageLookupByLibrary.simpleMessage("Custom"),
+    "customSetupHint": MessageLookupByLibrary.simpleMessage(
+      "Skip sign-in and add a subscription yourself",
+    ),
     "cut": MessageLookupByLibrary.simpleMessage("Cut"),
     "dark": MessageLookupByLibrary.simpleMessage("Dark"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Dashboard"),
@@ -387,6 +404,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage(
       "Developer mode is enabled.",
     ),
+    "deviceUsage": MessageLookupByLibrary.simpleMessage("Device limit"),
     "direct": MessageLookupByLibrary.simpleMessage("Direct"),
     "disableUDP": MessageLookupByLibrary.simpleMessage("Disable UDP"),
     "disclaimer": MessageLookupByLibrary.simpleMessage("Disclaimer"),
@@ -402,6 +420,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS hijacking"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS mode"),
+    "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
+      "Do you want to pass",
+    ),
     "domain": MessageLookupByLibrary.simpleMessage("Domain"),
     "download": MessageLookupByLibrary.simpleMessage("Download"),
     "edit": MessageLookupByLibrary.simpleMessage("Edit"),
@@ -412,6 +433,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "editProxyGroup": MessageLookupByLibrary.simpleMessage("Edit proxy group"),
     "editRule": MessageLookupByLibrary.simpleMessage("Edit rule"),
     "editSsid": MessageLookupByLibrary.simpleMessage("Edit SSID"),
+    "email": MessageLookupByLibrary.simpleMessage("Email"),
+    "emailTip": MessageLookupByLibrary.simpleMessage(
+      "Enter a valid email address",
+    ),
     "emptyTip": m7,
     "en": MessageLookupByLibrary.simpleMessage("English"),
     "entries": MessageLookupByLibrary.simpleMessage(" entries"),
@@ -433,6 +458,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "exitFullScreen": MessageLookupByLibrary.simpleMessage("Exit full screen"),
     "expand": MessageLookupByLibrary.simpleMessage("Standard"),
     "expectedStatus": MessageLookupByLibrary.simpleMessage("Expected status"),
+    "expiration": MessageLookupByLibrary.simpleMessage("Expiration"),
     "expireTime": MessageLookupByLibrary.simpleMessage("Expiration time"),
     "exportFile": MessageLookupByLibrary.simpleMessage("Export file"),
     "exportLogs": MessageLookupByLibrary.simpleMessage("Export logs"),
@@ -483,6 +509,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "geoResources": MessageLookupByLibrary.simpleMessage("Geo resources"),
     "geoSkipped": m10,
     "geoUpdated": m11,
+    "geoUpdating": m12,
     "geodataLoader": MessageLookupByLibrary.simpleMessage(
       "Geo low-memory mode",
     ),
@@ -500,8 +527,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Cache the changes?",
     ),
     "helperCorruptTip": MessageLookupByLibrary.simpleMessage(
-      "Helper service unavailable; TUN mode cannot be enabled. Reinstall FlClash to restore it.",
+      "Helper service unavailable; TUN mode cannot be enabled. Reinstall YuClash to restore it.",
     ),
+    "hide": MessageLookupByLibrary.simpleMessage("Hide"),
     "hideFromList": MessageLookupByLibrary.simpleMessage("Hide from list"),
     "hidePassword": MessageLookupByLibrary.simpleMessage("Hide password"),
     "host": MessageLookupByLibrary.simpleMessage("Host"),
@@ -514,8 +542,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Control the app with the keyboard",
     ),
     "hours": MessageLookupByLibrary.simpleMessage("hours"),
-    "hoursAgo": m12,
-    "hoursCount": m13,
+    "hoursAgo": m13,
+    "hoursCount": m14,
     "icon": MessageLookupByLibrary.simpleMessage("Icon"),
     "iconRecords": MessageLookupByLibrary.simpleMessage("Icon records"),
     "iconStyle": MessageLookupByLibrary.simpleMessage("Icon style"),
@@ -551,9 +579,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Enter the rule content",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -581,10 +610,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidBackupFile": MessageLookupByLibrary.simpleMessage(
       "Invalid backup file",
     ),
-    "invalidPolicy": m14,
-    "invalidProxy": m15,
-    "invalidProxyProvider": m16,
-    "invalidSubRule": m17,
+    "invalidPolicy": m15,
+    "invalidProxy": m16,
+    "invalidProxyProvider": m17,
+    "invalidSubRule": m18,
+    "invalidV2boardResponse": MessageLookupByLibrary.simpleMessage(
+      "The V2Board server returned an invalid response",
+    ),
+    "invalidV2boardServerCode": MessageLookupByLibrary.simpleMessage(
+      "Enter a valid service code",
+    ),
+    "invalidV2boardServerConfiguration": MessageLookupByLibrary.simpleMessage(
+      "Service configuration is unavailable",
+    ),
+    "invalidV2boardSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
+      "V2Board returned an invalid subscription URL",
+    ),
     "ipcidr": MessageLookupByLibrary.simpleMessage("IP/CIDR"),
     "ipv6Desc": MessageLookupByLibrary.simpleMessage(
       "When enabled, IPv6 traffic can be received",
@@ -609,6 +650,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "light": MessageLookupByLibrary.simpleMessage("Light"),
     "list": MessageLookupByLibrary.simpleMessage("List"),
     "listen": MessageLookupByLibrary.simpleMessage("Listen"),
+    "loadTest": MessageLookupByLibrary.simpleMessage("Load test"),
     "loading": MessageLookupByLibrary.simpleMessage("Loading..."),
     "local": MessageLookupByLibrary.simpleMessage("Local"),
     "localBackupDesc": MessageLookupByLibrary.simpleMessage(
@@ -623,7 +665,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "locationPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "The system requires location permission to read the Wi-Fi name. On Android choose \"Allow all the time\", otherwise the Wi-Fi name cannot be read while the app is in the background.",
     ),
-    "locationPermissionGuide": m18,
+    "locationPermissionGuide": m19,
     "locationPermissionRequired": MessageLookupByLibrary.simpleMessage(
       "Location permission required",
     ),
@@ -633,6 +675,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "logcatDesc": MessageLookupByLibrary.simpleMessage(
       "Disabling hides the log entry point",
     ),
+    "login": MessageLookupByLibrary.simpleMessage("Sign in"),
+    "logout": MessageLookupByLibrary.simpleMessage("Sign out"),
     "logs": MessageLookupByLibrary.simpleMessage("Logs"),
     "logsDesc": MessageLookupByLibrary.simpleMessage("Captured log records"),
     "logsTest": MessageLookupByLibrary.simpleMessage("Logs test"),
@@ -648,7 +692,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "matchTargetTitle": MessageLookupByLibrary.simpleMessage("Match target"),
     "maxFailedTimes": MessageLookupByLibrary.simpleMessage("Max failures"),
-    "maxLengthTip": m19,
+    "maxLengthTip": m20,
     "maximize": MessageLookupByLibrary.simpleMessage("Maximize"),
     "memoryInfo": MessageLookupByLibrary.simpleMessage("Memory info"),
     "messageTest": MessageLookupByLibrary.simpleMessage("Message test"),
@@ -661,11 +705,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage(
       "Override the default system exit behavior",
     ),
-    "minutesAgo": m20,
+    "minutesAgo": m21,
+    "missingV2boardSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
+      "The V2Board account has no subscription URL",
+    ),
     "mixedPort": MessageLookupByLibrary.simpleMessage("Mixed port"),
     "mode": MessageLookupByLibrary.simpleMessage("Mode"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Monochrome"),
-    "monthsAgo": m21,
+    "monthsAgo": m22,
     "more": MessageLookupByLibrary.simpleMessage("More"),
     "multipleValuesTip": MessageLookupByLibrary.simpleMessage(
       "Separate multiple values with commas",
@@ -695,6 +742,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkType": MessageLookupByLibrary.simpleMessage("Network type"),
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Neutral"),
     "nextMatch": MessageLookupByLibrary.simpleMessage("Next match"),
+    "noAvailableProxies": MessageLookupByLibrary.simpleMessage(
+      "No available proxies",
+    ),
     "noData": MessageLookupByLibrary.simpleMessage("No data"),
     "noHotKey": MessageLookupByLibrary.simpleMessage("No hotkeys yet"),
     "noInfo": MessageLookupByLibrary.simpleMessage("No info"),
@@ -715,8 +765,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "No profiles yet, please add one first",
     ),
-    "nullTip": m22,
-    "numberTip": m23,
+    "nullTip": m23,
+    "numberTip": m24,
     "onDemand": MessageLookupByLibrary.simpleMessage("On demand"),
     "onDemandDesc": MessageLookupByLibrary.simpleMessage(
       "Configure the app\'s running state for specific scenarios",
@@ -757,6 +807,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseEnterScriptName": MessageLookupByLibrary.simpleMessage(
       "Please enter a script name",
     ),
+    "pleaseInputAdminPassword": MessageLookupByLibrary.simpleMessage(
+      "Please enter the admin password",
+    ),
     "pleaseUploadValidQrcode": MessageLookupByLibrary.simpleMessage(
       "Please upload a valid QR code",
     ),
@@ -764,7 +817,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Please enter a different port",
     ),
-    "portTip": m24,
+    "portTip": m25,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Prefer HTTP/3 for DoH",
     ),
@@ -797,7 +850,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "project": MessageLookupByLibrary.simpleMessage("Project"),
     "providers": MessageLookupByLibrary.simpleMessage("External resources"),
     "proxies": MessageLookupByLibrary.simpleMessage("Proxies"),
-    "proxiesCount": m25,
+    "proxiesCount": m26,
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("Proxies are empty"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Proxy chain"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
@@ -821,6 +874,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxyNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "Used to resolve proxy node domains",
     ),
+    "proxyPort": MessageLookupByLibrary.simpleMessage("ProxyPort"),
     "proxyProviderDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
       "The selected proxy providers are abnormal",
     ),
@@ -842,6 +896,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("Rainbow"),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir port"),
     "redo": MessageLookupByLibrary.simpleMessage("Redo"),
+    "refreshSubscription": MessageLookupByLibrary.simpleMessage(
+      "Refresh subscription",
+    ),
     "remote": MessageLookupByLibrary.simpleMessage("Remote"),
     "remoteBackupDesc": MessageLookupByLibrary.simpleMessage(
       "Back up data to WebDAV",
@@ -850,6 +907,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Remote destination",
     ),
     "remove": MessageLookupByLibrary.simpleMessage("Remove"),
+    "rename": MessageLookupByLibrary.simpleMessage("Rename"),
     "request": MessageLookupByLibrary.simpleMessage("Request"),
     "requests": MessageLookupByLibrary.simpleMessage("Requests"),
     "requestsDesc": MessageLookupByLibrary.simpleMessage(
@@ -891,6 +949,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Compatible",
     ),
     "restoreStrategyOverride": MessageLookupByLibrary.simpleMessage("Override"),
+    "restoreStrategy_compatible": MessageLookupByLibrary.simpleMessage(
+      "Compatible",
+    ),
+    "restoreStrategy_override": MessageLookupByLibrary.simpleMessage(
+      "Override",
+    ),
     "restoreSuccess": MessageLookupByLibrary.simpleMessage(
       "Restore successful",
     ),
@@ -903,6 +967,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Bypass private addresses",
     ),
     "routeModeConfig": MessageLookupByLibrary.simpleMessage("Use config"),
+    "routeMode_bypassPrivate": MessageLookupByLibrary.simpleMessage(
+      "Bypass private route address",
+    ),
+    "routeMode_config": MessageLookupByLibrary.simpleMessage("Use config"),
     "ru": MessageLookupByLibrary.simpleMessage("Russian"),
     "rule": MessageLookupByLibrary.simpleMessage("Rule"),
     "ruleActionAndDesc": MessageLookupByLibrary.simpleMessage(
@@ -1016,10 +1084,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "ruleEmpty": MessageLookupByLibrary.simpleMessage("Rule is empty"),
     "ruleName": MessageLookupByLibrary.simpleMessage("Rule name"),
+    "ruleProviders": MessageLookupByLibrary.simpleMessage("Rule providers"),
     "ruleSet": MessageLookupByLibrary.simpleMessage("Rule set"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Rule target"),
     "rules": MessageLookupByLibrary.simpleMessage("Rules"),
-    "rulesCount": m26,
+    "rulesCount": m27,
     "save": MessageLookupByLibrary.simpleMessage("Save"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save the changes?"),
     "script": MessageLookupByLibrary.simpleMessage("Script"),
@@ -1031,11 +1100,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("Search"),
     "seconds": MessageLookupByLibrary.simpleMessage("seconds"),
-    "secondsCount": m27,
+    "secondsCount": m28,
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selectMatchTarget": MessageLookupByLibrary.simpleMessage(
       "Select MATCH-TARGET",
     ),
+    "selectNode": MessageLookupByLibrary.simpleMessage("Select node"),
     "selectProxies": MessageLookupByLibrary.simpleMessage("Select proxies"),
     "selectProxyProviders": MessageLookupByLibrary.simpleMessage(
       "Select proxy providers",
@@ -1050,7 +1120,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please select a sub-rule",
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
-    "selectedCountTitle": m28,
+    "selectedCountTitle": m29,
+    "serverAddress": MessageLookupByLibrary.simpleMessage("Server address"),
+    "serviceCode": MessageLookupByLibrary.simpleMessage("Service code"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "showLess": MessageLookupByLibrary.simpleMessage("Collapse"),
@@ -1102,6 +1174,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage(
       "Subscription info",
+    ),
+    "subscriptionPlan": MessageLookupByLibrary.simpleMessage(
+      "Subscription plan",
+    ),
+    "subscriptionUpdated": MessageLookupByLibrary.simpleMessage(
+      "Subscription updated",
     ),
     "suspended": MessageLookupByLibrary.simpleMessage("Suspended..."),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
@@ -1167,11 +1245,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain a profile from a URL",
     ),
-    "urlTip": m29,
+    "urlTip": m30,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "usedTraffic": MessageLookupByLibrary.simpleMessage("Used traffic"),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
+    "v2boardAccount": MessageLookupByLibrary.simpleMessage("V2Board account"),
     "value": MessageLookupByLibrary.simpleMessage("Value"),
     "vibrantScheme": MessageLookupByLibrary.simpleMessage("Vibrant"),
     "view": MessageLookupByLibrary.simpleMessage("View"),
@@ -1188,7 +1267,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "WebDAV configuration",
     ),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
-    "yearsAgo": m30,
+    "yearsAgo": m31,
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
+    "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };
 }

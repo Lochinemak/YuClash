@@ -244,7 +244,7 @@ final class SystemActionProvider extends $NotifierProvider<SystemAction, void> {
   }
 }
 
-String _$systemActionHash() => r'89be5d3bd8143e3e34f04c4811053bce16e590e7';
+String _$systemActionHash() => r'3f57a4326e7728b1f95acc8b31a36b5c73fd2594';
 
 abstract class _$SystemAction extends $Notifier<void> {
   void build();
@@ -366,6 +366,58 @@ abstract class _$ThemeAction extends $Notifier<void> {
   }
 }
 
+@ProviderFor(V2boardAction)
+final v2boardActionProvider = V2boardActionProvider._();
+
+final class V2boardActionProvider
+    extends $NotifierProvider<V2boardAction, V2boardAccountState> {
+  V2boardActionProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'v2boardActionProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$v2boardActionHash();
+
+  @$internal
+  @override
+  V2boardAction create() => V2boardAction();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(V2boardAccountState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<V2boardAccountState>(value),
+    );
+  }
+}
+
+String _$v2boardActionHash() => r'633e122cf973dbbe147bc826171b959251623268';
+
+abstract class _$V2boardAction extends $Notifier<V2boardAccountState> {
+  V2boardAccountState build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<V2boardAccountState, V2boardAccountState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<V2boardAccountState, V2boardAccountState>,
+              V2boardAccountState,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
 @ProviderFor(ProxiesAction)
 final proxiesActionProvider = ProxiesActionProvider._();
 
@@ -450,7 +502,7 @@ final class ProfilesActionProvider
   }
 }
 
-String _$profilesActionHash() => r'639d2bfc31789c39e63101e9b9b39f619166ae6f';
+String _$profilesActionHash() => r'359d494a45b2bc648ea72f07793d3a0b66b8d47d';
 
 abstract class _$ProfilesAction extends $Notifier<void> {
   void build();

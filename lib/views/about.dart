@@ -50,7 +50,7 @@ class AboutView extends ConsumerWidget {
         ListItem(
           title: const Text('Telegram'),
           onTap: () {
-            dialogs.openUrl('https://t.me/FlClash');
+            dialogs.openUrl('https://t.me/+G-veVtwBOl4wODc1');
           },
           trailing: const Icon(Icons.launch),
         ),
@@ -65,7 +65,7 @@ class AboutView extends ConsumerWidget {
           title: Text(appLocalizations.core),
           onTap: () {
             dialogs.openUrl(
-              'https://github.com/chen08209/Clash.Meta/tree/FlClash',
+              'https://github.com/Lochinemak/Clash.Meta/tree/FlClash',
             );
           },
           trailing: const Icon(Icons.launch),

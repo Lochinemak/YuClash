@@ -3445,6 +3445,228 @@ class IconRecordsCompanion extends UpdateCompanion<IconRecord> {
   }
 }
 
+class $V2boardServiceCodesTable extends V2boardServiceCodes
+    with TableInfo<$V2boardServiceCodesTable, ServiceCodeRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $V2boardServiceCodesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<String> code = GeneratedColumn<String>(
+    'code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUsedAtMeta = const VerificationMeta(
+    'lastUsedAt',
+  );
+  @override
+  late final GeneratedColumn<int> lastUsedAt = GeneratedColumn<int>(
+    'last_used_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [code, lastUsedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'v2board_service_codes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ServiceCodeRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('code')) {
+      context.handle(
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_codeMeta);
+    }
+    if (data.containsKey('last_used_at')) {
+      context.handle(
+        _lastUsedAtMeta,
+        lastUsedAt.isAcceptableOrUnknown(
+          data['last_used_at']!,
+          _lastUsedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastUsedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {code};
+  @override
+  ServiceCodeRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ServiceCodeRecord(
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      )!,
+      lastUsedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}last_used_at'],
+      )!,
+    );
+  }
+
+  @override
+  $V2boardServiceCodesTable createAlias(String alias) {
+    return $V2boardServiceCodesTable(attachedDatabase, alias);
+  }
+}
+
+class ServiceCodeRecord extends DataClass
+    implements Insertable<ServiceCodeRecord> {
+  final String code;
+  final int lastUsedAt;
+  const ServiceCodeRecord({required this.code, required this.lastUsedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['code'] = Variable<String>(code);
+    map['last_used_at'] = Variable<int>(lastUsedAt);
+    return map;
+  }
+
+  V2boardServiceCodesCompanion toCompanion(bool nullToAbsent) {
+    return V2boardServiceCodesCompanion(
+      code: Value(code),
+      lastUsedAt: Value(lastUsedAt),
+    );
+  }
+
+  factory ServiceCodeRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ServiceCodeRecord(
+      code: serializer.fromJson<String>(json['code']),
+      lastUsedAt: serializer.fromJson<int>(json['lastUsedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'code': serializer.toJson<String>(code),
+      'lastUsedAt': serializer.toJson<int>(lastUsedAt),
+    };
+  }
+
+  ServiceCodeRecord copyWith({String? code, int? lastUsedAt}) =>
+      ServiceCodeRecord(
+        code: code ?? this.code,
+        lastUsedAt: lastUsedAt ?? this.lastUsedAt,
+      );
+  ServiceCodeRecord copyWithCompanion(V2boardServiceCodesCompanion data) {
+    return ServiceCodeRecord(
+      code: data.code.present ? data.code.value : this.code,
+      lastUsedAt: data.lastUsedAt.present
+          ? data.lastUsedAt.value
+          : this.lastUsedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ServiceCodeRecord(')
+          ..write('code: $code, ')
+          ..write('lastUsedAt: $lastUsedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(code, lastUsedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ServiceCodeRecord &&
+          other.code == this.code &&
+          other.lastUsedAt == this.lastUsedAt);
+}
+
+class V2boardServiceCodesCompanion extends UpdateCompanion<ServiceCodeRecord> {
+  final Value<String> code;
+  final Value<int> lastUsedAt;
+  final Value<int> rowid;
+  const V2boardServiceCodesCompanion({
+    this.code = const Value.absent(),
+    this.lastUsedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  V2boardServiceCodesCompanion.insert({
+    required String code,
+    required int lastUsedAt,
+    this.rowid = const Value.absent(),
+  }) : code = Value(code),
+       lastUsedAt = Value(lastUsedAt);
+  static Insertable<ServiceCodeRecord> custom({
+    Expression<String>? code,
+    Expression<int>? lastUsedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (code != null) 'code': code,
+      if (lastUsedAt != null) 'last_used_at': lastUsedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  V2boardServiceCodesCompanion copyWith({
+    Value<String>? code,
+    Value<int>? lastUsedAt,
+    Value<int>? rowid,
+  }) {
+    return V2boardServiceCodesCompanion(
+      code: code ?? this.code,
+      lastUsedAt: lastUsedAt ?? this.lastUsedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (code.present) {
+      map['code'] = Variable<String>(code.value);
+    }
+    if (lastUsedAt.present) {
+      map['last_used_at'] = Variable<int>(lastUsedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('V2boardServiceCodesCompanion(')
+          ..write('code: $code, ')
+          ..write('lastUsedAt: $lastUsedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(e);
   $DatabaseManager get managers => $DatabaseManager(this);
@@ -3456,6 +3678,8 @@ abstract class _$Database extends GeneratedDatabase {
   );
   late final $ProxyGroupsTable proxyGroups = $ProxyGroupsTable(this);
   late final $IconRecordsTable iconRecords = $IconRecordsTable(this);
+  late final $V2boardServiceCodesTable v2boardServiceCodes =
+      $V2boardServiceCodesTable(this);
   late final Index idxRuleTarget = Index(
     'idx_rule_target',
     'CREATE INDEX idx_rule_target ON rules (rule_target)',
@@ -3477,6 +3701,8 @@ abstract class _$Database extends GeneratedDatabase {
   late final RulesDao rulesDao = RulesDao(this as Database);
   late final ProxyGroupsDao proxyGroupsDao = ProxyGroupsDao(this as Database);
   late final IconRecordsDao iconRecordsDao = IconRecordsDao(this as Database);
+  late final V2boardServiceCodesDao v2boardServiceCodesDao =
+      V2boardServiceCodesDao(this as Database);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3488,6 +3714,7 @@ abstract class _$Database extends GeneratedDatabase {
     profileRuleLinks,
     proxyGroups,
     iconRecords,
+    v2boardServiceCodes,
     idxRuleTarget,
     idxProfileSceneOrder,
     idxProfileNameOrder,
@@ -5832,6 +6059,167 @@ typedef $$IconRecordsTableProcessedTableManager =
       IconRecord,
       PrefetchHooks Function()
     >;
+typedef $$V2boardServiceCodesTableCreateCompanionBuilder =
+    V2boardServiceCodesCompanion Function({
+      required String code,
+      required int lastUsedAt,
+      Value<int> rowid,
+    });
+typedef $$V2boardServiceCodesTableUpdateCompanionBuilder =
+    V2boardServiceCodesCompanion Function({
+      Value<String> code,
+      Value<int> lastUsedAt,
+      Value<int> rowid,
+    });
+
+class $$V2boardServiceCodesTableFilterComposer
+    extends Composer<_$Database, $V2boardServiceCodesTable> {
+  $$V2boardServiceCodesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lastUsedAt => $composableBuilder(
+    column: $table.lastUsedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$V2boardServiceCodesTableOrderingComposer
+    extends Composer<_$Database, $V2boardServiceCodesTable> {
+  $$V2boardServiceCodesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lastUsedAt => $composableBuilder(
+    column: $table.lastUsedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$V2boardServiceCodesTableAnnotationComposer
+    extends Composer<_$Database, $V2boardServiceCodesTable> {
+  $$V2boardServiceCodesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get code =>
+      $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumn<int> get lastUsedAt => $composableBuilder(
+    column: $table.lastUsedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$V2boardServiceCodesTableTableManager
+    extends
+        RootTableManager<
+          _$Database,
+          $V2boardServiceCodesTable,
+          ServiceCodeRecord,
+          $$V2boardServiceCodesTableFilterComposer,
+          $$V2boardServiceCodesTableOrderingComposer,
+          $$V2boardServiceCodesTableAnnotationComposer,
+          $$V2boardServiceCodesTableCreateCompanionBuilder,
+          $$V2boardServiceCodesTableUpdateCompanionBuilder,
+          (
+            ServiceCodeRecord,
+            BaseReferences<
+              _$Database,
+              $V2boardServiceCodesTable,
+              ServiceCodeRecord
+            >,
+          ),
+          ServiceCodeRecord,
+          PrefetchHooks Function()
+        > {
+  $$V2boardServiceCodesTableTableManager(
+    _$Database db,
+    $V2boardServiceCodesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$V2boardServiceCodesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$V2boardServiceCodesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$V2boardServiceCodesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> code = const Value.absent(),
+                Value<int> lastUsedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => V2boardServiceCodesCompanion(
+                code: code,
+                lastUsedAt: lastUsedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String code,
+                required int lastUsedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => V2boardServiceCodesCompanion.insert(
+                code: code,
+                lastUsedAt: lastUsedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$V2boardServiceCodesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$Database,
+      $V2boardServiceCodesTable,
+      ServiceCodeRecord,
+      $$V2boardServiceCodesTableFilterComposer,
+      $$V2boardServiceCodesTableOrderingComposer,
+      $$V2boardServiceCodesTableAnnotationComposer,
+      $$V2boardServiceCodesTableCreateCompanionBuilder,
+      $$V2boardServiceCodesTableUpdateCompanionBuilder,
+      (
+        ServiceCodeRecord,
+        BaseReferences<
+          _$Database,
+          $V2boardServiceCodesTable,
+          ServiceCodeRecord
+        >,
+      ),
+      ServiceCodeRecord,
+      PrefetchHooks Function()
+    >;
 
 class $DatabaseManager {
   final _$Database _db;
@@ -5848,6 +6236,8 @@ class $DatabaseManager {
       $$ProxyGroupsTableTableManager(_db, _db.proxyGroups);
   $$IconRecordsTableTableManager get iconRecords =>
       $$IconRecordsTableTableManager(_db, _db.iconRecords);
+  $$V2boardServiceCodesTableTableManager get v2boardServiceCodes =>
+      $$V2boardServiceCodesTableTableManager(_db, _db.v2boardServiceCodes);
 }
 
 mixin _$ProfilesDaoMixin on DatabaseAccessor<Database> {
@@ -5921,4 +6311,21 @@ class IconRecordsDaoManager {
   IconRecordsDaoManager(this._db);
   $$IconRecordsTableTableManager get iconRecords =>
       $$IconRecordsTableTableManager(_db.attachedDatabase, _db.iconRecords);
+}
+
+mixin _$V2boardServiceCodesDaoMixin on DatabaseAccessor<Database> {
+  $V2boardServiceCodesTable get v2boardServiceCodes =>
+      attachedDatabase.v2boardServiceCodes;
+  V2boardServiceCodesDaoManager get managers =>
+      V2boardServiceCodesDaoManager(this);
+}
+
+class V2boardServiceCodesDaoManager {
+  final _$V2boardServiceCodesDaoMixin _db;
+  V2boardServiceCodesDaoManager(this._db);
+  $$V2boardServiceCodesTableTableManager get v2boardServiceCodes =>
+      $$V2boardServiceCodesTableTableManager(
+        _db.attachedDatabase,
+        _db.v2boardServiceCodes,
+      );
 }

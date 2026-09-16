@@ -3,12 +3,14 @@ import 'package:material_ui/material_ui.dart';
 
 class CommonChip extends StatelessWidget {
   final String label;
+  final TextStyle? labelStyle;
   final VoidCallback? onPressed;
   final VoidCallback? onDeleted;
 
   const CommonChip({
     super.key,
     required this.label,
+    this.labelStyle,
     this.onPressed,
     this.onDeleted,
   });
@@ -33,9 +35,11 @@ class CommonChip extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: context.textTheme.labelMedium?.copyWith(
-                color: foregroundColor,
-              ),
+              style:
+                  labelStyle ??
+                  context.textTheme.labelMedium?.copyWith(
+                    color: foregroundColor,
+                  ),
             ),
           ),
           if (onDeleted != null)
