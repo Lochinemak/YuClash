@@ -568,6 +568,8 @@
   "emailTip": "Enter a valid email address",
   "login": "Sign in",
   "logout": "Sign out",
+  "customSetup": "Custom",
+  "customSetupHint": "Skip sign-in and add a subscription yourself",
   "hide": "Hide",
   "refreshSubscription": "Refresh subscription",
   "subscriptionUpdated": "Subscription updated",

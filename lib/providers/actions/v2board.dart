@@ -12,11 +12,27 @@ class V2boardAction extends _$V2boardAction {
       return;
     }
     state = const V2boardAccountState(loading: true);
-    final session = await ref.read(v2boardSessionStoreProvider).load();
-    state = V2boardAccountState(initialized: true, session: session);
+    final store = ref.read(v2boardSessionStoreProvider);
+    final session = await store.load();
+    final skipped = session == null && await store.loadSkip();
+    state = V2boardAccountState(
+      initialized: true,
+      session: session,
+      skipped: skipped,
+    );
     if (session != null) {
       unawaited(_refreshSession(session, importSubscription: false));
     }
+  }
+
+  Future<void> skipLogin() async {
+    await ref.read(v2boardSessionStoreProvider).saveSkip();
+    state = const V2boardAccountState(initialized: true, skipped: true);
+  }
+
+  Future<void> resetSkip() async {
+    await ref.read(v2boardSessionStoreProvider).clearSkip();
+    state = const V2boardAccountState(initialized: true);
   }
 
   Future<void> login({

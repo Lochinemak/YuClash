@@ -4639,6 +4639,21 @@ class AppLocalizations {
     return Intl.message('Sign out', name: 'logout', desc: '', args: []);
   }
 
+  /// `Custom`
+  String get customSetup {
+    return Intl.message('Custom', name: 'customSetup', desc: '', args: []);
+  }
+
+  /// `Skip sign-in and add a subscription yourself`
+  String get customSetupHint {
+    return Intl.message(
+      'Skip sign-in and add a subscription yourself',
+      name: 'customSetupHint',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Hide`
   String get hide {
     return Intl.message('Hide', name: 'hide', desc: '', args: []);
