@@ -25,6 +25,16 @@ void main() {
       expect(setup.createBuildEnvironment('dev'), {'APP_ENV': 'dev'});
     });
 
+    test('Flutter build environment carries a trimmed v2board base URL', () {
+      expect(
+        setup.createBuildEnvironment(
+          'stable',
+          v2boardBaseUrl: ' https://panel.example ',
+        ),
+        {'APP_ENV': 'stable', 'V2BOARD_BASE_URL': 'https://panel.example'},
+      );
+    });
+
     test('omits verbose from flutter build args by default', () {
       final args = setup.createFlutterBuildArgs(
         platform: 'android',

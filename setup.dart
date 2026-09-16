@@ -124,8 +124,16 @@ List<String> createFlutterBuildArgs({
   return flutterBuildArgs;
 }
 
-Map<String, String> createBuildEnvironment(String env) {
-  return {'APP_ENV': env};
+Map<String, String> createBuildEnvironment(
+  String env, {
+  String? v2boardBaseUrl,
+}) {
+  final normalizedV2boardBaseUrl = v2boardBaseUrl?.trim();
+  return {
+    'APP_ENV': env,
+    if (normalizedV2boardBaseUrl?.isNotEmpty == true)
+      'V2BOARD_BASE_URL': normalizedV2boardBaseUrl!,
+  };
 }
 
 /// Packages whose build hook `pubspec.yaml` turns into a no-op.
@@ -164,7 +172,14 @@ Future<int> _package(
   required bool verbose,
 }) async {
   final file = File(p.join(rootDir, 'env.json'));
-  await file.writeAsString(jsonEncode(createBuildEnvironment(env)));
+  await file.writeAsString(
+    jsonEncode(
+      createBuildEnvironment(
+        env,
+        v2boardBaseUrl: Platform.environment['V2BOARD_BASE_URL'],
+      ),
+    ),
+  );
 
   final flutterBuildArgs = createFlutterBuildArgs(
     platform: platform,
