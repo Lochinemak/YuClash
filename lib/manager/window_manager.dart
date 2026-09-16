@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui' show ClipOp;
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/launch.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/config.dart';
 import 'package:fl_clash/providers/providers.dart';

@@ -4,7 +4,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TrackerInfoItem extends ConsumerWidget {
@@ -212,6 +212,7 @@ class TrackerInfoDetailView extends StatelessWidget {
   }
 
   Widget _buildItem({
+    required BuildContext context,
     required String title,
     required String desc,
     bool quickCopy = false,
@@ -233,6 +234,7 @@ class TrackerInfoDetailView extends StatelessWidget {
                     visualDensity: VisualDensity.compact,
                     padding: EdgeInsets.zero,
                     icon: const Icon(Icons.content_copy, size: 18),
+                    tooltip: context.appLocalizations.copy,
                     onPressed: () {},
                   ),
                 ),
@@ -249,63 +251,75 @@ class TrackerInfoDetailView extends StatelessWidget {
     final appLocalizations = context.appLocalizations;
     final items = [
       _buildItem(
+        context: context,
         title: appLocalizations.creationTime,
         desc: trackerInfo.start.showFull,
       ),
       if (_getProcessText().isNotEmpty)
-        _buildItem(title: appLocalizations.process, desc: _getProcessText()),
+        _buildItem(context: context, title: appLocalizations.process, desc: _getProcessText()),
       _buildItem(
+        context: context,
         title: appLocalizations.networkType,
         desc: trackerInfo.metadata.network,
       ),
-      _buildItem(title: appLocalizations.rule, desc: _getRuleText()),
+      _buildItem(context: context, title: appLocalizations.rule, desc: _getRuleText()),
       if (trackerInfo.metadata.host.isNotEmpty)
         _buildItem(
+          context: context,
           title: appLocalizations.host,
           desc: trackerInfo.metadata.host,
         ),
       if (_getSourceText().isNotEmpty)
-        _buildItem(title: appLocalizations.source, desc: _getSourceText()),
+        _buildItem(context: context, title: appLocalizations.source, desc: _getSourceText()),
       if (_getDestinationText().isNotEmpty)
         _buildItem(
+          context: context,
           title: appLocalizations.destination,
           desc: _getDestinationText(),
         ),
       _buildItem(
+        context: context,
         title: appLocalizations.upload,
         desc: trackerInfo.upload.traffic.show,
       ),
       _buildItem(
+        context: context,
         title: appLocalizations.download,
         desc: trackerInfo.download.traffic.show,
       ),
       if (trackerInfo.metadata.destinationGeoIP.isNotEmpty)
         _buildItem(
+          context: context,
           title: appLocalizations.destinationGeoIP,
           desc: trackerInfo.metadata.destinationGeoIP.join(' '),
         ),
       if (trackerInfo.metadata.destinationIPASN.isNotEmpty)
         _buildItem(
+          context: context,
           title: appLocalizations.destinationIPASN,
           desc: trackerInfo.metadata.destinationIPASN,
         ),
       if (trackerInfo.metadata.dnsMode != null)
         _buildItem(
+          context: context,
           title: appLocalizations.dnsMode,
           desc: trackerInfo.metadata.dnsMode!.name,
         ),
       if (trackerInfo.metadata.specialProxy.isNotEmpty)
         _buildItem(
+          context: context,
           title: appLocalizations.specialProxy,
           desc: trackerInfo.metadata.specialProxy,
         ),
       if (trackerInfo.metadata.specialRules.isNotEmpty)
         _buildItem(
+          context: context,
           title: appLocalizations.specialRules,
           desc: trackerInfo.metadata.specialRules,
         ),
       if (trackerInfo.metadata.remoteDestination.isNotEmpty)
         _buildItem(
+          context: context,
           title: appLocalizations.remoteDestination,
           desc: trackerInfo.metadata.remoteDestination,
         ),

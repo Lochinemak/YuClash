@@ -203,16 +203,25 @@ class CommonScaffoldState extends State<CommonScaffold> {
         icon: const Icon(Icons.arrow_back),
       );
     }
-    return backAction != null
-        ? BackButton(
-            onPressed: () {
-              if (!mounted) {
-                return;
-              }
-              backAction();
-            },
-          )
-        : null;
+    if (backAction != null) {
+      return BackButton(
+        onPressed: () {
+          if (!mounted) {
+            return;
+          }
+          backAction();
+        },
+      );
+    }
+    final drawerProvider = CommonScaffoldDrawerProvider.of(context);
+    if (drawerProvider != null && drawerProvider.enabled) {
+      return IconButton(
+        tooltip: context.appLocalizations.toggleLabel,
+        onPressed: drawerProvider.openDrawer,
+        icon: const Icon(Icons.menu),
+      );
+    }
+    return null;
   }
 
   Widget _buildTitle(AppBarSearchState? startState) {
