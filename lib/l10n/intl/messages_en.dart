@@ -221,12 +221,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdateError": MessageLookupByLibrary.simpleMessage(
       "The current application is already the latest version",
     ),
+    "classicDashboard": MessageLookupByLibrary.simpleMessage(
+      "Classic dashboard",
+    ),
     "clearData": MessageLookupByLibrary.simpleMessage("Clear Data"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage("Export clipboard"),
     "clipboardImport": MessageLookupByLibrary.simpleMessage("Clipboard import"),
     "color": MessageLookupByLibrary.simpleMessage("Color"),
     "colorSchemes": MessageLookupByLibrary.simpleMessage("Color schemes"),
     "columns": MessageLookupByLibrary.simpleMessage("Columns"),
+    "compactDashboard": MessageLookupByLibrary.simpleMessage(
+      "Compact dashboard",
+    ),
     "compatible": MessageLookupByLibrary.simpleMessage("Compatibility mode"),
     "configDataDetected": MessageLookupByLibrary.simpleMessage(
       "Data detected in configuration",
@@ -328,6 +334,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage(
       "Developer mode is enabled.",
     ),
+    "deviceUsage": MessageLookupByLibrary.simpleMessage("Device limit"),
     "direct": MessageLookupByLibrary.simpleMessage("Direct"),
     "disableUDP": MessageLookupByLibrary.simpleMessage("Disable UDP"),
     "disclaimer": MessageLookupByLibrary.simpleMessage("Disclaimer"),
@@ -356,6 +363,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "editProxyGroup": MessageLookupByLibrary.simpleMessage("Edit proxy group"),
     "editRule": MessageLookupByLibrary.simpleMessage("Edit rule"),
     "editSsid": MessageLookupByLibrary.simpleMessage("Edit SSID"),
+    "email": MessageLookupByLibrary.simpleMessage("Email"),
+    "emailTip": MessageLookupByLibrary.simpleMessage(
+      "Enter a valid email address",
+    ),
     "emptyTip": m4,
     "en": MessageLookupByLibrary.simpleMessage("English"),
     "entries": MessageLookupByLibrary.simpleMessage(" entries"),
@@ -376,6 +387,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "exit": MessageLookupByLibrary.simpleMessage("Exit"),
     "expand": MessageLookupByLibrary.simpleMessage("Standard"),
     "expectedStatus": MessageLookupByLibrary.simpleMessage("Expected status"),
+    "expiration": MessageLookupByLibrary.simpleMessage("Expiration"),
     "exportFile": MessageLookupByLibrary.simpleMessage("Export file"),
     "exportLogs": MessageLookupByLibrary.simpleMessage("Export logs"),
     "exportSuccess": MessageLookupByLibrary.simpleMessage("Export Success"),
@@ -440,8 +452,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Do you want to cache the changes?",
     ),
     "helperCorruptTip": MessageLookupByLibrary.simpleMessage(
-      "Helper service unavailable; TUN mode cannot be enabled. Reinstall FlClash to restore it.",
+      "Helper service unavailable; TUN mode cannot be enabled. Reinstall YuClash to restore it.",
     ),
+    "hide": MessageLookupByLibrary.simpleMessage("Hide"),
     "hideFromList": MessageLookupByLibrary.simpleMessage("Hide from list"),
     "host": MessageLookupByLibrary.simpleMessage("Host"),
     "hostsDesc": MessageLookupByLibrary.simpleMessage("Add Hosts"),
@@ -502,6 +515,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidProxy": m13,
     "invalidProxyProvider": m14,
     "invalidSubRule": m15,
+    "invalidV2boardResponse": MessageLookupByLibrary.simpleMessage(
+      "The V2Board server returned an invalid response",
+    ),
+    "invalidV2boardServerCode": MessageLookupByLibrary.simpleMessage(
+      "Enter a valid service code",
+    ),
+    "invalidV2boardServerConfiguration": MessageLookupByLibrary.simpleMessage(
+      "Service configuration is unavailable",
+    ),
+    "invalidV2boardSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
+      "V2Board returned an invalid subscription URL",
+    ),
     "ipcidr": MessageLookupByLibrary.simpleMessage("Ipcidr"),
     "ipv6Desc": MessageLookupByLibrary.simpleMessage(
       "When turned on it will be able to receive IPv6 traffic",
@@ -545,6 +570,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "logcatDesc": MessageLookupByLibrary.simpleMessage(
       "Disabling will hide the log entry",
     ),
+    "login": MessageLookupByLibrary.simpleMessage("Sign in"),
+    "logout": MessageLookupByLibrary.simpleMessage("Sign out"),
     "logs": MessageLookupByLibrary.simpleMessage("Logs"),
     "logsDesc": MessageLookupByLibrary.simpleMessage("Log capture records"),
     "logsTest": MessageLookupByLibrary.simpleMessage("Logs test"),
@@ -566,6 +593,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Modify the default system exit event",
     ),
     "minutesAgo": m17,
+    "missingV2boardSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
+      "The V2Board account has no subscription URL",
+    ),
     "mixedPort": MessageLookupByLibrary.simpleMessage("Mixed Port"),
     "mode": MessageLookupByLibrary.simpleMessage("Mode"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Monochrome"),
@@ -595,6 +625,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Network speed"),
     "networkType": MessageLookupByLibrary.simpleMessage("Network type"),
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Neutral"),
+    "noAvailableProxies": MessageLookupByLibrary.simpleMessage(
+      "No available proxies",
+    ),
     "noData": MessageLookupByLibrary.simpleMessage("No data"),
     "noHotKey": MessageLookupByLibrary.simpleMessage("No HotKey"),
     "noInfo": MessageLookupByLibrary.simpleMessage("No info"),
@@ -746,6 +779,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("Rainbow"),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir Port"),
     "redo": MessageLookupByLibrary.simpleMessage("redo"),
+    "refreshSubscription": MessageLookupByLibrary.simpleMessage(
+      "Refresh subscription",
+    ),
     "remote": MessageLookupByLibrary.simpleMessage("Remote"),
     "remoteBackupDesc": MessageLookupByLibrary.simpleMessage(
       "Backup local data to WebDAV",
@@ -924,6 +960,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("Seconds"),
     "secondsCount": m22,
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
+    "selectNode": MessageLookupByLibrary.simpleMessage("Select node"),
     "selectProxies": MessageLookupByLibrary.simpleMessage("Select proxies"),
     "selectProxyProviders": MessageLookupByLibrary.simpleMessage(
       "Select proxy providers",
@@ -939,6 +976,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
     "selectedCountTitle": m23,
+    "serverAddress": MessageLookupByLibrary.simpleMessage("Server address"),
+    "serviceCode": MessageLookupByLibrary.simpleMessage("Service code"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
@@ -979,6 +1018,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sub rule cannot be empty",
     ),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
+    "subscriptionPlan": MessageLookupByLibrary.simpleMessage(
+      "Subscription plan",
+    ),
+    "subscriptionUpdated": MessageLookupByLibrary.simpleMessage(
+      "Subscription updated",
+    ),
     "suspended": MessageLookupByLibrary.simpleMessage("Suspended..."),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
     "system": MessageLookupByLibrary.simpleMessage("System"),
@@ -1042,6 +1087,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
+    "v2boardAccount": MessageLookupByLibrary.simpleMessage("V2Board account"),
     "value": MessageLookupByLibrary.simpleMessage("Value"),
     "vibrantScheme": MessageLookupByLibrary.simpleMessage("Vibrant"),
     "view": MessageLookupByLibrary.simpleMessage("View"),

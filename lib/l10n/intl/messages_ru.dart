@@ -224,6 +224,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdateError": MessageLookupByLibrary.simpleMessage(
       "Текущее приложение уже является последней версией",
     ),
+    "classicDashboard": MessageLookupByLibrary.simpleMessage(
+      "Классическая панель",
+    ),
     "clearData": MessageLookupByLibrary.simpleMessage("Очистить данные"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage(
       "Экспорт в буфер обмена",
@@ -234,6 +237,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "color": MessageLookupByLibrary.simpleMessage("Цвет"),
     "colorSchemes": MessageLookupByLibrary.simpleMessage("Цветовые схемы"),
     "columns": MessageLookupByLibrary.simpleMessage("Столбцы"),
+    "compactDashboard": MessageLookupByLibrary.simpleMessage(
+      "Компактная панель",
+    ),
     "compatible": MessageLookupByLibrary.simpleMessage("Режим совместимости"),
     "configDataDetected": MessageLookupByLibrary.simpleMessage(
       "Данные обнаружены в конфигурации",
@@ -333,6 +339,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage(
       "Режим разработчика активирован.",
     ),
+    "deviceUsage": MessageLookupByLibrary.simpleMessage("Лимит устройств"),
     "direct": MessageLookupByLibrary.simpleMessage("Прямой"),
     "disableUDP": MessageLookupByLibrary.simpleMessage("Отключить UDP"),
     "disclaimer": MessageLookupByLibrary.simpleMessage(
@@ -365,6 +372,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "editRule": MessageLookupByLibrary.simpleMessage("Редактировать правило"),
     "editSsid": MessageLookupByLibrary.simpleMessage("Изменить SSID"),
+    "email": MessageLookupByLibrary.simpleMessage("Электронная почта"),
+    "emailTip": MessageLookupByLibrary.simpleMessage(
+      "Введите корректный адрес электронной почты",
+    ),
     "emptyTip": m4,
     "en": MessageLookupByLibrary.simpleMessage("Английский"),
     "entries": MessageLookupByLibrary.simpleMessage(" записей"),
@@ -387,6 +398,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "exit": MessageLookupByLibrary.simpleMessage("Выход"),
     "expand": MessageLookupByLibrary.simpleMessage("Стандартный"),
     "expectedStatus": MessageLookupByLibrary.simpleMessage("Ожидаемый статус"),
+    "expiration": MessageLookupByLibrary.simpleMessage("Срок действия"),
     "exportFile": MessageLookupByLibrary.simpleMessage("Экспорт файла"),
     "exportLogs": MessageLookupByLibrary.simpleMessage("Экспорт логов"),
     "exportSuccess": MessageLookupByLibrary.simpleMessage("Экспорт успешен"),
@@ -455,8 +467,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Хотите сохранить изменения в кэше?",
     ),
     "helperCorruptTip": MessageLookupByLibrary.simpleMessage(
-      "Служба Helper недоступна, поэтому TUN-режим включить нельзя. Переустановите FlClash.",
+      "Служба Helper недоступна, поэтому TUN-режим включить нельзя. Переустановите YuClash.",
     ),
+    "hide": MessageLookupByLibrary.simpleMessage("Скрыть"),
     "hideFromList": MessageLookupByLibrary.simpleMessage("Скрыть из списка"),
     "host": MessageLookupByLibrary.simpleMessage("Хост"),
     "hostsDesc": MessageLookupByLibrary.simpleMessage("Добавить Hosts"),
@@ -521,6 +534,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidProxy": m13,
     "invalidProxyProvider": m14,
     "invalidSubRule": m15,
+    "invalidV2boardResponse": MessageLookupByLibrary.simpleMessage(
+      "Сервер V2Board вернул некорректный ответ",
+    ),
+    "invalidV2boardServerCode": MessageLookupByLibrary.simpleMessage(
+      "Введите корректный код сервиса",
+    ),
+    "invalidV2boardServerConfiguration": MessageLookupByLibrary.simpleMessage(
+      "Конфигурация сервиса недоступна",
+    ),
+    "invalidV2boardSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
+      "V2Board вернул некорректный URL подписки",
+    ),
     "ipcidr": MessageLookupByLibrary.simpleMessage("IPCIDR"),
     "ipv6Desc": MessageLookupByLibrary.simpleMessage(
       "При включении будет возможно получать IPv6 трафик",
@@ -564,6 +589,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "logcatDesc": MessageLookupByLibrary.simpleMessage(
       "Отключение скроет запись логов",
     ),
+    "login": MessageLookupByLibrary.simpleMessage("Войти"),
+    "logout": MessageLookupByLibrary.simpleMessage("Выйти"),
     "logs": MessageLookupByLibrary.simpleMessage("Логи"),
     "logsDesc": MessageLookupByLibrary.simpleMessage("Записи захвата логов"),
     "logsTest": MessageLookupByLibrary.simpleMessage("Тест журналов"),
@@ -593,6 +620,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Изменить стандартное событие выхода из системы",
     ),
     "minutesAgo": m17,
+    "missingV2boardSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
+      "Для учетной записи V2Board отсутствует URL подписки",
+    ),
     "mixedPort": MessageLookupByLibrary.simpleMessage("Смешанный порт"),
     "mode": MessageLookupByLibrary.simpleMessage("Режим"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Монохром"),
@@ -622,6 +652,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Скорость сети"),
     "networkType": MessageLookupByLibrary.simpleMessage("Тип сети"),
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Нейтральные"),
+    "noAvailableProxies": MessageLookupByLibrary.simpleMessage(
+      "Нет доступных прокси",
+    ),
     "noData": MessageLookupByLibrary.simpleMessage("Нет данных"),
     "noHotKey": MessageLookupByLibrary.simpleMessage("Нет горячей клавиши"),
     "noInfo": MessageLookupByLibrary.simpleMessage("Нет информации"),
@@ -783,6 +816,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("Радужные"),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir-порт"),
     "redo": MessageLookupByLibrary.simpleMessage("Повторить"),
+    "refreshSubscription": MessageLookupByLibrary.simpleMessage(
+      "Обновить подписку",
+    ),
     "remote": MessageLookupByLibrary.simpleMessage("Удаленный"),
     "remoteBackupDesc": MessageLookupByLibrary.simpleMessage(
       "Резервное копирование локальных данных на WebDAV",
@@ -971,6 +1007,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("Секунд"),
     "secondsCount": m22,
     "selectAll": MessageLookupByLibrary.simpleMessage("Выбрать все"),
+    "selectNode": MessageLookupByLibrary.simpleMessage("Выбрать узел"),
     "selectProxies": MessageLookupByLibrary.simpleMessage("Выбрать прокси"),
     "selectProxyProviders": MessageLookupByLibrary.simpleMessage(
       "Выбрать провайдеров прокси",
@@ -986,6 +1023,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Выбрано"),
     "selectedCountTitle": m23,
+    "serverAddress": MessageLookupByLibrary.simpleMessage("Адрес сервера"),
+    "serviceCode": MessageLookupByLibrary.simpleMessage("Код сервиса"),
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
     "shrink": MessageLookupByLibrary.simpleMessage("Сжать"),
@@ -1030,6 +1069,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Подправило не может быть пустым",
     ),
     "submit": MessageLookupByLibrary.simpleMessage("Отправить"),
+    "subscriptionPlan": MessageLookupByLibrary.simpleMessage("Тарифный план"),
+    "subscriptionUpdated": MessageLookupByLibrary.simpleMessage(
+      "Подписка обновлена",
+    ),
     "suspended": MessageLookupByLibrary.simpleMessage("Приостановлено..."),
     "sync": MessageLookupByLibrary.simpleMessage("Синхронизация"),
     "system": MessageLookupByLibrary.simpleMessage("Система"),
@@ -1105,6 +1148,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Использовать системные hosts",
     ),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
+    "v2boardAccount": MessageLookupByLibrary.simpleMessage(
+      "Учетная запись V2Board",
+    ),
     "value": MessageLookupByLibrary.simpleMessage("Значение"),
     "vibrantScheme": MessageLookupByLibrary.simpleMessage("Яркие"),
     "view": MessageLookupByLibrary.simpleMessage("Просмотр"),

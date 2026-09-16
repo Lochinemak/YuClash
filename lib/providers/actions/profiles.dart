@@ -107,16 +107,26 @@ class ProfilesAction extends _$ProfilesAction {
       globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
     }
     ref.read(currentPageLabelProvider.notifier).value = PageLabel.profiles;
-    final profile = await globalState.loadingRun(
-      tag: LoadingTag.profiles,
-      () async {
-        return Profile.normal(url: url).update();
-      },
-      title: currentAppLocalizations.addProfile,
-    );
-    if (profile != null) {
-      putProfile(profile);
+    await globalState.loadingRun(tag: LoadingTag.profiles, () async {
+      return importUrlProfile(url);
+    }, title: currentAppLocalizations.addProfile);
+  }
+
+  Future<Profile> importUrlProfile(String url, {String? label}) async {
+    Profile? source;
+    for (final profile in ref.read(profilesProvider)) {
+      if (profile.url == url || (label != null && profile.label == label)) {
+        source = profile;
+        break;
+      }
     }
+    final profile = (source ?? Profile.normal(label: label, url: url)).copyWith(
+      label: label ?? source?.label ?? '',
+      url: url,
+    );
+    final updatedProfile = await profile.update();
+    putProfile(updatedProfile);
+    return updatedProfile;
   }
 
   void setProfileAndAutoApply(Profile profile) {

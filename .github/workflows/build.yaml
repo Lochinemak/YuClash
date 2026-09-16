@@ -1,7 +1,13 @@
 name: build
 
 on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
   push:
+    branches:
+      - main
     tags:
       - 'v*'
 env:
@@ -149,7 +155,7 @@ jobs:
         if: startsWith(matrix.platform,'android')
         run: |
           echo "${{ secrets.KEYSTORE }}" | base64 --decode > android/app/keystore.jks
-          echo "${{ secrets.SERVICE_JSON }}" | base64 --decode > android/app/google-services.json
+          echo "${{ secrets.FIREBASE_SERVICE_JSON }}" | base64 --decode > android/app/google-services.json
           {
             echo "keyAlias=${{ secrets.KEY_ALIAS }}"
             echo "storePassword=${{ secrets.STORE_PASSWORD }}"
@@ -194,6 +200,8 @@ jobs:
           flutter pub get
 
       - name: Setup
+        env:
+          V2BOARD_BASE_URL: ${{ secrets.V2BOARD_BASE_URL }}
         run: dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} -v
 
       - name: Upload
@@ -244,8 +252,8 @@ jobs:
           git add CHANGELOG.md
           if ! git diff --cached --quiet; then
             echo "Commit pushing"
-            git config --local user.email "chen08209@gmail.com"
-            git config --local user.name "chen08209"
+            git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
             git commit -m "Update changelog"
             if git push; then
               echo "Push succeeded"
@@ -288,13 +296,15 @@ jobs:
         shell: bash
         run: |
           pre_tag=$(
-            curl --silent "https://api.github.com/repos/chen08209/FlClash/releases/latest" |
+            curl --silent "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/latest" |
               sed -nE 's/.*"tag_name": "([^"]+)".*/\1/p'
           )
           bash .github/scripts/generate_release_notes.sh "$pre_tag" release.md
       - name: Push to telegram
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
           TAG: ${{ github.ref_name }}
           RUN_ID: ${{ github.run_id }}
         run: |
@@ -324,15 +334,15 @@ jobs:
         if: ${{ env.IS_STABLE == 'true' }}
         run: |
           version=$(echo "${{ github.ref_name }}" | sed 's/^v//')
-          arm_sha=$(sha256sum "./dist/FlClash-${version}-macos-arm64.dmg" | awk '{print $1}')
-          amd_sha=$(sha256sum "./dist/FlClash-${version}-macos-amd64.dmg" | awk '{print $1}')
+          arm_sha=$(sha256sum "./dist/YuClash-${version}-macos-arm64.dmg" | awk '{print $1}')
+          amd_sha=$(sha256sum "./dist/YuClash-${version}-macos-amd64.dmg" | awk '{print $1}')
 
           mkdir -p ./brew/Casks
           sed \
             -e "s|VERSION|$version|g" \
             -e "s|ARM_SHA256|$arm_sha|g" \
             -e "s|AMD_SHA256|$amd_sha|g" \
-            ./.github/homebrew_cask_template.rb > ./brew/Casks/flclash.rb
+            ./.github/homebrew_cask_template.rb > ./brew/Casks/yuclash.rb
 
       - name: Push to Homebrew tap
         if: ${{ env.IS_STABLE == 'true' }}
@@ -341,10 +351,10 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.HOMEBREW_SSH_DEPLOY_KEY }}
         with:
           source-directory: ./brew/
-          destination-github-username: chen08209
+          destination-github-username: ${{ github.repository_owner }}
           destination-repository-name: homebrew-tap
-          user-name: 'chen08029'
-          user-email: 'chen08209@gmail.com'
+          user-name: 'github-actions[bot]'
+          user-email: '41898282+github-actions[bot]@users.noreply.github.com'
           target-branch: main
           commit-message: Update Homebrew cask from ${{ github.ref_name }}
           target-directory: /
@@ -363,10 +373,10 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
           source-directory: ./tmp/
-          destination-github-username: chen08209
-          destination-repository-name: FlClash-fdroid-repo
-          user-name: 'chen08029'
-          user-email: 'chen08209@gmail.com'
+          destination-github-username: ${{ github.repository_owner }}
+          destination-repository-name: YuClash-fdroid-repo
+          user-name: 'github-actions[bot]'
+          user-email: '41898282+github-actions[bot]@users.noreply.github.com'
           target-branch: main
           commit-message: Update from ${{ github.ref_name }}
           target-directory: /tmp/

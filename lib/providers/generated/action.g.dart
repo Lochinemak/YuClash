@@ -40,7 +40,7 @@ final class CommonActionProvider extends $NotifierProvider<CommonAction, void> {
   }
 }
 
-String _$commonActionHash() => r'81d01cab066e94793cdaa4ff89806ebff6030f50';
+String _$commonActionHash() => r'52a2cd8f01ea3fbbb76b7a7958332bf0b6f04211';
 
 abstract class _$CommonAction extends $Notifier<void> {
   void build();
@@ -91,7 +91,7 @@ final class SetupActionProvider extends $NotifierProvider<SetupAction, void> {
   }
 }
 
-String _$setupActionHash() => r'27018fa3a8606b501472f50aa4b46eeb0c964ff3';
+String _$setupActionHash() => r'5a79357c5d361292f9131c347890356b138fe077';
 
 abstract class _$SetupAction extends $Notifier<void> {
   void build();
@@ -193,7 +193,7 @@ final class CoreActionProvider extends $NotifierProvider<CoreAction, void> {
   }
 }
 
-String _$coreActionHash() => r'f314ae5f40da30a71ece0b5f84cdd2e9d7335ee9';
+String _$coreActionHash() => r'972ad46fcf005c6c6e91f8f11965e142920941aa';
 
 abstract class _$CoreAction extends $Notifier<void> {
   void build();
@@ -366,6 +366,58 @@ abstract class _$ThemeAction extends $Notifier<void> {
   }
 }
 
+@ProviderFor(V2boardAction)
+final v2boardActionProvider = V2boardActionProvider._();
+
+final class V2boardActionProvider
+    extends $NotifierProvider<V2boardAction, V2boardAccountState> {
+  V2boardActionProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'v2boardActionProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$v2boardActionHash();
+
+  @$internal
+  @override
+  V2boardAction create() => V2boardAction();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(V2boardAccountState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<V2boardAccountState>(value),
+    );
+  }
+}
+
+String _$v2boardActionHash() => r'cc3121efa3d2e2b2b3da75507835337face1b960';
+
+abstract class _$V2boardAction extends $Notifier<V2boardAccountState> {
+  V2boardAccountState build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<V2boardAccountState, V2boardAccountState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<V2boardAccountState, V2boardAccountState>,
+              V2boardAccountState,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
 @ProviderFor(ProxiesAction)
 final proxiesActionProvider = ProxiesActionProvider._();
 
@@ -398,7 +450,7 @@ final class ProxiesActionProvider
   }
 }
 
-String _$proxiesActionHash() => r'1a734ab542f5e3734f9887768567e1eb14e0decf';
+String _$proxiesActionHash() => r'c3125fbd8c342d859ebb3a82a83e0ea69457c2f3';
 
 abstract class _$ProxiesAction extends $Notifier<void> {
   void build();
@@ -450,7 +502,7 @@ final class ProfilesActionProvider
   }
 }
 
-String _$profilesActionHash() => r'e67a3e4a98c1b3b668275721491a2b0318d27550';
+String _$profilesActionHash() => r'6fb00d60da9d13b65c804ab2fceaa205f7bf8106';
 
 abstract class _$ProfilesAction extends $Notifier<void> {
   void build();
