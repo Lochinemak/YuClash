@@ -263,10 +263,6 @@ Artifact names come from `build_config.yaml` at the repository root (`core_name`
 consumers below hardcode the matching `YuClash*` names, so changing one side alone breaks every desktop build while
 Android keeps working — Android's artifact name comes from `lib_name` and never goes through `core_name`.
 
-`plugins/setup/buildkit/build_tool/` is the older standalone Dart CLI. It no longer participates in any platform build
-and survives only behind the manual `make core-<platform>` entry points, reached through `buildkit/run_build_tool.sh`.
-It duplicates what `setup_hooks/` does, so a change to one is not a change to the other.
-
 ### Setup Build Harness Plugin
 
 `plugins/setup/` is a build-time package, not a runtime Dart or FFI API. It declares no `flutter: plugin: platforms:`
@@ -304,8 +300,8 @@ records live under `.dart_tool/setup_build_cache/v1/`:
   silently without Go/Cargo compilation, output copying, or Windows `taskkill`.
 - Cache records are written only after a successful build and protected by per-target process/file locks. Missing outputs,
   changed inputs, cache-schema changes, or `--force` rebuild only the affected target.
-- `flutter clean` removes `.dart_tool`, so the next native build performs one full core rebuild. Manual builds can bypass
-  the cache with `make core-<platform> FORCE=1`.
+- `flutter clean` removes `.dart_tool`, so the next native build performs one full core rebuild. To force a rebuild on
+  its own, delete `.dart_tool/setup_build_cache/`.
 
 This differs from `rust_api`: rust_api is a runtime Flutter Rust Bridge integration whose Cargokit hooks produce its native
 FFI library, while setup is only the build and packaging bridge for YuClash's external core artifacts.
@@ -338,7 +334,8 @@ Windows helper integrity/version check:
   `sessionMismatch` without terminating that process. Session IDs are ownership tokens for lifecycle safety, not a claim
   that the loopback HTTP endpoints are authenticated.
 
-Build configuration defaults live in `build_tool/lib/src/options.dart` and can be overridden via a root `build_config.yaml`.
+Build configuration defaults live in `plugins/setup/setup_hooks/lib/src/options.dart` and are overridden by the root
+`build_config.yaml`, which is what names the Core and Helper artifacts.
 
 Architecture detection is automatic. The `--description` flag passed to `flutter_distributor` adds arch suffixes to artifact names, such as `YuClash-0.8.93-macos-arm64.dmg`.
 
@@ -354,11 +351,8 @@ Architecture detection is automatic. The `--description` flag passed to `flutter
 
 ## Rust Helper Service
 
-`services/helper/` is a Windows-only privileged helper for starting the core as admin and managing TUN. It is built with:
-
-```bash
-make core-windows
-```
+`services/helper/` is a privileged helper for starting the core as admin and managing TUN. It is built on Linux and
+Windows by the same setup build hook that builds the Core, not by a separate command.
 
 The build tool always compiles the Helper in Rust release mode after calculating
 the SHA256 of the Core produced for the active Flutter configuration.

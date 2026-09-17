@@ -17,26 +17,24 @@ dart setup.dart windows
 dart setup.dart android
 ```
 
-Build only the Go core and skip Flutter packaging:
+The Go core and the Rust helper build automatically: Flutter runs
+`plugins/setup/hook/build.dart` on every `flutter build` and `flutter test`,
+and the hook drives `CoreBuilder` from the `setup_hooks` package in
+`plugins/setup/setup_hooks/`. Android builds take the NDK from the C compiler
+Flutter hands the hook; no `ANDROID_NDK` variable is needed.
+Artifacts land in `libclash/`. The hook reruns only when Go, Rust, or
+`setup_hooks` inputs change; the fingerprint cache lives in
+`.dart_tool/setup_build_cache/`. To force a rebuild, delete that directory:
 
 ```bash
-make core-macos
-make core-linux
-make core-windows
-make core-android
+rm -rf .dart_tool/setup_build_cache
 ```
 
-Pass `ARCH` or `TARGET_PLATFORM` through `make` when needed, for example:
+Flutter hides the hook's output on success, so to see why the Core was or was
+not rebuilt read `.dart_tool/setup_build_cache/hook.log`; each invocation starts
+with a `===` line carrying its timestamp and target.
 
-```bash
-make core-macos ARCH=arm64
-make core-android TARGET_PLATFORM=android-arm64
-```
-
-Core builds use setup's input fingerprint cache. Pass `FORCE=1` to bypass it,
-for example `make core-macos ARCH=arm64 FORCE=1`.
-
-The Makefile wraps `plugins/setup/buildkit/run_build_tool.sh`; prefer the `make` entry points unless debugging the build tool itself.
+There is no `make core`: the Makefile only updates submodules.
 
 ## Flutter Development
 

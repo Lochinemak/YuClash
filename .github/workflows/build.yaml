@@ -67,8 +67,8 @@ jobs:
             flutter test --reporter expanded
           )
 
-      - name: Validate setup build tool
-        working-directory: plugins/setup/buildkit/build_tool
+      - name: Validate setup hooks package
+        working-directory: plugins/setup/setup_hooks
         run: |
           dart pub get
           dart analyze
