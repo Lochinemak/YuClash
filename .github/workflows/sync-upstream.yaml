@@ -12,54 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  sync-dev:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout dev
-        uses: actions/checkout@v4
-        with:
-          ref: dev
-          fetch-depth: 0
-          token: ${{ secrets.SYNC_PAT }}
-
-      - name: Configure git
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-
-      - name: Fetch upstream
-        run: |
-          git remote add upstream "$UPSTREAM_REPO"
-          git fetch upstream dev
-
-      - name: Merge upstream/dev
-        id: merge
-        run: |
-          if git merge upstream/dev --no-edit; then
-            echo "conflict=false" >> "$GITHUB_OUTPUT"
-          else
-            git merge --abort
-            echo "conflict=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Push clean merge
-        if: steps.merge.outputs.conflict == 'false'
-        run: git push origin dev
-
-      - name: Open PR for manual conflict resolution
-        if: steps.merge.outputs.conflict == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.SYNC_PAT }}
-        run: |
-          branch="sync/upstream-dev-$(date +%Y%m%d)"
-          git checkout -b "$branch"
-          git merge upstream/dev --no-edit || true
-          git push origin "$branch" --force
-          gh pr create --title "Sync upstream dev ($(date +%Y-%m-%d)) — needs conflict resolution" \
-            --body "Automated sync from chen08209/FlClash \`dev\` hit merge conflicts. Resolve them on this branch, then merge." \
-            --base dev --head "$branch"
-
-  sync-main:
+  sync:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
@@ -78,9 +31,10 @@ jobs:
         run: |
           git remote add upstream "$UPSTREAM_REPO"
           git fetch upstream main
+          git fetch origin dev:refs/remotes/origin/dev
 
-      - name: Merge upstream/main
-        id: merge
+      - name: Merge upstream/main into main
+        id: merge-main
         run: |
           if git merge upstream/main --no-edit; then
             echo "conflict=false" >> "$GITHUB_OUTPUT"
@@ -89,8 +43,21 @@ jobs:
             echo "conflict=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Push clean merge and tag a release
-        if: steps.merge.outputs.conflict == 'false'
+      - name: Open PR for manual main conflict resolution
+        if: steps.merge-main.outputs.conflict == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.SYNC_PAT }}
+        run: |
+          branch="sync/upstream-main-$(date +%Y%m%d)"
+          git checkout -b "$branch"
+          git merge upstream/main --no-edit || true
+          git push origin "$branch" --force
+          gh pr create --title "Sync upstream main ($(date +%Y-%m-%d)) — needs conflict resolution" \
+            --body "Automated sync from chen08209/FlClash \`main\` hit merge conflicts. Resolve them on this branch, then merge — merging will NOT auto-tag a release and will NOT forward \`dev\`, so tag manually and merge \`main\` into \`dev\` once it's in." \
+            --base main --head "$branch"
+
+      - name: Push main and tag a release
+        if: steps.merge-main.outputs.conflict == 'false'
         run: |
           git push origin main
 
@@ -108,15 +75,28 @@ jobs:
             git push origin "$tag"
           fi
 
-      - name: Open PR for manual conflict resolution
-        if: steps.merge.outputs.conflict == 'true'
+      - name: Forward dev from main
+        id: merge-dev
+        if: steps.merge-main.outputs.conflict == 'false'
+        run: |
+          git checkout -B dev origin/dev
+          if git merge main --no-edit; then
+            git push origin dev
+            echo "conflict=false" >> "$GITHUB_OUTPUT"
+          else
+            git merge --abort
+            echo "conflict=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open PR for manual dev conflict resolution
+        if: steps.merge-dev.outputs.conflict == 'true'
         env:
           GH_TOKEN: ${{ secrets.SYNC_PAT }}
         run: |
-          branch="sync/upstream-main-$(date +%Y%m%d)"
+          branch="sync/main-to-dev-$(date +%Y%m%d)"
           git checkout -b "$branch"
-          git merge upstream/main --no-edit || true
+          git merge main --no-edit || true
           git push origin "$branch" --force
-          gh pr create --title "Sync upstream main ($(date +%Y-%m-%d)) — needs conflict resolution" \
-            --body "Automated sync from chen08209/FlClash \`main\` hit merge conflicts. Resolve them on this branch, then merge — merging will NOT auto-tag a release, so tag manually once it's in." \
-            --base main --head "$branch"
+          gh pr create --title "Forward main into dev ($(date +%Y-%m-%d)) — needs conflict resolution" \
+            --body "\`main\` took an upstream sync that does not merge cleanly into \`dev\`. Resolve the conflicts on this branch, then merge." \
+            --base dev --head "$branch"
