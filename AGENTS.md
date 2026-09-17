@@ -15,6 +15,7 @@ Read these only when the task touches their area:
 
 - [.agents/architecture.md](.agents/architecture.md): core integration, providers, database, managers, build system, and
   local plugins.
+- [.agents/worktrees.md](.agents/worktrees.md): worktree hygiene across Claude Code, Codex, and Gemini.
 - [.agents/agent-config.md](.agents/agent-config.md): how to choose between `AGENTS.md`, `.agents`, skills, Codex config,
   command rules, and hooks.
 - [.agents/skills.md](.agents/skills.md): index of repo-scoped skills in `.agents/skills/`.
@@ -31,8 +32,8 @@ Read these only when the task touches their area:
   repository-wide invariants in `.agents/`, and keep a comment only for a fact that is local to one call site.
   See [.agents/rules.md](.agents/rules.md) for the full policy.
 - Use `flutter test`, not `dart test`, because models pull in Flutter types.
-- Use the project-local FVM toolchain for all local Flutter and Dart commands: run `fvm flutter ...` and `fvm dart ...`.
-  The repository `.fvmrc` pins Flutter 3.44.4; do not use a global Flutter or Dart SDK for project commands.
+- Use a Flutter that matches CI's `FLUTTER_VERSION` in `.github/workflows/build.yaml` (currently 3.47.1). There is no
+  `.fvmrc`; an older SDK cannot even resolve this project's dependencies.
 - After every Android release build, preserve the R8 mapping that covers app and bundled `service` code by copying
   `build/app/outputs/mapping/release/mapping.txt` beside the release artifact as `app-release-mapping.txt`.
 - Unit and widget tests are allowed. Add focused tests when they protect changed behavior or integration contracts.
@@ -44,7 +45,7 @@ Read these only when the task touches their area:
 - Keep start/stop/restart paths latest-intent-safe. Flutter-to-Android service commands are deliberately optimistic, while
   native state serializes the actual work; desktop lifecycle results distinguish applied, coalesced, and superseded
   requests.
-- Follow `analysis_options.yaml`, especially single quotes, trailing commas, `child:` last, no `print()`, const/final
+- Follow `lint_options.yaml` (included by every `analysis_options.yaml`), especially single quotes, trailing commas, `child:` last, no `print()`, const/final
   preferences, and declared return types.
 - For CI parity, verify with `flutter pub get`, `flutter analyze --no-fatal-infos`, and
   `flutter test --reporter expanded` when practical.
