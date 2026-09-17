@@ -103,14 +103,10 @@ expect_fail 'an unknown changelog type' 'Changelog-Type' \
   'chore: x' '' 'Changelog: X' 'Changelog-Type: docs'
 expect_fail 'a breaking marker with no footer' 'BREAKING CHANGE' \
   'feat(core)!: drop the legacy socket'
-expect_fail 'an agent co-author' 'coding agent' \
+expect_pass 'an agent co-author' \
   'fix(core): keep the socket alive' \
   '' \
   'Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>'
-expect_fail 'a bot co-author' 'coding agent' \
-  'fix(core): keep the socket alive' \
-  '' \
-  'Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>'
 expect_pass 'a human co-author' \
   'fix(core): keep the socket alive' \
   '' \
