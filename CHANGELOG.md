@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.0.0 (2026-09-17)
+
+**Bug Fixes**
+
+- **changelog** Restore the frozen marker and realign v0.8.98 with its tag (bc62ac7)
+- **android** Keep the TV adaptive icon foreground inside the safe zone (65bee3a)
+- **build** Restore the YuClash Core/Helper artifact names (f664be7)
+- **resources** Refresh the geo file size and time after an update finishes (6d192ba)
+- **core** Keep the core running while Windows sleeps with the app suspended (0dad8c8)
+
 ## v0.8.98 (2026-09-16)
 
 **Features**

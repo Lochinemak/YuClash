@@ -2,6 +2,44 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "1.0.0",
+      "tag": "v1.0.0",
+      "date": "2026-09-17",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "bc62ac7",
+              "scope": "changelog",
+              "text": "Restore the frozen marker and realign v0.8.98 with its tag"
+            },
+            {
+              "id": "65bee3a",
+              "scope": "android",
+              "text": "Keep the TV adaptive icon foreground inside the safe zone"
+            },
+            {
+              "id": "f664be7",
+              "scope": "build",
+              "text": "Restore the YuClash Core/Helper artifact names"
+            },
+            {
+              "id": "6d192ba",
+              "scope": "resources",
+              "text": "Refresh the geo file size and time after an update finishes"
+            },
+            {
+              "id": "0dad8c8",
+              "scope": "core",
+              "text": "Keep the core running while Windows sleeps with the app suspended"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.8.98",
       "tag": "v0.8.98",
       "date": "2026-09-16",
