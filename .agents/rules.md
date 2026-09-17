@@ -47,8 +47,10 @@ enclosing clip or shape where one is needed: `InkWell.borderRadius`, `OutlineInp
 (`BorderRadius.circular(999)` or half the shortest side) may stay circular — both geometries coincide
 there.
 
-CI gates formatting: `dart format --output=none --set-exit-if-changed lib test
-tool plugins setup.dart` runs before `flutter analyze`.
+Upstream's CI gates formatting with `dart format --output=none --set-exit-if-changed lib test tool plugins setup.dart`.
+This fork does not: 22 files, mostly vendored `plugins/rust_api/cargokit` and `plugins/window_ext`, are unformatted, so
+the gate cannot be turned on without reformatting them first. `dart format` still runs as a pre-commit hook on staged
+Dart files.
 
 Generated directories are excluded from analysis:
 
@@ -94,13 +96,15 @@ healthy changes sit at or under 3.6%, while the core fix that prompted the gate 
 It is a ceiling on frequency, not a target to fill. Do not read `core/`'s inherited mihomo density as a quota either —
 it is forked upstream code, not a house style.
 
-Three gates run the same script, and they do not have equal force. The `PostToolUse` hooks in `.claude/settings.json`
-and `.codex/config.toml` run after the tool and hand offending lines back as feedback; neither can undo the completed
-write. The `comment-density` pre-commit hook fails the commit, and it is the only hard gate that covers every tool.
-Behavior is pinned by `tool/check_comment_density_test.sh`, which CI runs directly.
+Upstream runs this script from three gates. This fork has one: the `PostToolUse` hook in `.claude/settings.json`, which
+runs after the tool and hands offending lines back as feedback — it cannot undo the completed write. There is no
+`comment-density` pre-commit hook here (`.pre-commit-config.yaml` carries only `dart-format` and a pre-push
+`flutter-analyze`), no hook in `.codex/config.toml`, and CI does not run
+`tool/check_comment_density_test.sh`. Treat the ceiling as advisory and check it yourself on a large change.
 
 When a change genuinely warrants more, raise the ceiling for that run rather than working around it:
-`COMMENT_DENSITY_MAX=20 git commit`, or `SKIP=comment-density git commit` to step past it entirely.
+`COMMENT_DENSITY_MAX=20` in the environment. `SKIP=comment-density git commit` is upstream's escape hatch for the
+pre-commit hook this fork does not install.
 
 ### Where Knowledge Belongs
 
@@ -306,10 +310,9 @@ Register fallback values for freezed params used with `any()` matchers.
 `tool/check_coverage.dart` enforces a total floor plus per-group floors declared in `_groupFloors`. Raise a
 group's floor when new tests lift it; do not lower one to make a run pass.
 
-In this fork CI does not run it, so a green CI says nothing about the floors. Measured on 2026-09-17 the total was
-78.27% against the 75 floor and twelve of thirteen groups passed, but `pages` sat at 61.4% against its 71 floor —
-almost entirely `lib/pages/login.dart` at 1 of 135 lines. Wiring the gate in means covering that file first; until
-then run it by hand after touching `lib/pages/`.
+CI runs it against a total floor of 75. It was wired in on 2026-09-17 after `test/pages/login_test.dart` took
+`lib/pages/login.dart` from 1 of 135 lines to 125, which lifted `pages` from 61.4% to 77.7% and cleared its 71 floor;
+the total sits at 78.87%.
 
 Every measured group needs a floor. A group the report measures but `_groupFloors` does not declare fails the run, so
 adding a top-level directory under `lib/` means adding its floor in the same change. Set a new floor at or just below

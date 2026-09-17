@@ -248,7 +248,8 @@ non-build check, in this order:
 bash .github/scripts/generate_release_notes_test.sh
 flutter pub get
 flutter analyze --no-fatal-infos
-flutter test --reporter expanded          # no --coverage; see below
+flutter test --reporter expanded --coverage
+dart run tool/check_coverage.dart coverage/lcov.info 75
 # each of plugins/proxy, plugins/wifi_ssid, plugins/window_ext, plugins/setup:
 #   flutter pub get && flutter analyze --no-fatal-infos
 # then flutter test in plugins/proxy and plugins/wifi_ssid
@@ -270,7 +271,6 @@ bash tool/check_commit_msg_test.sh
 bash tool/check_comment_density_test.sh
 bash tool/check_plugins.sh
 dart run tool/changelog.dart verify
-flutter test --coverage && dart run tool/check_coverage.dart coverage/lcov.info 75
 ```
 
 `dart format --output=none --set-exit-if-changed` is not run by CI either.
