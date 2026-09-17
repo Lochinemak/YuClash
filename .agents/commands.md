@@ -180,6 +180,9 @@ emulator validation; Kotlin compilation cannot prove those system callbacks.
 
 ## Changelog And Release
 
+This fork numbers its own releases from `1.0.0` and never adopts upstream's number; `.agents/upstream-sync.md` has the
+rule and the reason. Nothing tags automatically — `tool/release.sh` is the only path that cuts a release.
+
 The changelog is derived from Conventional Commits by `tool/changelog.dart` and written to two committed files:
 `CHANGELOG.md` for readers and `changelog.json` for the renderers. See `.agents/rules.md` for the `Changelog:` trailers
 that decide the wording.
@@ -246,6 +249,7 @@ non-build check, in this order:
 
 ```bash
 bash .github/scripts/generate_release_notes_test.sh
+bash .github/scripts/resolve_pubspec_version_test.sh
 flutter pub get
 flutter analyze --no-fatal-infos
 flutter test --reporter expanded --coverage

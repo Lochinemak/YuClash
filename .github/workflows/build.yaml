@@ -28,6 +28,10 @@ jobs:
         shell: bash
         run: bash .github/scripts/generate_release_notes_test.sh
 
+      - name: Test pubspec version conflict resolution
+        shell: bash
+        run: bash .github/scripts/resolve_pubspec_version_test.sh
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:

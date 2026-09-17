@@ -29,6 +29,29 @@ The cost of this model is latency: a fix sits on upstream `dev` for a few days b
 accepted here because this fork ships stable builds. To preview an upstream pre-release, branch off `upstream/dev` into
 a throwaway branch and delete it — do not merge it into `dev` or `main`.
 
+## Version Line
+
+This fork numbers its own releases starting at `1.0.0` and never adopts upstream's number. Each release is a patch bump
+(`1.0.0` → `1.0.1`); when upstream moves its minor or major, this fork moves its own by one too.
+
+Upstream's entire release cadence lives in the patch digit — 116 stable tags across only two minor lines, `0.7` and
+`0.8`. Sharing that digit would mean a collision on every upstream release, with `v0.8.99` naming two different builds
+across the two projects. Taking the whole `x.y.z` instead costs nothing and leaves no digit in common. The upstream
+base belongs in the release notes, not in the version number.
+
+A suffixed scheme such as `0.8.99-yu.1` is not an option here: `.github/workflows/build.yaml` gates the release job on
+`!contains(github.ref_name, '-')`, so any hyphenated tag is treated as a prerelease and publishes no GitHub release and
+no Homebrew cask update. macOS also takes `CFBundleShortVersionString` straight from the pubspec version name.
+
+Because the fork's number diverges from upstream's, `pubspec.yaml`'s `version:` line conflicts on every upstream
+release. `.github/scripts/resolve_pubspec_version.sh` resolves it: when the conflict is confined to that one line it
+keeps this fork's version and the sync stays automatic; anything else in the conflict, including a second conflicted
+hunk in the same file, makes it refuse so the PR path takes over. `.github/scripts/resolve_pubspec_version_test.sh`
+covers both directions and runs in CI.
+
+The sync workflow does not tag. Releases are cut by `tool/release.sh stable --push`, which reads the version from
+`pubspec.yaml` and bumps the patch when that version is already tagged.
+
 ## When The Workflow Opens A PR
 
 A conflicting sync stops the automation and opens a PR instead:
