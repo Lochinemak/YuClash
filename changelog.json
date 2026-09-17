@@ -4,12 +4,57 @@
     {
       "version": "0.8.98",
       "tag": "v0.8.98",
-      "date": "2026-09-14",
+      "date": "2026-09-16",
       "prerelease": false,
       "groups": [
         {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "be499ac",
+              "text": "Resolve V2Board servers by service code"
+            },
+            {
+              "id": "8e3f22b",
+              "text": "Rebrand YuClash and integrate V2Board"
+            }
+          ]
+        },
+        {
           "type": "fix",
           "entries": [
+            {
+              "id": "a7bd4d1",
+              "scope": "rust_api",
+              "text": "Fall back to a sibling NDK's libclang for Android bindgen"
+            },
+            {
+              "id": "38ccbdc",
+              "scope": "setup",
+              "text": "Re-exclude buildkit/build_tool from plugins/setup's analyzer"
+            },
+            {
+              "id": "75004b1",
+              "text": "Two test failures surfaced by CI after the icon/scheme fixes"
+            },
+            {
+              "id": "5f436b1",
+              "text": "Restore the real app identity (applicationId/bundle id) across platforms"
+            },
+            {
+              "id": "8001282",
+              "scope": "setup",
+              "text": "Restore V2BOARD_BASE_URL wiring dropped by the upstream merge"
+            },
+            {
+              "id": "a8a228a",
+              "text": "Restore YuClash app icon overwritten by upstream during reconciliation"
+            },
+            {
+              "id": "fe4bb8c",
+              "scope": "android",
+              "text": "Match Flutter MethodChannel names to the renamed packageName"
+            },
             {
               "id": "c5bf5bd",
               "scope": "resources",
@@ -19,6 +64,18 @@
               "id": "60f371a",
               "scope": "core",
               "text": "Keep the core running while Windows sleeps with the app suspended"
+            },
+            {
+              "id": "72cf926",
+              "text": "Resolve Inno Setup locale"
+            },
+            {
+              "id": "8e6173c",
+              "text": "Resolve Windows package assets"
+            },
+            {
+              "id": "c2be7c9",
+              "text": "Request Clash Meta subscriptions"
             }
           ]
         }
