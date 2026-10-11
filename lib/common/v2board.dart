@@ -123,7 +123,8 @@ final class V2boardApiClient {
       try {
         return await action();
       } on DioException catch (error) {
-        if (attempt >= retries || error.type != DioExceptionType.connectionError) {
+        if (attempt >= retries ||
+            error.type != DioExceptionType.connectionError) {
           rethrow;
         }
         await Future.delayed(delay);

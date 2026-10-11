@@ -1,4 +1,5 @@
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/icons/icons.dart';
 import 'package:fl_clash/manager/app_manager.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -34,7 +35,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.menu));
+    await tester.tap(find.byTooltip('Account'));
     await tester.pumpAndSettle();
 
     expect(find.text('Premium'), findsOneWidget);
@@ -124,7 +125,7 @@ void main() {
 
 ProviderContainer _container(ViewMode viewMode, Size viewSize) {
   final navigationItem = NavigationItem(
-    icon: const Icon(Icons.space_dashboard),
+    glyph: AppGlyphs.dashboard,
     label: PageLabel.dashboard,
     builder: (_) => const SizedBox.shrink(),
   );

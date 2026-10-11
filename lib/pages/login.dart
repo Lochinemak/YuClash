@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/icons/icons.dart';
 import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
@@ -159,7 +160,7 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
                                 autocorrect: false,
                                 enableSuggestions: false,
                                 decoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.key_outlined),
+                                  prefixIcon: const GlyphIcon(AppGlyphs.key),
                                   border: const OutlineInputBorder(),
                                   labelText: appLocalizations.serviceCode,
                                 ),
@@ -211,7 +212,7 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
                         textInputAction: TextInputAction.next,
                         autofillHints: const [AutofillHints.username],
                         decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.alternate_email),
+                          prefixIcon: const GlyphIcon(AppGlyphs.account),
                           border: const OutlineInputBorder(),
                           labelText: appLocalizations.email,
                         ),
@@ -233,7 +234,7 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
                         autofillHints: const [AutofillHints.password],
                         onFieldSubmitted: (_) => _submit(),
                         decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.lock_outline),
+                          prefixIcon: const GlyphIcon(AppGlyphs.password),
                           suffixIcon: IconButton(
                             tooltip: _obscurePassword
                                 ? appLocalizations.show
@@ -245,10 +246,10 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
                                       _obscurePassword = !_obscurePassword;
                                     });
                                   },
-                            icon: Icon(
+                            icon: GlyphIcon(
                               _obscurePassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
+                                  ? AppGlyphs.eye
+                                  : AppGlyphs.eyeOff,
                             ),
                           ),
                           border: const OutlineInputBorder(),
@@ -284,7 +285,7 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
                                     strokeWidth: 2,
                                   ),
                                 )
-                              : const Icon(Icons.login),
+                              : const GlyphIcon(AppGlyphs.lockOpen, fill: 1),
                           label: Text(appLocalizations.login),
                         ),
                       ),

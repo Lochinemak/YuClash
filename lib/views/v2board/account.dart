@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/icons/icons.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -50,7 +51,7 @@ class V2boardAccountDialog extends ConsumerWidget {
                   dimension: 18,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Icon(Icons.sync),
+              : const GlyphIcon(AppGlyphs.sync, fill: 1),
           label: Text(appLocalizations.refreshSubscription),
         ),
       ],
@@ -123,10 +124,7 @@ class V2boardAccountOverviewView extends ConsumerWidget {
     }
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: [
-        Text('$online / '),
-        const Icon(Icons.all_inclusive),
-      ],
+      children: [Text('$online / '), const Text('∞')],
     );
   }
 
@@ -175,7 +173,7 @@ class V2boardAccountOverviewView extends ConsumerWidget {
           ),
           const SizedBox(height: 24),
           _AccountDetailRow(
-            icon: Icons.workspace_premium_outlined,
+            icon: AppGlyphs.star,
             label: appLocalizations.subscriptionPlan,
             value: Text(
               overview?.planName ?? appLocalizations.noInfo,
@@ -196,7 +194,7 @@ class V2boardAccountOverviewView extends ConsumerWidget {
           ),
           const SizedBox(height: 20),
           _AccountDetailRow(
-            icon: Icons.event_outlined,
+            icon: AppGlyphs.clock,
             label: appLocalizations.expiration,
             value: Text(
               _expireText(context, overview?.expire),
@@ -205,7 +203,7 @@ class V2boardAccountOverviewView extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           _AccountDetailRow(
-            icon: Icons.devices_outlined,
+            icon: AppGlyphs.devices,
             label: appLocalizations.deviceUsage,
             value: _deviceValue(
               context,
@@ -284,7 +282,7 @@ class V2boardAccountPanel extends ConsumerWidget {
                         context,
                       ).closeButtonTooltip,
                       onPressed: onClose,
-                      icon: const Icon(Icons.close),
+                      icon: const GlyphIcon(AppGlyphs.close),
                     ),
                   const SizedBox(width: 8),
                 ],
@@ -301,10 +299,8 @@ class V2boardAccountPanel extends ConsumerWidget {
                         children: [
                           FilledButton.icon(
                             onPressed: () => _signIn(ref),
-                            icon: const Icon(Icons.login),
-                            label: Text(
-                              appLocalizations.login,
-                            ),
+                            icon: const GlyphIcon(AppGlyphs.lockOpen, fill: 1),
+                            label: Text(appLocalizations.login),
                           ),
                         ],
                       ),
@@ -321,7 +317,7 @@ class V2boardAccountPanel extends ConsumerWidget {
                         onPressed: state.loading
                             ? null
                             : () => _logout(context, ref),
-                        icon: const Icon(Icons.logout),
+                        icon: const GlyphIcon(AppGlyphs.lock),
                         label: Text(appLocalizations.logout),
                       ),
                     ),
@@ -331,7 +327,7 @@ class V2boardAccountPanel extends ConsumerWidget {
                         onPressed: state.loading
                             ? null
                             : () => _refresh(context, ref),
-                        icon: const Icon(Icons.sync),
+                        icon: const GlyphIcon(AppGlyphs.sync, fill: 1),
                         label: Text(appLocalizations.update),
                       ),
                     ),
@@ -347,7 +343,7 @@ class V2boardAccountPanel extends ConsumerWidget {
 }
 
 class _AccountDetailRow extends StatelessWidget {
-  final IconData icon;
+  final Glyph icon;
   final String label;
   final Widget value;
 
@@ -362,7 +358,7 @@ class _AccountDetailRow extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: context.colorScheme.primary),
+        GlyphIcon(icon, color: context.colorScheme.primary),
         const SizedBox(width: 12),
         Expanded(
           child: Column(

@@ -1,3 +1,4 @@
+import 'package:fl_clash/icons/icons.dart';
 import 'package:fl_clash/common/v2board.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/login.dart';
@@ -6,6 +7,7 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../helpers/glyph_finders.dart';
 import '../helpers/test_app.dart';
 
 class _TestV2boardAction extends V2boardAction {
@@ -177,13 +179,13 @@ void main() {
         of: find.byType(TextFormField).at(2),
         matching: find.byType(IconButton),
       );
-      expect(find.byIcon(Icons.visibility_outlined), findsOneWidget);
+      expect(find.byGlyph(AppGlyphs.eye), findsOneWidget);
 
       await tester.tap(toggle);
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.visibility_outlined), findsNothing);
+      expect(find.byGlyph(AppGlyphs.eyeOff), findsOneWidget);
+      expect(find.byGlyph(AppGlyphs.eye), findsNothing);
     });
 
     testWidgets('shows a spinner and disables both actions while loading', (
@@ -196,7 +198,7 @@ void main() {
       );
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      expect(find.byIcon(Icons.login), findsNothing);
+      expect(find.byGlyph(AppGlyphs.lockOpen), findsNothing);
       expect(
         tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
         isNull,
@@ -222,7 +224,7 @@ void main() {
 
       // The error paragraph is an extra Text beyond the static labels.
       expect(find.byType(CircularProgressIndicator), findsNothing);
-      expect(find.byIcon(Icons.login), findsOneWidget);
+      expect(find.byGlyph(AppGlyphs.lockOpen), findsOneWidget);
     });
 
     testWidgets('custom setup asks the notifier to skip login', (tester) async {

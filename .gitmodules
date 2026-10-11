@@ -2,7 +2,3 @@
 	path = core/Clash.Meta
 	url = https://github.com/Lochinemak/Clash.Meta.git
 	branch = FlClash
-[submodule "core/http"]
-	path = core/http
-	url = https://github.com/Lochinemak/http.git
-	branch = patched

@@ -4,14 +4,16 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/permission.dart';
 import 'package:fl_clash/common/system_dns.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/manager/window_manager.dart';
+import 'package:fl_clash/icons/icons.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/v2board/account.dart';
 import 'package:fl_clash/widgets/animated_visibility.dart';
+import 'package:fl_clash/widgets/icon.dart';
 import 'package:fl_clash/widgets/inherited.dart';
 import 'package:fl_clash/widgets/pop_scope.dart';
+import 'package:fl_clash/widgets/sidebar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,9 +33,11 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    ref.listenManual(checkIpProvider, (prev, next) {
-      if (prev != next && next.isInit && next.containsDetection) {
-        ref.read(networkDetectionProvider.notifier).startCheck();
+    // A desktop build started to the tray mounts while hidden, and a paused
+    // render never runs a post-frame callback.
+    scheduleMicrotask(() {
+      if (mounted) {
+        _updateVisible(WidgetsBinding.instance.lifecycleState);
       }
     });
     ref.listenManual(configProvider, (prev, next) {
@@ -41,6 +45,11 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
         ref.read(storeActionProvider.notifier).savePreferencesDebounce();
       }
     });
+    ref.listenManual(groupsProvider, (prev, next) {
+      if (prev != next) {
+        unawaited(precacheTargetIcons(next.map((group) => group.icon)));
+      }
+    }, fireImmediately: true);
     ref.listenManual(needUpdateGroupsProvider, (prev, next) {
       if (prev != next) {
         ref.read(proxiesActionProvider.notifier).updateGroupsDebounce();
@@ -48,7 +57,7 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
     });
     ref.listenManual(suspendProvider, (prev, next) {
       final isStart = ref.read(isStartProvider);
-      if (prev != next && isStart) {
+      if (prev != next && isStart && !ref.read(safeModeProvider)) {
         debouncer.call(FunctionTag.suspend, () async {
           final core = ref.read(coreHandlerProvider);
           if (next == true) {
@@ -56,7 +65,6 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
           } else {
             await core.startListener();
           }
-          ref.read(checkIpNumProvider.notifier).add();
         });
       }
     });
@@ -74,17 +82,26 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
     super.dispose();
   }
 
+  void _updateVisible(AppLifecycleState? state) {
+    ref.read(appVisibleProvider.notifier).value = switch (state) {
+      null || AppLifecycleState.resumed || AppLifecycleState.inactive => true,
+      AppLifecycleState.hidden ||
+      AppLifecycleState.paused ||
+      AppLifecycleState.detached => false,
+    };
+  }
+
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     commonPrint.log('$state');
+    _updateVisible(state);
     if (state == AppLifecycleState.resumed) {
       permissions.check(ref.read);
-      render?.resume();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) {
           return;
         }
-        ref.read(setupActionProvider.notifier).tryCheckIp();
+        ref.read(routeTrackerProvider.notifier).markResumed();
       });
     }
   }
@@ -96,86 +113,84 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      onPointerHover: (_) {
-        render?.resume();
-      },
-      child: widget.child,
-    );
+    return widget.child;
   }
 }
 
-class AppEnvManager extends StatelessWidget {
+class AppEnvManager extends ConsumerWidget {
   final Widget child;
 
   const AppEnvManager({super.key, required this.child});
 
+  String? _bannerMessage({required bool safeMode}) {
+    if (safeMode) {
+      return 'SAFE MODE';
+    }
+    if (!globalState.isPre) {
+      return null;
+    }
+    return kDebugMode ? 'DEBUG' : globalState.appEnv.toUpperCase();
+  }
+
   @override
-  Widget build(BuildContext context) {
-    if (kDebugMode) {
-      if (globalState.isPre) {
-        return Banner(
-          message: 'DEBUG',
-          location: BannerLocation.topEnd,
-          child: child,
-        );
-      }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final message = _bannerMessage(safeMode: ref.watch(safeModeProvider));
+    if (message == null) {
+      return child;
     }
-    if (globalState.isPre) {
-      return Banner(
-        message: globalState.appEnv.toUpperCase(),
-        location: BannerLocation.topEnd,
-        child: child,
-      );
-    }
-    return child;
+    return Banner(
+      message: message,
+      location: BannerLocation.topEnd,
+      child: child,
+    );
   }
 }
 
-class _SidebarRail extends StatelessWidget {
-  const _SidebarRail({
+class _Sidebar extends ConsumerWidget {
+  const _Sidebar({
     required this.items,
     required this.currentIndex,
-    required this.showLabel,
+    required this.viewMode,
     required this.onSelected,
+    this.footer,
   });
 
   final List<NavigationItem> items;
   final int currentIndex;
-  final bool showLabel;
+  final ViewMode viewMode;
   final void Function(int index) onSelected;
+  final Widget? footer;
 
   @override
-  Widget build(BuildContext context) {
-    final labelStyle = context.textTheme.labelLarge!.copyWith(
-      color: context.colorScheme.onSurface,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final canExpand = canExpandSidebar(viewMode);
+    final sidebarExpanded = ref.watch(
+      appSettingProvider.select((state) => state.sidebarExpanded),
     );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: NavigationRail(
-            scrollable: true,
-            minExtendedWidth: 200,
-            backgroundColor: Colors.transparent,
-            selectedLabelTextStyle: labelStyle,
-            unselectedLabelTextStyle: labelStyle,
-            destinations: [
-              for (final item in items)
-                NavigationRailDestination(
-                  icon: item.icon,
-                  label: Text(item.label.label),
-                ),
-            ],
-            onDestinationSelected: onSelected,
-            extended: false,
-            selectedIndex: currentIndex,
-            labelType: showLabel
-                ? NavigationRailLabelType.all
-                : NavigationRailLabelType.none,
-          ),
-        ),
+    final version = ref.watch(versionProvider);
+    return NavigationSidebar(
+      destinations: [
+        for (final item in items)
+          SidebarDestination(glyph: item.glyph, label: item.label.label),
       ],
+      selectedIndex: currentIndex,
+      expanded: canExpand && sidebarExpanded,
+      onSelected: onSelected,
+      onToggle: canExpand
+          ? () {
+              ref
+                  .read(appSettingProvider.notifier)
+                  .update(
+                    (state) =>
+                        state.copyWith(sidebarExpanded: !state.sidebarExpanded),
+                  );
+            }
+          : null,
+      windowControls: windowControlsOverSidebar(
+        isMacOS: system.isMacOS,
+        version: version,
+      ),
+      footer: footer,
     );
   }
 }
@@ -191,7 +206,6 @@ class AppSidebarContainer extends ConsumerStatefulWidget {
 }
 
 class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
-  static const _railWidth = 80.0;
   static const _accountPanelWidth = 320.0;
 
   final _drawerKey = GlobalKey<ScaffoldState>();
@@ -208,13 +222,18 @@ class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
   }
 
   Widget _buildBackground({
-    required BuildContext context,
+    required Color color,
+    required Color edge,
     required Widget child,
   }) {
-    return Material(color: context.colorScheme.surfaceContainer, child: child);
+    return Material(
+      color: color,
+      shape: BorderDirectional(end: BorderSide(color: edge)),
+      child: child,
+    );
   }
 
-  void _updateSideBarWidth(WidgetRef ref, double contentWidth) {
+  void _updateSideBarWidth(double contentWidth) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(sideWidthProvider.notifier).value =
           ref.read(viewSizeProvider.select((state) => state.width)) -
@@ -222,10 +241,11 @@ class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
     });
   }
 
-  void _handleToPage(WidgetRef ref, PageLabel pageLabel) {
+  void _handleToPage(PageLabel pageLabel) {
     final focusNode = FocusManager.instance.primaryFocus;
+    final focusContext = focusNode?.context;
     final preserveNavigationFocus =
-        focusNode?.context?.findAncestorWidgetOfExactType<NavigationRail>() !=
+        focusContext?.findAncestorWidgetOfExactType<NavigationSidebar>() !=
         null;
     ref.read(currentPageLabelProvider.notifier).toPage(pageLabel);
     if (!preserveNavigationFocus || focusNode == null) {
@@ -257,7 +277,7 @@ class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
     });
   }
 
-  Widget _buildAccountButton(V2boardSession? session) {
+  Widget? _buildAccountButton(V2boardSession? session) {
     if (session != null) {
       return IconButton(
         tooltip: context.appLocalizations.account,
@@ -269,101 +289,49 @@ class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
       return IconButton(
         tooltip: context.appLocalizations.login,
         onPressed: () => ref.read(v2boardActionProvider.notifier).resetSkip(),
-        icon: const Icon(Icons.login),
+        icon: const GlyphIcon(AppGlyphs.account),
       );
     }
-    return const SizedBox.shrink();
+    return null;
   }
 
-  Widget _buildRail({
-    required List<NavigationItem> navigationItems,
-    required int currentIndex,
-    required bool showLabel,
-    required V2boardSession? session,
-  }) {
-    return SizedBox(
-      width: _railWidth,
-      child: _buildBackground(
-        context: context,
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (system.isMacOS) const SizedBox(height: 22),
-              const SizedBox(height: 10),
-              if (!system.isMacOS) ...[
-                const ClipRect(child: AppIcon()),
-                const SizedBox(height: 12),
-              ],
-              Expanded(
-                child: ScrollConfiguration(
-                  behavior: const HiddenBarScrollBehavior(),
-                  child: _SidebarRail(
-                    items: navigationItems,
-                    currentIndex: currentIndex,
-                    showLabel: showLabel,
-                    onSelected: (index) {
-                      _handleToPage(ref, navigationItems[index].label);
-                    },
-                  ),
-                ),
-              ),
-              _buildAccountButton(session),
-              const SizedBox(height: 4),
-              IconButton(
-                tooltip: context.appLocalizations.toggleLabel,
-                onPressed: () {
-                  ref
-                      .read(appSettingProvider.notifier)
-                      .update(
-                        (state) => state.copyWith(showLabel: !state.showLabel),
-                      );
-                },
-                icon: Icon(
-                  Icons.menu,
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMainContent(Widget child) {
-    return Expanded(
-      child: ClipRect(
-        child: LayoutBuilder(
-          builder: (_, constraints) {
-            _updateSideBarWidth(ref, constraints.maxWidth);
-            return child;
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDesktopLayout({
+  Widget _buildLayout({
     required Widget child,
     required ViewMode viewMode,
     required List<NavigationItem> navigationItems,
     required int currentIndex,
-    required bool showLabel,
     required V2boardSession? session,
   }) {
+    final blur = ref.watch(windowBlurProvider);
+    final colorScheme = context.colorScheme;
+    final surfaceContainer = colorScheme.surfaceContainer;
+    final hasSidebar = viewMode != ViewMode.mobile;
+    final isLtr = Directionality.of(context) == TextDirection.ltr;
     final content = Container(
-      color: context.colorScheme.surfaceContainer,
+      color: blur ? Colors.transparent : surfaceContainer,
       child: Row(
         children: [
           AnimatedVisibility.sidebar(
-            visible: viewMode != ViewMode.mobile,
-            child: _buildRail(
-              navigationItems: navigationItems,
-              currentIndex: currentIndex,
-              showLabel: showLabel,
-              session: session,
+            visible: hasSidebar,
+            child: _buildBackground(
+              color: blur
+                  ? surfaceContainer.withValues(alpha: kSidebarBlurOpacity)
+                  : surfaceContainer,
+              edge: colorScheme.outlineVariant,
+              child: MediaQuery.removePadding(
+                context: context,
+                removeLeft: !isLtr,
+                removeRight: isLtr,
+                child: _Sidebar(
+                  items: navigationItems,
+                  currentIndex: currentIndex,
+                  viewMode: viewMode,
+                  onSelected: (index) {
+                    _handleToPage(navigationItems[index].label);
+                  },
+                  footer: _buildAccountButton(session),
+                ),
+              ),
             ),
           ),
           if (viewMode == ViewMode.desktop)
@@ -378,7 +346,22 @@ class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
                     )
                   : const SizedBox.shrink(),
             ),
-          _buildMainContent(child),
+          Expanded(
+            flex: 1,
+            child: ClipRect(
+              child: LayoutBuilder(
+                builder: (_, constraints) {
+                  _updateSideBarWidth(constraints.maxWidth);
+                  return MediaQuery.removePadding(
+                    context: context,
+                    removeLeft: hasSidebar && isLtr,
+                    removeRight: hasSidebar && !isLtr,
+                    child: child,
+                  );
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -391,7 +374,8 @@ class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
     if (viewMode != ViewMode.laptop) {
       return content;
     }
-    final panelWidth = (MediaQuery.sizeOf(context).width - _railWidth)
+    final sidebarWidth = ref.watch(sideWidthProvider);
+    final panelWidth = (MediaQuery.sizeOf(context).width - sidebarWidth)
         .clamp(0.0, _accountPanelWidth)
         .toDouble();
     return BackLayerScope(
@@ -399,18 +383,21 @@ class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
       child: Stack(
         children: [
           content,
-          Positioned.fill(
-            left: _railWidth,
+          PositionedDirectional(
+            start: sidebarWidth,
+            top: 0,
+            bottom: 0,
+            end: 0,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _closeAccountPanel,
               child: ColoredBox(color: Colors.black.withValues(alpha: 0.2)),
             ),
           ),
-          Positioned(
+          PositionedDirectional(
             top: 0,
             bottom: 0,
-            left: _railWidth,
+            start: sidebarWidth,
             width: panelWidth,
             child: Material(
               elevation: 3,
@@ -425,10 +412,8 @@ class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
   @override
   Widget build(BuildContext context) {
     final navigationState = ref.watch(navigationStateProvider);
-    final navigationItems = navigationState.navigationItems;
-    final isMobileView = navigationState.viewMode == ViewMode.mobile;
-    final currentIndex = navigationState.currentIndex;
-    final showLabel = ref.watch(appSettingProvider).showLabel;
+    final viewMode = navigationState.viewMode;
+    final isMobileView = viewMode == ViewMode.mobile;
     final session = ref.watch(
       v2boardActionProvider.select((state) => state.session),
     );
@@ -448,12 +433,11 @@ class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
       body: CommonScaffoldDrawerProvider(
         openDrawer: _openDrawer,
         enabled: isMobileView,
-        child: _buildDesktopLayout(
+        child: _buildLayout(
           child: widget.child,
-          viewMode: navigationState.viewMode,
-          navigationItems: navigationItems,
-          currentIndex: currentIndex,
-          showLabel: showLabel,
+          viewMode: viewMode,
+          navigationItems: navigationState.navigationItems,
+          currentIndex: navigationState.currentIndex,
           session: session,
         ),
       ),

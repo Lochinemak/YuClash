@@ -20,6 +20,8 @@ Read these only when the task touches their area:
 - [.agents/worktrees.md](.agents/worktrees.md): worktree hygiene across Claude Code, Codex, and Gemini.
 - [.agents/agent-config.md](.agents/agent-config.md): how to choose between `AGENTS.md`, `.agents`, skills, Codex config,
   command rules, and hooks.
+- [.agents/flutter-upgrade.md](.agents/flutter-upgrade.md): SDK-pinned workarounds to recheck before changing the
+  Flutter version.
 - [.agents/skills.md](.agents/skills.md): index of repo-scoped skills in `.agents/skills/`.
 
 ## Highest Priority Rules
@@ -27,12 +29,18 @@ Read these only when the task touches their area:
 - When the user explicitly requests a scoped, low-risk change, inspect the relevant context and implement it directly.
   Do not require brainstorming, design documents, implementation plans, multiple-option proposals, or repeated confirmation.
   Ask only when material ambiguity, destructive impact, additional authority, or scope expansion could change the result.
+- The request sets the scope. A pre-existing bug, cleanup, or refactor the task did not ask for is a follow-up in the
+  summary, not part of the change. Edit a file surgically when a rewrite would give the same result, keep scratch checks
+  out of the repository, and commit tests only where the task asks for them or the neighbouring code already keeps them.
 - Do not add code or configuration comments unless the user explicitly asks for comments. This includes explanatory,
   narrative, TODO, and documentation comments. Never annotate line by line; comments belong only at the few key points
   that cannot be understood without one, and there you must propose the exact text and wait for approval. Delete
   commented-out code and stale notes whenever you touch the surrounding code. Put assertable behavior in a test,
   repository-wide invariants in `.agents/`, and keep a comment only for a fact that is local to one call site.
   See [.agents/rules.md](.agents/rules.md) for the full policy.
+- Start YuClash on the host only as a safe mode build, and end only processes you started, by recorded pid. Never
+  kill a YuClash instance by name; the user's own instance is not yours to close. See
+  [.agents/rules.md](.agents/rules.md).
 - Use `flutter test`, not `dart test`, because models pull in Flutter types.
 - Use a Flutter that matches CI's `FLUTTER_VERSION` in `.github/workflows/build.yaml` (currently 3.47.1). There is no
   `.fvmrc`; an older SDK cannot even resolve this project's dependencies.
@@ -47,12 +55,18 @@ Read these only when the task touches their area:
 - Keep start/stop/restart paths latest-intent-safe. Flutter-to-Android service commands are deliberately optimistic, while
   native state serializes the actual work; desktop lifecycle results distinguish applied, coalesced, and superseded
   requests.
+- Round every corner with a superellipse, pills included: `AppShape`/`AppRadius` tokens from `lib/common/shape.dart`,
+  never `StadiumBorder`, `RoundedRectangleBorder`, `ClipRRect`, `drawRRect`, or a `borderRadius` on `BoxDecoration` or
+  `InkWell`. `test/lint/superellipse_corners_test.dart` enforces it; see the Corner Radius section of
+  [.agents/rules.md](.agents/rules.md).
 - Follow `lint_options.yaml` (included by every `analysis_options.yaml`), especially single quotes, trailing commas, `child:` last, no `print()`, const/final
   preferences, and declared return types.
-- For CI parity, verify with `flutter pub get`, `flutter analyze --no-fatal-infos`, and
-  `flutter test --reporter expanded` when practical.
+- Before reporting a change done, run `flutter pub get`, `flutter analyze --no-fatal-infos`, and the `flutter test`
+  suites that cover it, as CI does. If a toolchain the build hook needs is missing (Go, and on Linux and Windows
+  cargo), say which check was skipped rather than dropping it silently.
 
 ## Repo Skills
 
-Use repo skills from `.agents/skills/` when a task matches their descriptions. Current skills cover localization,
-provider tests, UI work, and core/platform changes.
+Use repo skills from `.agents/skills/` when a task matches their descriptions; `.claude/skills/` symlinks expose the
+same skills to Claude Code. Current skills cover localization, UI work, core/platform changes, and pre-commit
+structural quality review.

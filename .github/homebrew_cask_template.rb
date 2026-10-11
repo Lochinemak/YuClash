@@ -23,9 +23,11 @@ cask "yuclash" do
 
   app "YuClash.app"
 
-  postflight do
-    system_command "xattr",
-                   args: ["-rd", "com.apple.quarantine", "#{appdir}/YuClash.app"]
+  postflight_steps do
+    run "/usr/bin/xattr",
+        args:           ["-rd", "com.apple.quarantine", "{{appdir}}/YuClash.app"],
+        writable_paths: ["YuClash.app"],
+        writable_base:  :appdir
   end
 
   uninstall quit: "com.yucloud.clash"

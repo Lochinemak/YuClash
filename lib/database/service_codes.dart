@@ -57,9 +57,8 @@ class V2boardServiceCodesDao extends DatabaseAccessor<Database>
   }
 
   Selectable<ServiceCodeRecord> query() {
-    return select(v2boardServiceCodes)
-      ..orderBy([
-        (t) => OrderingTerm(expression: t.lastUsedAt, mode: OrderingMode.desc),
-      ]);
+    return select(v2boardServiceCodes)..orderBy([
+      (t) => OrderingTerm(expression: t.lastUsedAt, mode: OrderingMode.desc),
+    ]);
   }
 }
