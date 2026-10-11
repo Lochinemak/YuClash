@@ -329,8 +329,10 @@ cargo fmt --check && cargo clippy && cargo test   # services/helper and plugins/
 
 A separate `windows-helper-test` job runs the helper's `windows-service`
 feature tests on `windows-2022`. Both must pass before the `build` matrix
-starts. Release builds run only for `v*` tag pushes; pull requests against
-`main` run `test` and `build` but never `upload`.
+starts. The matrix runs only for `v*` tag pushes and `workflow_dispatch`;
+pushes to `main` and pull requests run the checks alone, and `upload` is
+tag-only. A newer push to the same branch cancels the run still going, while
+tag runs are never cancelled.
 
 Several gates upstream enforces exist here as scripts but are **not wired into
 CI**, so running them is currently a manual step:
