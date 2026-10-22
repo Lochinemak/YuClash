@@ -1,4 +1,4 @@
-import 'package:fl_clash/icons/icons.dart';
+import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/common/v2board.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/login.dart';

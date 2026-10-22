@@ -1,10 +1,10 @@
 # Project Context
 
-YuClash is a multi-platform proxy client based on FlClash and ClashMeta (mihomo), built with Flutter. It supports Android, Windows, macOS, and Linux, using a Material You design with Surfboard-like UI.
+FlClash is a multi-platform proxy client based on ClashMeta (mihomo), built with Flutter. It supports Android, Windows, macOS, and Linux, using Material You from `material_ui` as the base with Apple's Human Interface interaction conventions layered on top.
 
 ## Version Notes
 
-- Flutter stays on the 3.47.x line. Release CI pins 3.47.4 and is the source
+- Flutter stays on the 3.47.x line. Release CI pins 3.47.6 and is the source
   of truth for release builds; `.fvmrc` and local SDKs may sit on another 3.47
   patch. The editor in `plugins/code_forge` came from `code_forge` 10.14.0, which
   needs Dart 3.13.2, so the CI pin cannot go below Flutter 3.47.2.
@@ -16,12 +16,12 @@ YuClash is a multi-platform proxy client based on FlClash and ClashMeta (mihomo)
 
 ## Forked Dependencies
 
-Two `pubspec.yaml` dependencies are pinned to a fork by commit SHA. Both forks
-live under `chen08209`, the account that owns FlClash, which this project is
-forked from — so unlike in FlClash itself, advancing one of these pins is not a
-local decision here: the fork is maintained by the upstream author. What each fork
-still waits on is the *upstream* fix that would let the pin be dropped entirely,
-recorded below.
+One `pubspec.yaml` dependency is pinned to a fork by commit SHA. The fork lives
+under `chen08209`, the same account that owns this repository, so it is
+maintained in-house rather than tracked from a third party: advancing a pin is a
+local decision, and there is no external maintainer to wait on for the patch
+itself. What the fork still waits on is the *upstream* fix that would let the pin
+be dropped entirely, recorded below.
 
 Each entry records what the fork changes and what has to be true before it can go
 back to the published package, so a future upgrade does not have to rediscover it.
@@ -43,17 +43,15 @@ now, see the window plugin section of `architecture.md`.
 - Migrates `win32_registry` from `^2.0.0` to `^3.0.3`, which is a breaking rename
   across the whole Windows implementation (`Registry.openPath` → `CURRENT_USER.open`,
   `createValue` → `setValue`, `getStringValue` → `getString`).
-- This one is not optional while it lasts: this app depends on `win32_registry: ^3.0.3`
+- This one is not optional while it lasts: FlClash depends on `win32_registry: ^3.0.3`
   directly, and upstream's `^2.0.0` constraint cannot co-resolve with it.
 - Drop the fork when upstream publishes a release that accepts `win32_registry` 3.x.
 
-`yaml_writer` — `chen08209/yaml_writer`, version 2.1.0.
-
-- Adds `StringNode.quoteKey()` and applies it to map keys in `lib/src/node.dart`.
-  Upstream quotes values but emits keys verbatim, so a profile key needing quotes
-  is written as invalid YAML.
-- Drop the fork once upstream quotes map keys by the same
-  `isValidUnquotedString` rule it already applies to values.
+The `yaml_writer` fork (`chen08209/yaml_writer`) was replaced by
+`lib/common/yaml_writer.dart`. Its key quoting let keys such as `!a`, `'a` or
+`0x1F` reach the Core's yaml.v3 as a parse error or a non-string; a merge key
+`<<` stays plain on purpose, because `package:yaml` keeps it as an ordinary key
+and the Core applies the merge.
 
 The `code_forge` fork (`chen08209/code_forge`) is frozen: its Dart code now lives
 in the in-repo `plugins/code_forge` package and its Rust code in the `editor/`
@@ -69,9 +67,15 @@ resolved-until-the-ceiling-moves rather than as debt:
 - `intl` is intentionally unbounded (`any`) and `material_color_utilities` is
   resolved by the Flutter SDK; neither is a bound this repository sets.
 
-`freezed`, the `riverpod` set, `build_runner`, `drift_dev`, `intl_utils` and
-`test` all resolve against the analyzer the pinned SDK ships; none of them is
-held back. When an upgrade fails version solving, record the blocker here with
+The `riverpod` set, `build_runner`, `drift_dev` and `intl_utils` resolve to their
+latest releases. Two are held back:
+
+- `freezed` 4.0.2 needs `analyzer` 14, while `intl_utils` 2.8.16 still requires
+  `analyzer` ^13. It moves once `intl_utils` accepts analyzer 14.
+- `test` 1.32.0 needs `test_api` 0.7.14, and `flutter_test` on Flutter 3.47 pins
+  0.7.12. It moves with the SDK.
+
+When an upgrade fails version solving, record the blocker here with
 what has to change upstream before the pin can move, so the next
 `flutter pub outdated` run does not rediscover it.
 

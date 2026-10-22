@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:io';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
@@ -16,35 +17,26 @@ const v2boardProfileName = String.fromEnvironment(
 );
 const appHelperService = 'YuClashHelperService';
 const coreManifestName = 'manifest.json';
-const coreName = 'clash.meta';
 const browserUa =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 const packageName = 'com.yucloud.clash';
 final unixSocketPath = '/tmp/YuClashSocket_${Random().nextInt(10000)}.sock';
 final windowsPipeName = '\\\\.\\pipe\\YuClashCore_${_randomPipeId()}';
 const helperPort = 47891;
+const helperPortKey =
+    'SYSTEM\\CurrentControlSet\\Services\\$appHelperService\\Runtime';
+const helperPortValue = 'Port';
 const helperSocketPath = '/run/yuclash/helper.sock';
 const helperProtocolVersionHeader = 'x-yuclash-helper-protocol';
-const helperProtocolVersion = '6';
+final helperProtocolVersion = Platform.isWindows ? '8' : '6';
 const maxTextScale = 1.4;
 const minTextScale = 0.8;
-final baseInfoEdgeInsets = EdgeInsets.symmetric(
-  vertical: 16.mAp,
-  horizontal: 16.mAp,
-);
-final listHeaderPadding = EdgeInsets.only(
-  left: 16.mAp,
-  right: 16.mAp,
-  top: 24.mAp,
-  bottom: 8.mAp,
-);
-const pageToolbarHeight = 64.0;
-const sheetToolbarHeight = 48.0;
-const sheetAppBarHeight = 68.0;
 
 const watchExecution = false;
 
 const safeModeBuild = bool.fromEnvironment('SAFE_MODE');
+
+const disclaimerVersion = 1;
 
 String _randomPipeId() {
   final random = Random.secure();
@@ -54,8 +46,12 @@ String _randomPipeId() {
   ).join();
 }
 
-final defaultTextScaleFactor =
-    WidgetsBinding.instance.platformDispatcher.textScaleFactor;
+/// Depends on [context]'s text scaler, so the caller rebuilds when the system
+/// font scale changes.
+double systemTextScaleOf(BuildContext context) {
+  MediaQuery.textScalerOf(context);
+  return WidgetsBinding.instance.platformDispatcher.textScaleFactor;
+}
 
 /// How long the Core may spend on one delay test. It spends this twice in the
 /// worst case - once queueing for a slot, once on the probe itself - so the
@@ -64,7 +60,11 @@ const delayTestTimeoutDuration = Duration(seconds: 8);
 
 const delayTestGuardDuration = Duration(seconds: 30);
 
+const delayTimedOutValue = -1;
+
 const probeTimeoutDuration = Duration(seconds: 10);
+
+const downloadTimeoutDuration = Duration(seconds: 20);
 
 /// A healthy source answers within a second; past this the outbound is down.
 const outboundIpTimeoutDuration = Duration(seconds: 6);
@@ -83,15 +83,11 @@ const serviceSweepBudgetFactor = 6;
 const coreConnectionWaitDuration = Duration(seconds: 10);
 
 /// Keep at or below the Core's delay-test concurrency (`delayTestConcurrency`
-/// in core/common.go).
-const maxConcurrentDelayTests = 16;
-const animateDuration = Duration(milliseconds: 100);
-const midDuration = Duration(milliseconds: 200);
-const commonDuration = Duration(milliseconds: 300);
+/// in core/delay.go).
+const maxConcurrentDelayTests = 32;
+const maxConcurrentImports = 4;
+const maxConcurrentIconLoads = 8;
 
-/// How often a live Core feed is allowed to repaint. One batch costs about a
-/// frame on a phone, and anything at or below the 200ms scroll-to-end
-/// animation restarts it mid-flight, so the list jumps instead of animating.
 const renderThrottleDuration = Duration(milliseconds: 300);
 const defaultUpdateDuration = Duration(days: 1);
 const MMDB = 'GEOIP.metadb';
@@ -111,11 +107,6 @@ const providersDirectoryName = 'providers';
 const proxiesProviderDirectoryName = 'proxies';
 const rulesProviderDirectoryName = 'rules';
 
-String providerCacheDirectoryName(ProviderKind kind) => switch (kind) {
-  ProviderKind.proxy => proxiesProviderDirectoryName,
-  ProviderKind.rule => rulesProviderDirectoryName,
-};
-
 const localhost = '127.0.0.1';
 const clashConfigKey = 'clash_config';
 const configKey = 'config';
@@ -128,6 +119,25 @@ const maxMobileWidth = 600;
 const maxLaptopWidth = 840;
 const defaultTestUrl = 'https://www.gstatic.com/generate_204';
 
+const shareLinkSchemes = {
+  'hysteria',
+  'hysteria2',
+  'hy2',
+  'hysteria2+realm',
+  'hy2+realm',
+  'tuic',
+  'trojan',
+  'vless',
+  'vmess',
+  'ss',
+  'ssr',
+  'socks',
+  'socks5',
+  'socks5h',
+  'anytls',
+  'mierus',
+};
+
 const stringListEquality = ListEquality<String>();
 const intListEquality = ListEquality<int>();
 const ruleListEquality = ListEquality<Rule>();
@@ -136,6 +146,7 @@ const profileListEquality = ListEquality<Profile>();
 const proxyGroupsEquality = ListEquality<ProxyGroup>();
 const customProxiesEquality = ListEquality<CustomProxy>();
 const clashProviderListEquality = ListEquality<ClashProvider>();
+const iconSetListEquality = ListEquality<IconSet>();
 const hotKeyActionListEquality = ListEquality<HotKeyAction>();
 const stringAndStringMapEntryListEquality =
     ListEquality<MapEntry<String, String>>();
@@ -145,7 +156,7 @@ const proxiesListStoreKey = PageStorageKey<String>('proxies_list');
 const toolsStoreKey = PageStorageKey<String>('tools');
 const profilesStoreKey = PageStorageKey<String>('profiles');
 
-const defaultPrimaryColor = 0XFFD8C0C3;
+const defaultPrimaryColor = 0xFF007AFF;
 
 const maxLogsLength = 5000;
 const maxRequestsLength = 2000;
@@ -156,24 +167,22 @@ const pausedMaxDnsQueriesLength = maxDnsQueriesLength * 2;
 
 const trafficSampleLength = 30;
 
+// Apple's system colors, in the order of the macOS accent colors.
 const defaultPrimaryColors = [
-  0xFF795548,
-  0xFF03A9F4,
-  0xFFFFFF00,
-  0XFFBBC9CC,
-  0XFFABD397,
   defaultPrimaryColor,
-  0XFF665390,
+  0xFFAF52DE,
+  0xFFFF2D55,
+  0xFFFF3B30,
+  0xFFFF9500,
+  0xFFFFCC00,
+  0xFF34C759,
+  0xFF8E8E93,
 ];
 
 const scriptTemplate = '''
 const main = (config) => {
   return config;
 }''';
-
-const proxyProviderTemplate = 'proxies: []\n';
-
-const ruleProviderTemplate = 'payload: []\n';
 
 const backupDatabaseName = 'database.sqlite';
 const configJsonName = 'config.json';

@@ -1,5 +1,5 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/icons/icons.dart';
+import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -80,9 +80,9 @@ class V2boardAccountAvatar extends StatelessWidget {
       child: Center(
         child: Text(
           initial,
-          style: context.textTheme.titleMedium?.copyWith(
-            color: context.colorScheme.onPrimaryContainer,
-          ),
+          style: AppTextStyle.headline
+              .of(context)
+              .copyWith(color: context.colorScheme.onPrimaryContainer),
         ),
       ),
     );
@@ -157,14 +157,14 @@ class V2boardAccountOverviewView extends ConsumerWidget {
                       overview?.email ?? session.email,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: context.textTheme.titleMedium?.toSoftBold,
+                      style: AppTextStyle.headline.of(context).toSoftBold,
                     ),
                     const SizedBox(height: 2),
                     Text(
                       Uri.tryParse(session.baseUrl)?.host ?? session.baseUrl,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: context.textTheme.bodySmall?.toLight,
+                      style: AppTextStyle.footnote.of(context).toLight,
                     ),
                   ],
                 ),
@@ -183,14 +183,14 @@ class V2boardAccountOverviewView extends ConsumerWidget {
           const SizedBox(height: 16),
           Text(
             appLocalizations.trafficUsage,
-            style: context.textTheme.labelLarge,
+            style: AppTextStyle.subheadline.of(context, emphasized: true),
           ),
           const SizedBox(height: 8),
           LinearProgressIndicator(value: progress, minHeight: 8),
           const SizedBox(height: 8),
           Text(
             '${used.traffic.show} / ${total.traffic.show}',
-            style: context.textTheme.bodyMedium?.toLight,
+            style: AppTextStyle.subheadline.of(context).toLight,
           ),
           const SizedBox(height: 20),
           _AccountDetailRow(
@@ -215,9 +215,9 @@ class V2boardAccountOverviewView extends ConsumerWidget {
             const SizedBox(height: 20),
             Text(
               v2boardErrorText(context, state.error!),
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colorScheme.error,
-              ),
+              style: AppTextStyle.subheadline
+                  .of(context)
+                  .copyWith(color: context.colorScheme.error),
             ),
           ],
           if (state.loading) ...[
@@ -273,14 +273,13 @@ class V2boardAccountPanel extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       appLocalizations.account,
-                      style: context.textTheme.titleLarge,
+                      style: AppTextStyle.title3.of(context),
                     ),
                   ),
                   if (onClose != null)
                     IconButton(
-                      tooltip: MaterialLocalizations.of(
-                        context,
-                      ).closeButtonTooltip,
+                      tooltip: MaterialLocalizations.of(context)
+                          .closeButtonTooltip,
                       onPressed: onClose,
                       icon: const GlyphIcon(AppGlyphs.close),
                     ),
@@ -364,10 +363,15 @@ class _AccountDetailRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: context.textTheme.labelMedium?.toLight),
+              Text(
+                label,
+                style: AppTextStyle.caption1
+                    .of(context, emphasized: true)
+                    .toLight,
+              ),
               const SizedBox(height: 2),
               DefaultTextStyle.merge(
-                style: context.textTheme.bodyLarge,
+                style: AppTextStyle.body.of(context),
                 child: IconTheme.merge(
                   data: IconThemeData(
                     color: context.colorScheme.onSurface,

@@ -1,19 +1,15 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/common/permission.dart';
 import 'package:fl_clash/common/system_dns.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/icons/icons.dart';
+import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/v2board/account.dart';
-import 'package:fl_clash/widgets/animated_visibility.dart';
+import 'package:fl_clash/ui/ui.dart';
 import 'package:fl_clash/widgets/icon.dart';
-import 'package:fl_clash/widgets/inherited.dart';
-import 'package:fl_clash/widgets/pop_scope.dart';
-import 'package:fl_clash/widgets/sidebar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,16 +52,8 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
       }
     });
     ref.listenManual(suspendProvider, (prev, next) {
-      final isStart = ref.read(isStartProvider);
-      if (prev != next && isStart && !ref.read(safeModeProvider)) {
-        debouncer.call(FunctionTag.suspend, () async {
-          final core = ref.read(coreHandlerProvider);
-          if (next == true) {
-            await core.stopListener();
-          } else {
-            await core.startListener();
-          }
-        });
+      if (prev != next) {
+        ref.read(setupActionProvider.notifier).syncSuspend();
       }
     });
     final systemDns = systemDnsCoordinator;
@@ -93,10 +81,9 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
 
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    commonPrint.log('$state');
     _updateVisible(state);
     if (state == AppLifecycleState.resumed) {
-      permissions.check(ref.read);
+      unawaited(ref.read(locationPermissionsProvider.notifier).refresh());
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) {
           return;

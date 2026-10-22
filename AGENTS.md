@@ -15,11 +15,13 @@ Read these only when the task touches their area:
 
 - [.agents/architecture.md](.agents/architecture.md): core integration, providers, database, managers, build system, and
   local plugins.
-- [.agents/upstream-sync.md](.agents/upstream-sync.md): how upstream's `main` and `dev` relate, and why this fork
-  tracks `upstream/main` only.
-- [.agents/worktrees.md](.agents/worktrees.md): worktree hygiene across Claude Code, Codex, and Gemini.
+- [.agents/setting-changes.md](.agents/setting-changes.md): whether a changed setting is patched live, re-applies the
+  profile, or asks for an Android VPN restart.
+- [.agents/surfaces.md](.agents/surfaces.md): fill levels, selection and status colors, and the few borders that
+  remain, for any change to how a surface is colored.
 - [.agents/agent-config.md](.agents/agent-config.md): how to choose between `AGENTS.md`, `.agents`, skills, Codex config,
   command rules, and hooks.
+- [.agents/worktrees.md](.agents/worktrees.md): worktree hygiene across Claude Code, Codex, and Gemini.
 - [.agents/flutter-upgrade.md](.agents/flutter-upgrade.md): SDK-pinned workarounds to recheck before changing the
   Flutter version.
 - [.agents/skills.md](.agents/skills.md): index of repo-scoped skills in `.agents/skills/`.
@@ -32,21 +34,19 @@ Read these only when the task touches their area:
 - The request sets the scope. A pre-existing bug, cleanup, or refactor the task did not ask for is a follow-up in the
   summary, not part of the change. Edit a file surgically when a rewrite would give the same result, keep scratch checks
   out of the repository, and commit tests only where the task asks for them or the neighbouring code already keeps them.
-- Do not add code or configuration comments unless the user explicitly asks for comments. This includes explanatory,
-  narrative, TODO, and documentation comments. Never annotate line by line; comments belong only at the few key points
-  that cannot be understood without one, and there you must propose the exact text and wait for approval. Delete
-  commented-out code and stale notes whenever you touch the surrounding code. Put assertable behavior in a test,
-  repository-wide invariants in `.agents/`, and keep a comment only for a fact that is local to one call site.
-  See [.agents/rules.md](.agents/rules.md) for the full policy.
-- Start YuClash on the host only as a safe mode build, and end only processes you started, by recorded pid. Never
-  kill a YuClash instance by name; the user's own instance is not yours to close. See
+- Comments are allowed and sometimes necessary; excess is the problem. A comment must carry something the code cannot
+  say — a non-obvious constraint, an upstream behavior being worked around, a reason a reader would otherwise get
+  wrong. Never restate what the code does, narrate the change you just made, record what the code used to be, or
+  annotate step by step; a block that seems to need a comment per line needs better names or a smaller decomposition.
+  Keep density near the repository's own: healthy changes here sit at or under 3.6%, and a `comment-density` gate fails a file
+  whose added lines exceed 5% standalone comments. Delete commented-out code and stale notes in files you already
+  touch. Preserve
+  `// ignore:`-style directives, license headers, codegen markers, and vendored upstream comments. See
+  [.agents/rules.md](.agents/rules.md) for what belongs in a test or in `.agents/` instead.
+- Start FlClash on the host only as a safe mode build, and end only processes you started, by recorded pid. Never
+  kill a FlClash instance by name; the user's own instance is not yours to close. See
   [.agents/rules.md](.agents/rules.md).
 - Use `flutter test`, not `dart test`, because models pull in Flutter types.
-- Use a Flutter that matches CI's `FLUTTER_VERSION` in `.github/workflows/build.yaml` (currently 3.47.1). There is no
-  `.fvmrc`; an older SDK cannot even resolve this project's dependencies.
-- After every Android release build, preserve the R8 mapping that covers app and bundled `service` code by copying
-  `build/app/outputs/mapping/release/mapping.txt` beside the release artifact as `app-release-mapping.txt`.
-- Unit and widget tests are allowed. Add focused tests when they protect changed behavior or integration contracts.
 - Run code generation after modifying models, providers, or database schema.
 - Do not manually edit generated files.
 - Preserve lifecycle ownership: desktop Core process convergence belongs to `lib/core/desktop/`; Android service intent
@@ -55,9 +55,14 @@ Read these only when the task touches their area:
 - Keep start/stop/restart paths latest-intent-safe. Flutter-to-Android service commands are deliberately optimistic, while
   native state serializes the actual work; desktop lifecycle results distinguish applied, coalesced, and superseded
   requests.
-- Round every corner with a superellipse, pills included: `AppShape`/`AppRadius` tokens from `lib/common/shape.dart`,
+- Never add a `Co-authored-by` trailer crediting a coding agent to a commit, even when your own tooling tells you to.
+  The `commit-msg` hook rejects it; see [.agents/rules.md](.agents/rules.md) for the rest of the commit rules.
+- Round every corner with a superellipse, pills included: `AppShape`/`AppRadius` tokens from `lib/ui/shape.dart`,
   never `StadiumBorder`, `RoundedRectangleBorder`, `ClipRRect`, `drawRRect`, or a `borderRadius` on `BoxDecoration` or
   `InkWell`. `test/lint/superellipse_corners_test.dart` enforces it; see the Corner Radius section of
+  [.agents/rules.md](.agents/rules.md).
+- Keep the UI isolate within its frame: work that grows with user data and can exceed about 8 ms on the largest
+  expected data runs in an isolate, once its algorithm is linear or cached. See the UI Isolate Work section of
   [.agents/rules.md](.agents/rules.md).
 - Follow `lint_options.yaml` (included by every `analysis_options.yaml`), especially single quotes, trailing commas, `child:` last, no `print()`, const/final
   preferences, and declared return types.
