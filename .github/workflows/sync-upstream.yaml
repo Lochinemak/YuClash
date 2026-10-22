@@ -59,8 +59,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           branch="sync/upstream-main-$(date +%Y%m%d)"
-          git checkout -b "$branch"
-          git merge upstream/main --no-edit || true
+          git checkout -b "$branch" upstream/main
+          git merge main --no-edit || true
           git push origin "$branch" --force
           gh pr create --title "Sync upstream main ($(date +%Y-%m-%d)) — needs conflict resolution" \
             --body "Automated sync from chen08209/FlClash \`main\` hit merge conflicts beyond the \`pubspec.yaml\` version line. Keep this fork's own version line when resolving. Merging this PR will NOT forward \`dev\`, so merge \`main\` into \`dev\` once it's in. Releases are cut by \`tool/release.sh stable --push\`, never by this workflow." \
@@ -89,8 +89,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           branch="sync/main-to-dev-$(date +%Y%m%d)"
-          git checkout -b "$branch"
-          git merge main --no-edit || true
+          git checkout -b "$branch" main
           git push origin "$branch" --force
           gh pr create --title "Forward main into dev ($(date +%Y-%m-%d)) — needs conflict resolution" \
             --body "\`main\` took an upstream sync that does not merge cleanly into \`dev\`. Resolve the conflicts on this branch, then merge." \
