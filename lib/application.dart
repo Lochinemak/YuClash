@@ -3,16 +3,18 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/common/window.dart';
 import 'package:fl_clash/bootstrap.dart';
 import 'package:fl_clash/common/system_dns.dart';
+import 'package:fl_clash/common/window.dart';
+import 'package:fl_clash/icons/icons.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/manager/hotkey_manager.dart';
 import 'package:fl_clash/manager/manager.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
-import 'package:fl_clash/ui/ui.dart';
+import 'package:fl_clash/widgets/focus.dart';
+import 'package:fl_clash/widgets/keyboard_inset_hold.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,7 +25,6 @@ Widget buildManagerStack({
   required bool isDesktop,
   required Future<void> Function(List<ConnectivityResult> results)
   onConnectivityChanged,
-  Stream<ProcessSignal>? terminateSignals,
   required Widget child,
 }) {
   final platformApp = isDesktop
@@ -39,7 +40,6 @@ Widget buildManagerStack({
   );
   final platformState = isDesktop
       ? WindowManager(
-          terminateSignals: terminateSignals,
           child: TrayManager(
             child: HotKeyManager(child: ProxyManager(child: state)),
           ),
@@ -59,13 +59,33 @@ class Application extends ConsumerStatefulWidget {
   ConsumerState<Application> createState() => ApplicationState();
 }
 
+const _actionIconTheme = ActionIconThemeData(
+  backButtonIconBuilder: _backButtonIcon,
+  closeButtonIconBuilder: _closeButtonIcon,
+);
+
+Widget _backButtonIcon(BuildContext context) =>
+    GlyphIcon(AppGlyphs.backFor(Theme.of(context).platform));
+
+Widget _closeButtonIcon(BuildContext context) =>
+    const GlyphIcon(AppGlyphs.close);
+
 class ApplicationState extends ConsumerState<Application> {
   Timer? _autoUpdateProfilesTaskTimer;
   bool _preHasVpn = false;
-  // Windows can only watch SIGINT and SIGHUP.
-  final _terminateSignals = system.isDesktop && !system.isWindows
-      ? ProcessSignal.sigterm.watch()
-      : null;
+
+  final _pageTransitionsTheme = const PageTransitionsTheme(
+    builders: <TargetPlatform, PageTransitionsBuilder>{
+      TargetPlatform.android: commonSharedXPageTransitions,
+      TargetPlatform.windows: commonSharedXPageTransitions,
+      TargetPlatform.linux: commonSharedXPageTransitions,
+      TargetPlatform.macOS: commonSharedXPageTransitions,
+    },
+  );
+
+  ColorScheme _getAppColorScheme({required Brightness brightness}) {
+    return ref.read(genColorSchemeProvider(brightness));
+  }
 
   @override
   void initState() {
@@ -109,7 +129,7 @@ class ApplicationState extends ConsumerState<Application> {
       );
       if (res != true) return;
       unawaited(
-        ref.read(profilesActionProvider.notifier).addProfileFromLink(url),
+        ref.read(profilesActionProvider.notifier).addProfileFormURL(url),
       );
     });
   }
@@ -117,7 +137,6 @@ class ApplicationState extends ConsumerState<Application> {
   void _autoUpdateProfilesTask() {
     _autoUpdateProfilesTaskTimer = Timer(const Duration(minutes: 20), () async {
       await ref.read(profilesActionProvider.notifier).autoUpdateProfiles();
-      await ref.read(resourcesActionProvider.notifier).autoUpdate();
       if (!mounted) {
         return;
       }
@@ -152,21 +171,13 @@ class ApplicationState extends ConsumerState<Application> {
           onNavigationNotification: (_) => true,
           localizationsDelegates: const [
             AppLocalizations.delegate,
-            AppUiLocalizations.delegate,
             ...GlobalMaterialLocalizations.delegates,
           ],
           builder: (context, child) {
-            return ThemeCrossFade(
-              child: buildManagerStack(
-                isDesktop: system.isDesktop,
-                onConnectivityChanged: _handleConnectivityChanged,
-                terminateSignals: _terminateSignals,
-                child: RemoteFocusAdapter(
-                  enabled: system.isTV,
-                  floatingKeyboard: app?.floatingKeyboard,
-                  child: child!,
-                ),
-              ),
+            return buildManagerStack(
+              isDesktop: system.isDesktop,
+              onConnectivityChanged: _handleConnectivityChanged,
+              child: RemoteFocusAdapter(enabled: system.isTV, child: child!),
             );
           },
           scrollBehavior: const BaseScrollBehavior(),
@@ -174,13 +185,22 @@ class ApplicationState extends ConsumerState<Application> {
           locale: getLocaleForString(locale),
           supportedLocales: AppLocalizations.delegate.supportedLocales,
           themeMode: themeProps.themeMode,
-          theme: watchAppTheme(ref, Brightness.light),
-          darkTheme: watchAppTheme(ref, Brightness.dark),
-          themeAnimationStyle: AnimationStyle.noAnimation,
+          theme: ThemeData(
+            useMaterial3: true,
+            pageTransitionsTheme: _pageTransitionsTheme,
+            actionIconTheme: _actionIconTheme,
+            colorScheme: _getAppColorScheme(brightness: Brightness.light),
+          ).withAppShapes,
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            pageTransitionsTheme: _pageTransitionsTheme,
+            actionIconTheme: _actionIconTheme,
+            colorScheme: _getAppColorScheme(brightness: Brightness.dark),
+          ).withAppShapes,
           home: KeyboardInsetHold(child: child!),
         );
       },
-      child: const HomePage(),
+      child: const V2boardGate(child: HomePage()),
     );
   }
 

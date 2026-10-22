@@ -1,26 +1,25 @@
 <div align="center">
 
-<img src="assets/images/icon.png" alt="FlClash" width="88">
+<img src="assets/images/icon.png" alt="YuClash" width="88">
 
-# FlClash
+# YuClash
 
 基于 ClashMeta 的多平台代理客户端，简单易用，开源无广告。
 
 [English](README.md) · **简体中文**
 
-[![Release](https://img.shields.io/github/v/release/chen08209/FlClash?style=flat-square&label=release)](https://github.com/chen08209/FlClash/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/chen08209/FlClash/total?style=flat-square&logo=github)](https://github.com/chen08209/FlClash/releases)
-[![License](https://img.shields.io/github/license/chen08209/FlClash?style=flat-square)](LICENSE)
-[![Telegram](https://img.shields.io/badge/Telegram-channel-26A5E4?style=flat-square&logo=telegram&logoColor=white)](https://t.me/FlClash)
+[![Release](https://img.shields.io/github/v/release/Little-Orange-Limited/YuClash?style=flat-square&label=release)](https://github.com/Little-Orange-Limited/YuClash/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/Little-Orange-Limited/YuClash/total?style=flat-square&logo=github)](https://github.com/Little-Orange-Limited/YuClash/releases)
+[![License](https://img.shields.io/github/license/Little-Orange-Limited/YuClash?style=flat-square)](LICENSE)
 
-[官网](https://chen08209.github.io/FlClash/zh) · [下载](#下载) · [更新日志](CHANGELOG.md) · [从源码构建](#从源码构建)
+[下载](#下载) · [更新日志](CHANGELOG.md) · [从源码构建](#从源码构建)
 
 </div>
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="snapshots/preview-dark.png">
-    <img alt="FlClash 在 MacBook 与手机上的仪表盘" src="snapshots/preview.png" width="92%">
+    <img alt="YuClash 在 MacBook 与手机上的仪表盘" src="snapshots/preview.png" width="92%">
   </picture>
 </p>
 
@@ -37,26 +36,24 @@
 
 ## 下载
 
-从 [GitHub Releases](https://github.com/chen08209/FlClash/releases/latest) 获取最新版本，或打开
-[官网](https://chen08209.github.io/FlClash/zh#download)，它会自动为你的设备选好安装包。
+从 [GitHub Releases](https://github.com/Little-Orange-Limited/YuClash/releases/latest) 获取最新版本。
 
 | 平台 | 安装包 | 说明 |
 | --- | --- | --- |
-| Android | `arm64-v8a`、`armeabi-v7a`、`x86_64` 三种 APK | 绝大多数手机选 `arm64-v8a`。也可以通过下方的 F-Droid 仓库安装。 |
+| Android | `arm64-v8a`、`armeabi-v7a`、`x86_64` 三种 APK | 绝大多数手机选 `arm64-v8a`。 |
 | Windows 10 及以上 | 安装版（`.exe`）或便携版（`.zip`），分 x64 与 ARM64 | 骁龙等 ARM 架构笔记本选 ARM64。 |
 | macOS 12 及以上 | Apple Silicon 与 Intel 两种 DMG | 也可以通过 Homebrew 安装。 |
 | Linux | `.deb`、`.rpm` 和 AppImage，分 x64 与 ARM64 | 托盘依赖见下方说明。 |
 
 <p>
-  <a href="https://chen08209.github.io/FlClash-fdroid-repo/repo?fingerprint=789D6D32668712EF7672F9E58DEEB15FBD6DCEEC5AE7A4371EA72F2AAE8A12FD"><img alt="Get it on F-Droid" src="snapshots/get-it-on-fdroid.svg" height="56"></a>
-  <a href="https://github.com/chen08209/FlClash/releases/latest"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" height="56"></a>
+  <a href="https://github.com/Little-Orange-Limited/YuClash/releases/latest"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" height="56"></a>
 </p>
 
 **Homebrew**
 
 ```bash
-brew tap chen08209/tap
-brew install --cask flclash
+brew tap Little-Orange-Limited/tap
+brew install --cask yuclash
 ```
 
 **Linux 托盘图标**
@@ -70,7 +67,7 @@ sudo dnf install libayatana-appindicator-gtk3     # Fedora
 
 ## 使用
 
-**通过链接导入配置。** 打开下面格式的链接，即可把订阅导入 FlClash。`clashmeta://` 和 `flclash://` 开头的链接同样可用。
+**通过链接导入配置。** 打开下面格式的链接，即可把订阅导入 YuClash。`clashmeta://` 和 `yuclash://` 开头的链接同样可用。
 
 ```text
 clash://install-config?url=<经过 URL 编码的订阅链接>
@@ -79,15 +76,15 @@ clash://install-config?url=<经过 URL 编码的订阅链接>
 **Android 自动化。** Tasker、MacroDroid 等应用可以用下面的 Action 启动 Activity，从而启动、停止或切换代理：
 
 ```text
-com.follow.clash.action.START
-com.follow.clash.action.STOP
-com.follow.clash.action.TOGGLE
+com.yucloud.clash.action.START
+com.yucloud.clash.action.STOP
+com.yucloud.clash.action.TOGGLE
 ```
 
 在电脑上也可以通过 adb 触发：
 
 ```bash
-adb shell am start -a com.follow.clash.action.TOGGLE
+adb shell am start -a com.yucloud.clash.action.TOGGLE
 ```
 
 ## 从源码构建
@@ -96,13 +93,14 @@ adb shell am start -a com.follow.clash.action.TOGGLE
 以及通过 rustup 安装的 [Rust](https://rustup.rs/)。桌面端需要在对应系统上构建，Android 在任意系统上都能构建。
 
 ```bash
-git clone --recursive https://github.com/chen08209/FlClash.git
-cd FlClash
+git clone --recursive https://github.com/Little-Orange-Limited/YuClash.git
+cd YuClash
 flutter pub get
 dart setup.dart android   # 或 windows、macos、linux
 ```
 
-安装包输出到 `dist/`。Go 内核和 Rust 库会在 Flutter 构建过程中一并编译。
+安装包输出到 `dist/`。Go 内核和 Rust 库会在 Flutter 构建过程中一并编译。运行 `dart setup.dart` 前把
+`V2BOARD_BASE_URL` 配置为服务代码 JSON 映射，构建会将其编译进应用。
 
 | 平台 | 额外依赖 |
 | --- | --- |
@@ -115,16 +113,16 @@ dart setup.dart android   # 或 windows、macos、linux
 
 ## 支持
 
-给仓库点一个 Star 是支持项目最简单的方式。问题讨论和更新通知请关注 [Telegram 频道](https://t.me/FlClash)，
-Bug 与功能建议请提交到 [GitHub Issues](https://github.com/chen08209/FlClash/issues)。
+给仓库点一个 Star 是支持项目最简单的方式。问题讨论、Bug 与功能建议请提交到
+[GitHub Issues](https://github.com/Little-Orange-Limited/YuClash/issues)。
 
-<a href="https://star-history.com/#chen08209/FlClash&Date">
+<a href="https://star-history.com/#Little-Orange-Limited/YuClash&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=chen08209/FlClash&type=Date&theme=dark">
-    <img alt="Star history" src="https://api.star-history.com/svg?repos=chen08209/FlClash&type=Date" width="640">
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Little-Orange-Limited/YuClash&type=Date&theme=dark">
+    <img alt="Star history" src="https://api.star-history.com/svg?repos=Little-Orange-Limited/YuClash&type=Date" width="640">
   </picture>
 </a>
 
 ## 许可证
 
-FlClash 以 [GPL-3.0 协议](LICENSE)发布。
+YuClash 以 [GPL-3.0 协议](LICENSE)发布。

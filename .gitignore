@@ -70,6 +70,7 @@ docs/
 /macos/build/
 /env.json
 /core_sha256.json
+/core/*.exe
 /plugins/rust_api/.claude/
 /issue-triage/
 devtools_options.yaml

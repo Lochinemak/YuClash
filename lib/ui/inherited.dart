@@ -1,7 +1,9 @@
-import 'package:fl_clash/ui/item_position.dart';
-import 'package:fl_clash/ui/sheet.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fl_clash/providers/app.dart';
+import 'package:fl_clash/widgets/sheet.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PageActivityScope extends InheritedWidget {
   final bool isActive;
@@ -25,7 +27,12 @@ class PageActivityScope extends InheritedWidget {
   }
 }
 
+const double _floatingActionButtonHeight = 56;
+
 class BottomInsetScope extends InheritedWidget {
+  static const double floatingActionButtonInset =
+      kFloatingActionButtonMargin + _floatingActionButtonHeight;
+
   static const double dockedSearchHeight = 48;
   static const double dockedSearchMargin = kFloatingActionButtonMargin;
   static const double dockedSearchInset =
@@ -91,6 +98,67 @@ class FloatingBarScope extends InheritedWidget {
   }
 }
 
+class CommonScaffoldBackActionProvider extends InheritedWidget {
+  final VoidCallback? backAction;
+
+  const CommonScaffoldBackActionProvider({
+    super.key,
+    required this.backAction,
+    required super.child,
+  });
+
+  static CommonScaffoldBackActionProvider? of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<CommonScaffoldBackActionProvider>();
+  }
+
+  @override
+  bool updateShouldNotify(CommonScaffoldBackActionProvider oldWidget) =>
+      backAction != oldWidget.backAction;
+}
+
+class CommonScaffoldDrawerProvider extends InheritedWidget {
+  final VoidCallback openDrawer;
+  final bool enabled;
+
+  const CommonScaffoldDrawerProvider({
+    super.key,
+    required this.openDrawer,
+    required this.enabled,
+    required super.child,
+  });
+
+  static CommonScaffoldDrawerProvider? of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<CommonScaffoldDrawerProvider>();
+  }
+
+  @override
+  bool updateShouldNotify(CommonScaffoldDrawerProvider oldWidget) =>
+      openDrawer != oldWidget.openDrawer || enabled != oldWidget.enabled;
+}
+
+class CommonScaffoldFabExtendedProvider extends InheritedWidget {
+  final bool isExtended;
+
+  const CommonScaffoldFabExtendedProvider({
+    super.key,
+    required this.isExtended,
+    required super.child,
+  });
+
+  static CommonScaffoldFabExtendedProvider? of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<
+          CommonScaffoldFabExtendedProvider
+        >();
+  }
+
+  @override
+  bool updateShouldNotify(CommonScaffoldFabExtendedProvider oldWidget) =>
+      isExtended != oldWidget.isExtended;
+}
+
 class ItemPositionProvider extends InheritedWidget {
   final ItemPosition position;
 
@@ -111,12 +179,10 @@ class ItemPositionProvider extends InheritedWidget {
 
 class ProxyDecoratorProvider extends InheritedWidget {
   final bool isProxyDecorator;
-  final double lift;
 
   const ProxyDecoratorProvider({
     super.key,
     required this.isProxyDecorator,
-    required this.lift,
     required super.child,
   });
 
@@ -126,34 +192,28 @@ class ProxyDecoratorProvider extends InheritedWidget {
 
   @override
   bool updateShouldNotify(ProxyDecoratorProvider oldWidget) =>
-      isProxyDecorator != oldWidget.isProxyDecorator || lift != oldWidget.lift;
+      isProxyDecorator != oldWidget.isProxyDecorator;
 }
 
 class SheetProvider<T> extends InheritedWidget {
   final SheetType type;
   final void Function([T? result])? nestedNavigatorPop;
 
-  /// The close button's way out of the sheet; [nestedNavigatorPop] only pops.
-  final VoidCallback? onClose;
-
   const SheetProvider({
     super.key,
     required super.child,
     required this.type,
     this.nestedNavigatorPop,
-    this.onClose,
   });
 
   SheetProvider copyWith({
     SheetType? type,
     void Function([T? result])? nestedNavigatorPop,
-    VoidCallback? onClose,
     required Widget child,
   }) {
     return SheetProvider<T>(
       type: type ?? this.type,
       nestedNavigatorPop: nestedNavigatorPop ?? this.nestedNavigatorPop,
-      onClose: onClose ?? this.onClose,
       child: child,
     );
   }
@@ -164,9 +224,18 @@ class SheetProvider<T> extends InheritedWidget {
 
   @override
   bool updateShouldNotify(SheetProvider oldWidget) =>
-      type != oldWidget.type ||
-      nestedNavigatorPop != oldWidget.nestedNavigatorPop ||
-      onClose != oldWidget.onClose;
+      type != oldWidget.type &&
+      nestedNavigatorPop != oldWidget.nestedNavigatorPop;
+}
+
+extension SheetHeightExt on WidgetRef {
+  double sheetHeight(BuildContext context, double factor) {
+    final viewHeight = watch(viewHeightProvider);
+    if (SheetProvider.of(context)?.type != SheetType.bottomSheet) {
+      return double.maxFinite;
+    }
+    return viewHeight * factor;
+  }
 }
 
 class ProfileIdProvider extends InheritedWidget {
@@ -242,7 +311,7 @@ class SheetDismissScope extends InheritedWidget {
 /// inside it: a controller shared by pages kept alive together fails the
 /// scrollbar's single position check.
 class SheetScrollScope extends InheritedWidget {
-  final SheetScrollControllerFactory createController;
+  final ScrollController Function() createController;
 
   const SheetScrollScope({
     super.key,
@@ -250,7 +319,7 @@ class SheetScrollScope extends InheritedWidget {
     required super.child,
   });
 
-  static SheetScrollControllerFactory? of(BuildContext context) {
+  static ScrollController Function()? of(BuildContext context) {
     return context
         .getInheritedWidgetOfExactType<SheetScrollScope>()
         ?.createController;
@@ -261,16 +330,23 @@ class SheetScrollScope extends InheritedWidget {
       createController != oldWidget.createController;
 }
 
-typedef SheetScrollControllerFactory =
-    ScrollController Function({double initialScrollOffset});
+/// Whether a sheet is animating to a detent, which resizes its content.
+class SheetSettlingScope extends InheritedWidget {
+  final ValueListenable<bool> settling;
 
-ScrollController sheetScrollController(
-  BuildContext context, {
-  double initialScrollOffset = 0.0,
-}) {
-  final createController = SheetScrollScope.of(context);
-  if (createController == null) {
-    return ScrollController(initialScrollOffset: initialScrollOffset);
+  const SheetSettlingScope({
+    super.key,
+    required this.settling,
+    required super.child,
+  });
+
+  static ValueListenable<bool>? of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<SheetSettlingScope>()
+        ?.settling;
   }
-  return createController(initialScrollOffset: initialScrollOffset);
+
+  @override
+  bool updateShouldNotify(SheetSettlingScope oldWidget) =>
+      settling != oldWidget.settling;
 }

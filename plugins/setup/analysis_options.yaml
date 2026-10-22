@@ -4,9 +4,4 @@ analyzer:
   exclude:
     - setup_hooks/**
     - build/**
-    - android/**
-    - ios/**
     - web/**
-    - windows/**
-    - macos/**
-    - linux/**

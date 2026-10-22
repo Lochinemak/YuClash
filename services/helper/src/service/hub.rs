@@ -43,9 +43,9 @@ use windows_sys::Win32::System::JobObjects::{
 )))]
 const LISTEN_PORT: u16 = 47890;
 #[cfg(not(target_os = "linux"))]
-const CORE_PIPE_PREFIX: &str = r"\\.\pipe\FlClashCore_";
+const CORE_PIPE_PREFIX: &str = r"\\.\pipe\YuClashCore_";
 #[cfg(target_os = "linux")]
-const CORE_SOCKET_PREFIX: &str = "/tmp/FlClashSocket_";
+const CORE_SOCKET_PREFIX: &str = "/tmp/YuClashSocket_";
 #[cfg(target_os = "linux")]
 const CORE_SOCKET_SUFFIX: &str = ".sock";
 const PROTOCOL_VERSION_HEADER: &str = "x-flclash-helper-protocol";
@@ -873,9 +873,9 @@ mod tests {
     }
 
     #[cfg(not(target_os = "linux"))]
-    const ALLOWED_CORE_ADDRESS: &str = r"\\.\pipe\FlClashCore_0123456789abcdef0123456789abcdef";
+    const ALLOWED_CORE_ADDRESS: &str = r"\\.\pipe\YuClashCore_0123456789abcdef0123456789abcdef";
     #[cfg(target_os = "linux")]
-    const ALLOWED_CORE_ADDRESS: &str = "/tmp/FlClashSocket_4821.sock";
+    const ALLOWED_CORE_ADDRESS: &str = "/tmp/YuClashSocket_4821.sock";
 
     fn spawn_placeholder_core() -> Child {
         #[cfg(windows)]
@@ -944,7 +944,7 @@ mod tests {
 
     #[tokio::test]
     async fn ping_returns_running_helper_path_for_verified_core() {
-        let response = ping_response(Ok(PathBuf::from("FlClashHelperService.exe")));
+        let response = ping_response(Ok(PathBuf::from("YuClashHelperService.exe")));
 
         assert_eq!(response.status(), StatusCode::OK);
         assert_eq!(
@@ -955,7 +955,7 @@ mod tests {
             warp::hyper::body::to_bytes(response.into_body())
                 .await
                 .unwrap(),
-            "FlClashHelperService.exe"
+            "YuClashHelperService.exe"
         );
     }
 
@@ -1476,33 +1476,33 @@ mod tests {
     #[test]
     fn only_accepts_random_core_pipe_namespace() {
         assert!(is_allowed_core_address(
-            r"\\.\pipe\FlClashCore_0123456789abcdef0123456789abcdef"
+            r"\\.\pipe\YuClashCore_0123456789abcdef0123456789abcdef"
         ));
-        assert!(!is_allowed_core_address(r"\\.\pipe\FlClashCore"));
+        assert!(!is_allowed_core_address(r"\\.\pipe\YuClashCore"));
         assert!(!is_allowed_core_address(
             r"\\.\pipe\Other_0123456789abcdef0123456789abcdef"
         ));
         assert!(!is_allowed_core_address(
-            r"\\.\pipe\FlClashCore_0123456789abcdef"
+            r"\\.\pipe\YuClashCore_0123456789abcdef"
         ));
         assert!(!is_allowed_core_address(
-            r"\\.\pipe\FlClashCore_0123456789abcdef0123456789abcdeg"
+            r"\\.\pipe\YuClashCore_0123456789abcdef0123456789abcdeg"
         ));
         assert!(!is_allowed_core_address(
-            r"\\.\pipe\FlClashCore_ABCDEF0123456789abcdef0123456789"
+            r"\\.\pipe\YuClashCore_ABCDEF0123456789abcdef0123456789"
         ));
     }
 
     #[cfg(target_os = "linux")]
     #[test]
     fn only_accepts_random_core_socket_namespace() {
-        assert!(is_allowed_core_address("/tmp/FlClashSocket_4821.sock"));
-        assert!(!is_allowed_core_address("/tmp/FlClashSocket_.sock"));
-        assert!(!is_allowed_core_address("/tmp/FlClashSocket_4821"));
+        assert!(is_allowed_core_address("/tmp/YuClashSocket_4821.sock"));
+        assert!(!is_allowed_core_address("/tmp/YuClashSocket_.sock"));
+        assert!(!is_allowed_core_address("/tmp/YuClashSocket_4821"));
         assert!(!is_allowed_core_address("/tmp/Other_4821.sock"));
-        assert!(!is_allowed_core_address("/tmp/FlClashSocket_../x.sock"));
+        assert!(!is_allowed_core_address("/tmp/YuClashSocket_../x.sock"));
         assert!(!is_allowed_core_address(
-            "/tmp/FlClashSocket_12345678901.sock"
+            "/tmp/YuClashSocket_12345678901.sock"
         ));
     }
 

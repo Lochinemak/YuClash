@@ -1,0 +1,169 @@
+import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/icons/icons.dart';
+import 'package:fl_clash/manager/app_manager.dart';
+import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/state.dart';
+import 'package:fl_clash/views/v2board/account.dart';
+import 'package:fl_clash/widgets/widgets.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import '../helpers/test_app.dart';
+
+void main() {
+  testWidgets('mobile root scaffold opens the account drawer', (tester) async {
+    tester.view.physicalSize = const Size(412, 915);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final container = _container(ViewMode.mobile, const Size(412, 915));
+    addTearDown(container.dispose);
+    globalState.container = container;
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TestApp(
+          wrapInProviderScope: false,
+          child: AppSidebarContainer(
+            child: CommonScaffold(title: 'Page', body: SizedBox.expand()),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Account'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Premium'), findsOneWidget);
+    expect(find.text('user@example.com'), findsOneWidget);
+    expect(find.byType(V2boardAccountPanel), findsOneWidget);
+    expect(tester.takeException(), null);
+  });
+
+  testWidgets('desktop account button expands and closes the detail panel', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1000, 700);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final container = _container(ViewMode.desktop, const Size(1000, 700));
+    addTearDown(container.dispose);
+    globalState.container = container;
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TestApp(
+          wrapInProviderScope: false,
+          child: AppSidebarContainer(child: SizedBox.expand()),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final accountButton = find.ancestor(
+      of: find.byType(V2boardAccountAvatar),
+      matching: find.byType(IconButton),
+    );
+    await tester.tap(accountButton);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(V2boardAccountPanel), findsOneWidget);
+    expect(tester.getSize(find.byType(V2boardAccountPanel)).width, 320);
+
+    await tester.tap(accountButton);
+    await tester.pumpAndSettle();
+    expect(find.byType(V2boardAccountPanel), findsNothing);
+
+    await tester.tap(accountButton);
+    await tester.pumpAndSettle();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(V2boardAccountPanel), findsNothing);
+    expect(tester.takeException(), null);
+  });
+
+  testWidgets('laptop width overlays the account panel without overflow', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(680, 580);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final container = _container(ViewMode.laptop, const Size(680, 580));
+    addTearDown(container.dispose);
+    globalState.container = container;
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TestApp(
+          wrapInProviderScope: false,
+          child: AppSidebarContainer(child: SizedBox.expand()),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final accountButton = find.ancestor(
+      of: find.byType(V2boardAccountAvatar),
+      matching: find.byType(IconButton),
+    );
+    await tester.tap(accountButton);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(V2boardAccountPanel), findsOneWidget);
+    expect(tester.getSize(find.byType(V2boardAccountPanel)).width, 320);
+    expect(tester.takeException(), null);
+  });
+}
+
+ProviderContainer _container(ViewMode viewMode, Size viewSize) {
+  final navigationItem = NavigationItem(
+    glyph: AppGlyphs.dashboard,
+    label: PageLabel.dashboard,
+    builder: (_) => const SizedBox.shrink(),
+  );
+  return ProviderContainer(
+    overrides: [
+      navigationStateProvider.overrideWithValue(
+        NavigationState(
+          pageLabel: PageLabel.dashboard,
+          navigationItems: [navigationItem],
+          viewMode: viewMode,
+          locale: 'en',
+          currentIndex: 0,
+        ),
+      ),
+      viewSizeProvider.overrideWithBuild((_, _) => viewSize),
+      v2boardActionProvider.overrideWithValue(
+        V2boardAccountState(session: _session(), initialized: true),
+      ),
+    ],
+  );
+}
+
+V2boardSession _session() {
+  return const V2boardSession(
+    baseUrl: 'https://panel.example/',
+    email: 'user@example.com',
+    authData: 'session-token',
+    subscriptionUrl: 'https://subscribe.example/client?token=abc',
+    accountOverview: V2boardAccountOverview(
+      email: 'user@example.com',
+      avatarUrl: '',
+      planName: 'Premium',
+      upload: 1024,
+      download: 2048,
+      total: 8192,
+      expire: null,
+      onlineDevices: 1,
+      deviceLimit: 3,
+    ),
+  );
+}

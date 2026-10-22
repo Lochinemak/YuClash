@@ -2,185 +2,9 @@
   "schemaVersion": 2,
   "versions": [
     {
-      "version": "0.9.1",
-      "tag": "v0.9.1",
-      "date": "2026-10-17",
-      "prerelease": false,
-      "groups": [
-        {
-          "type": "breaking",
-          "entries": [
-            {
-              "id": "cb08088",
-              "scope": "network",
-              "text": "Desktop TUN keys follow the profile unless picked; changed values carry over"
-            }
-          ]
-        },
-        {
-          "type": "feat",
-          "entries": [
-            {
-              "id": "f43755c",
-              "scope": "l10n",
-              "text": "French, Spanish and Korean translations"
-            },
-            {
-              "id": "bc72bba",
-              "scope": "android",
-              "text": "No more Firebase analytics or crash reporting"
-            },
-            {
-              "id": "cb08088",
-              "scope": "network",
-              "text": "Per-key desktop TUN settings; system proxy and tray fixes"
-            },
-            {
-              "id": "5eafd7a",
-              "scope": "theme",
-              "text": "Redesigned theme colors and color styles"
-            },
-            {
-              "id": "9bd258f",
-              "scope": "dashboard",
-              "text": "A redesigned dashboard around the current exit"
-            },
-            {
-              "id": "0bac500",
-              "scope": "profiles",
-              "text": "Profile-detail resources and include-all in custom groups"
-            },
-            {
-              "id": "2ea52fd",
-              "scope": "proxies",
-              "text": "Proxy groups as cards, group tabs as chips"
-            },
-            {
-              "id": "da6fb0a",
-              "scope": "views",
-              "text": "Sortable tables for connections, requests and DNS"
-            },
-            {
-              "id": "7c9627f",
-              "scope": "ui",
-              "text": "Optional two-tier Liquid Glass and slide-to-pick menus"
-            },
-            {
-              "id": "9bd2286",
-              "scope": "ui",
-              "text": "iOS-style surfaces, alerts and sheets; clearer TV focus"
-            }
-          ]
-        },
-        {
-          "type": "fix",
-          "entries": [
-            {
-              "id": "5607f70",
-              "scope": "ui",
-              "text": "Fix pasting and Chinese input in text fields"
-            },
-            {
-              "id": "5984c16",
-              "scope": "core",
-              "text": "Large profiles no longer crash; downloads trust core CAs"
-            }
-          ]
-        },
-        {
-          "type": "perf",
-          "entries": [
-            {
-              "id": "2201c19",
-              "scope": "android",
-              "text": "Smoother Android UI while the proxy is busy"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "0.9.0",
-      "tag": "v0.9.0",
-      "date": "2026-10-14",
-      "prerelease": false,
-      "groups": [
-        {
-          "type": "breaking",
-          "entries": [
-            {
-              "id": "491fae1",
-              "scope": "views",
-              "text": "DNS and NTP override toggles are removed; picked keys apply to every profile"
-            },
-            {
-              "id": "1677024",
-              "scope": "database",
-              "text": "Custom overwrites are removed; rebuild them as custom profiles"
-            }
-          ]
-        },
-        {
-          "type": "feat",
-          "entries": [
-            {
-              "id": "491fae1",
-              "scope": "views",
-              "text": "Per-key DNS, NTP, sniffer and TUN settings"
-            },
-            {
-              "id": "3abda78",
-              "scope": "profiles",
-              "text": "Custom profiles"
-            },
-            {
-              "id": "8c43053",
-              "scope": "ui",
-              "text": "Stacked sheets, context menus and a sort mode"
-            },
-            {
-              "id": "532ebf0",
-              "scope": "providers",
-              "text": "DNS, Hosts and ports apply without a restart"
-            },
-            {
-              "id": "d3fa225",
-              "scope": "android",
-              "text": "Launcher shortcuts and one-step on-demand access"
-            },
-            {
-              "id": "2fa2f7f",
-              "scope": "core",
-              "text": "Share link import and mrs rule sets"
-            }
-          ]
-        },
-        {
-          "type": "fix",
-          "entries": [
-            {
-              "id": "1677024",
-              "scope": "database",
-              "text": "Unreadable settings no longer block startup or restores"
-            },
-            {
-              "id": "94a25f4",
-              "scope": "desktop",
-              "text": "Windows and Linux desktop fixes"
-            },
-            {
-              "id": "d780cb8",
-              "scope": "core,helper",
-              "text": "The elevated Core only answers its owner"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "version": "0.8.99",
-      "tag": "v0.8.99",
-      "date": "2026-10-03",
+      "version": "1.0.1",
+      "tag": "v1.0.1",
+      "date": "2026-10-12",
       "prerelease": false,
       "groups": [
         {
@@ -266,14 +90,97 @@
       ]
     },
     {
-      "version": "0.8.98",
-      "tag": "v0.8.98",
-      "date": "2026-09-14",
+      "version": "1.0.0",
+      "tag": "v1.0.0",
+      "date": "2026-09-17",
       "prerelease": false,
       "groups": [
         {
           "type": "fix",
           "entries": [
+            {
+              "id": "bc62ac7",
+              "scope": "changelog",
+              "text": "Restore the frozen marker and realign v0.8.98 with its tag"
+            },
+            {
+              "id": "65bee3a",
+              "scope": "android",
+              "text": "Keep the TV adaptive icon foreground inside the safe zone"
+            },
+            {
+              "id": "f664be7",
+              "scope": "build",
+              "text": "Restore the YuClash Core/Helper artifact names"
+            },
+            {
+              "id": "6d192ba",
+              "scope": "resources",
+              "text": "Refresh the geo file size and time after an update finishes"
+            },
+            {
+              "id": "0dad8c8",
+              "scope": "core",
+              "text": "Keep the core running while Windows sleeps with the app suspended"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "0.8.98",
+      "tag": "v0.8.98",
+      "date": "2026-09-16",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "be499ac",
+              "text": "Resolve V2Board servers by service code"
+            },
+            {
+              "id": "8e3f22b",
+              "text": "Rebrand YuClash and integrate V2Board"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "a7bd4d1",
+              "scope": "rust_api",
+              "text": "Fall back to a sibling NDK's libclang for Android bindgen"
+            },
+            {
+              "id": "38ccbdc",
+              "scope": "setup",
+              "text": "Re-exclude buildkit/build_tool from plugins/setup's analyzer"
+            },
+            {
+              "id": "75004b1",
+              "text": "Two test failures surfaced by CI after the icon/scheme fixes"
+            },
+            {
+              "id": "5f436b1",
+              "text": "Restore the real app identity (applicationId/bundle id) across platforms"
+            },
+            {
+              "id": "8001282",
+              "scope": "setup",
+              "text": "Restore V2BOARD_BASE_URL wiring dropped by the upstream merge"
+            },
+            {
+              "id": "a8a228a",
+              "text": "Restore YuClash app icon overwritten by upstream during reconciliation"
+            },
+            {
+              "id": "fe4bb8c",
+              "scope": "android",
+              "text": "Match Flutter MethodChannel names to the renamed packageName"
+            },
             {
               "id": "c5bf5bd",
               "scope": "resources",
@@ -283,6 +190,18 @@
               "id": "60f371a",
               "scope": "core",
               "text": "Keep the core running while Windows sleeps with the app suspended"
+            },
+            {
+              "id": "72cf926",
+              "text": "Resolve Inno Setup locale"
+            },
+            {
+              "id": "8e6173c",
+              "text": "Resolve Windows package assets"
+            },
+            {
+              "id": "c2be7c9",
+              "text": "Request Clash Meta subscriptions"
             }
           ]
         }

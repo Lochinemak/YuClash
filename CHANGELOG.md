@@ -1,56 +1,6 @@
 # Changelog
 
-## v0.9.1 (2026-10-17)
-
-**Breaking Changes**
-
-- **network** Desktop TUN keys follow the profile unless picked; changed values carry over (cb08088)
-
-**Features**
-
-- **l10n** French, Spanish and Korean translations (f43755c)
-- **android** No more Firebase analytics or crash reporting (bc72bba)
-- **network** Per-key desktop TUN settings; system proxy and tray fixes (cb08088)
-- **theme** Redesigned theme colors and color styles (5eafd7a)
-- **dashboard** A redesigned dashboard around the current exit (9bd258f)
-- **profiles** Profile-detail resources and include-all in custom groups (0bac500)
-- **proxies** Proxy groups as cards, group tabs as chips (2ea52fd)
-- **views** Sortable tables for connections, requests and DNS (da6fb0a)
-- **ui** Optional two-tier Liquid Glass and slide-to-pick menus (7c9627f)
-- **ui** iOS-style surfaces, alerts and sheets; clearer TV focus (9bd2286)
-
-**Bug Fixes**
-
-- **ui** Fix pasting and Chinese input in text fields (5607f70)
-- **core** Large profiles no longer crash; downloads trust core CAs (5984c16)
-
-**Performance**
-
-- **android** Smoother Android UI while the proxy is busy (2201c19)
-
-## v0.9.0 (2026-10-14)
-
-**Breaking Changes**
-
-- **views** DNS and NTP override toggles are removed; picked keys apply to every profile (491fae1)
-- **database** Custom overwrites are removed; rebuild them as custom profiles (1677024)
-
-**Features**
-
-- **views** Per-key DNS, NTP, sniffer and TUN settings (491fae1)
-- **profiles** Custom profiles (3abda78)
-- **ui** Stacked sheets, context menus and a sort mode (8c43053)
-- **providers** DNS, Hosts and ports apply without a restart (532ebf0)
-- **android** Launcher shortcuts and one-step on-demand access (d3fa225)
-- **core** Share link import and mrs rule sets (2fa2f7f)
-
-**Bug Fixes**
-
-- **database** Unreadable settings no longer block startup or restores (1677024)
-- **desktop** Windows and Linux desktop fixes (94a25f4)
-- **core,helper** The elevated Core only answers its owner (d780cb8)
-
-## v0.8.99 (2026-10-03)
+## v1.0.1 (2026-10-12)
 
 **Features**
 
@@ -72,12 +22,37 @@
 - **core,android** Push notifications reconnect in Doze (1e9955d)
 - **backup,database** Restores never apply halfway (bee8f24)
 
-## v0.8.98 (2026-09-14)
+## v1.0.0 (2026-09-17)
 
 **Bug Fixes**
 
+- **changelog** Restore the frozen marker and realign v0.8.98 with its tag (bc62ac7)
+- **android** Keep the TV adaptive icon foreground inside the safe zone (65bee3a)
+- **build** Restore the YuClash Core/Helper artifact names (f664be7)
+- **resources** Refresh the geo file size and time after an update finishes (6d192ba)
+- **core** Keep the core running while Windows sleeps with the app suspended (0dad8c8)
+
+## v0.8.98 (2026-09-16)
+
+**Features**
+
+- Resolve V2Board servers by service code (be499ac)
+- Rebrand YuClash and integrate V2Board (8e3f22b)
+
+**Bug Fixes**
+
+- **rust_api** Fall back to a sibling NDK's libclang for Android bindgen (a7bd4d1)
+- **setup** Re-exclude buildkit/build_tool from plugins/setup's analyzer (38ccbdc)
+- Two test failures surfaced by CI after the icon/scheme fixes (75004b1)
+- Restore the real app identity (applicationId/bundle id) across platforms (5f436b1)
+- **setup** Restore V2BOARD_BASE_URL wiring dropped by the upstream merge (8001282)
+- Restore YuClash app icon overwritten by upstream during reconciliation (a8a228a)
+- **android** Match Flutter MethodChannel names to the renamed packageName (fe4bb8c)
 - **resources** Refresh the geo file size and time after an update finishes (c5bf5bd)
 - **core** Keep the core running while Windows sleeps with the app suspended (60f371a)
+- Resolve Inno Setup locale (72cf926)
+- Resolve Windows package assets (8e6173c)
+- Request Clash Meta subscriptions (c2be7c9)
 
 ## v0.8.97 (2026-09-10)
 

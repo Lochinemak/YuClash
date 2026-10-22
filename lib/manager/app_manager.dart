@@ -1,13 +1,19 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/permission.dart';
 import 'package:fl_clash/common/system_dns.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/icons/icons.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
-import 'package:fl_clash/ui/ui.dart';
+import 'package:fl_clash/views/v2board/account.dart';
+import 'package:fl_clash/widgets/animated_visibility.dart';
 import 'package:fl_clash/widgets/icon.dart';
+import 'package:fl_clash/widgets/inherited.dart';
+import 'package:fl_clash/widgets/pop_scope.dart';
+import 'package:fl_clash/widgets/sidebar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,21 +50,22 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
         unawaited(precacheTargetIcons(next.map((group) => group.icon)));
       }
     }, fireImmediately: true);
-    ref.listenManual(iconSetsProvider, (_, next) {
-      if (next.value case final iconSets?) {
-        unawaited(
-          precacheTargetIcons(iconSets.map((iconSet) => iconSet.cover)),
-        );
-      }
-    }, fireImmediately: true);
     ref.listenManual(needUpdateGroupsProvider, (prev, next) {
       if (prev != next) {
         ref.read(proxiesActionProvider.notifier).updateGroupsDebounce();
       }
     });
     ref.listenManual(suspendProvider, (prev, next) {
-      if (prev != next) {
-        ref.read(setupActionProvider.notifier).syncSuspend();
+      final isStart = ref.read(isStartProvider);
+      if (prev != next && isStart && !ref.read(safeModeProvider)) {
+        debouncer.call(FunctionTag.suspend, () async {
+          final core = ref.read(coreHandlerProvider);
+          if (next == true) {
+            await core.stopListener();
+          } else {
+            await core.startListener();
+          }
+        });
       }
     });
     final systemDns = systemDnsCoordinator;
@@ -86,9 +93,10 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
 
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    commonPrint.log('$state');
     _updateVisible(state);
     if (state == AppLifecycleState.resumed) {
-      unawaited(ref.read(locationPermissionsProvider.notifier).refresh());
+      permissions.check(ref.read);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) {
           return;
@@ -144,12 +152,14 @@ class _Sidebar extends ConsumerWidget {
     required this.currentIndex,
     required this.viewMode,
     required this.onSelected,
+    this.footer,
   });
 
   final List<NavigationItem> items;
   final int currentIndex;
   final ViewMode viewMode;
   final void Function(int index) onSelected;
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -180,16 +190,50 @@ class _Sidebar extends ConsumerWidget {
         isMacOS: system.isMacOS,
         version: version,
       ),
+      footer: footer,
     );
   }
 }
 
-class AppSidebarContainer extends ConsumerWidget {
+class AppSidebarContainer extends ConsumerStatefulWidget {
   final Widget child;
 
   const AppSidebarContainer({super.key, required this.child});
 
-  void _updateSideBarWidth(WidgetRef ref, double contentWidth) {
+  @override
+  ConsumerState<AppSidebarContainer> createState() =>
+      _AppSidebarContainerState();
+}
+
+class _AppSidebarContainerState extends ConsumerState<AppSidebarContainer> {
+  static const _accountPanelWidth = 320.0;
+
+  final _drawerKey = GlobalKey<ScaffoldState>();
+  bool _accountPanelOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    ref.listenManual(viewModeProvider, (previous, next) {
+      if (previous != next && _accountPanelOpen && mounted) {
+        _closeAccountPanel();
+      }
+    });
+  }
+
+  Widget _buildBackground({
+    required Color color,
+    required Color edge,
+    required Widget child,
+  }) {
+    return Material(
+      color: color,
+      shape: BorderDirectional(end: BorderSide(color: edge)),
+      child: child,
+    );
+  }
+
+  void _updateSideBarWidth(double contentWidth) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(sideWidthProvider.notifier).value =
           ref.read(viewSizeProvider.select((state) => state.width)) -
@@ -197,7 +241,7 @@ class AppSidebarContainer extends ConsumerWidget {
     });
   }
 
-  void _handleToPage(WidgetRef ref, PageLabel pageLabel) {
+  void _handleToPage(PageLabel pageLabel) {
     final focusNode = FocusManager.instance.primaryFocus;
     final focusContext = focusNode?.context;
     final preserveNavigationFocus =
@@ -214,32 +258,66 @@ class AppSidebarContainer extends ConsumerWidget {
     });
   }
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final navigationState = ref.watch(navigationStateProvider);
-    final navigationItems = navigationState.navigationItems;
-    final viewMode = navigationState.viewMode;
-    final currentIndex = navigationState.currentIndex;
-    final blur = ref.watch(windowBlurProvider);
-    final page = SurfaceLevel.page.colorOf(context.colorScheme);
-    final chrome = context.colorScheme.chromeSurface;
-    void onSelected(int index) {
-      _handleToPage(ref, navigationItems[index].label);
-    }
+  void _openDrawer() {
+    _drawerKey.currentState?.openDrawer();
+  }
 
+  void _toggleAccountPanel() {
+    setState(() {
+      _accountPanelOpen = !_accountPanelOpen;
+    });
+  }
+
+  void _closeAccountPanel() {
+    if (!_accountPanelOpen) {
+      return;
+    }
+    setState(() {
+      _accountPanelOpen = false;
+    });
+  }
+
+  Widget? _buildAccountButton(V2boardSession? session) {
+    if (session != null) {
+      return IconButton(
+        tooltip: context.appLocalizations.account,
+        onPressed: _toggleAccountPanel,
+        icon: V2boardAccountAvatar(session: session, radius: 14),
+      );
+    }
+    if (ref.watch(v2boardActionProvider.select((state) => state.skipped))) {
+      return IconButton(
+        tooltip: context.appLocalizations.login,
+        onPressed: () => ref.read(v2boardActionProvider.notifier).resetSkip(),
+        icon: const GlyphIcon(AppGlyphs.account),
+      );
+    }
+    return null;
+  }
+
+  Widget _buildLayout({
+    required Widget child,
+    required ViewMode viewMode,
+    required List<NavigationItem> navigationItems,
+    required int currentIndex,
+    required V2boardSession? session,
+  }) {
+    final blur = ref.watch(windowBlurProvider);
+    final colorScheme = context.colorScheme;
+    final surfaceContainer = colorScheme.surfaceContainer;
     final hasSidebar = viewMode != ViewMode.mobile;
     final isLtr = Directionality.of(context) == TextDirection.ltr;
-    return Container(
-      color: blur ? Colors.transparent : page,
+    final content = Container(
+      color: blur ? Colors.transparent : surfaceContainer,
       child: Row(
         children: [
           AnimatedVisibility.sidebar(
             visible: hasSidebar,
-            child: Material(
+            child: _buildBackground(
               color: blur
-                  ? chrome.withValues(alpha: kSidebarBlurOpacity)
-                  : chrome,
-              shape: BorderDirectional(end: Divider.createBorderSide(context)),
+                  ? surfaceContainer.withValues(alpha: kSidebarBlurOpacity)
+                  : surfaceContainer,
+              edge: colorScheme.outlineVariant,
               child: MediaQuery.removePadding(
                 context: context,
                 removeLeft: !isLtr,
@@ -248,17 +326,32 @@ class AppSidebarContainer extends ConsumerWidget {
                   items: navigationItems,
                   currentIndex: currentIndex,
                   viewMode: viewMode,
-                  onSelected: onSelected,
+                  onSelected: (index) {
+                    _handleToPage(navigationItems[index].label);
+                  },
+                  footer: _buildAccountButton(session),
                 ),
               ),
             ),
           ),
+          if (viewMode == ViewMode.desktop)
+            AnimatedSize(
+              alignment: Alignment.centerLeft,
+              duration: kThemeAnimationDuration,
+              curve: Curves.easeOut,
+              child: _accountPanelOpen
+                  ? SizedBox(
+                      width: _accountPanelWidth,
+                      child: V2boardAccountPanel(onClose: _closeAccountPanel),
+                    )
+                  : const SizedBox.shrink(),
+            ),
           Expanded(
             flex: 1,
             child: ClipRect(
               child: LayoutBuilder(
                 builder: (_, constraints) {
-                  _updateSideBarWidth(ref, constraints.maxWidth);
+                  _updateSideBarWidth(constraints.maxWidth);
                   return MediaQuery.removePadding(
                     context: context,
                     removeLeft: hasSidebar && isLtr,
@@ -270,6 +363,83 @@ class AppSidebarContainer extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+    if (!_accountPanelOpen) {
+      return content;
+    }
+    if (viewMode == ViewMode.desktop) {
+      return BackLayerScope(onBack: _closeAccountPanel, child: content);
+    }
+    if (viewMode != ViewMode.laptop) {
+      return content;
+    }
+    final sidebarWidth = ref.watch(sideWidthProvider);
+    final panelWidth = (MediaQuery.sizeOf(context).width - sidebarWidth)
+        .clamp(0.0, _accountPanelWidth)
+        .toDouble();
+    return BackLayerScope(
+      onBack: _closeAccountPanel,
+      child: Stack(
+        children: [
+          content,
+          PositionedDirectional(
+            start: sidebarWidth,
+            top: 0,
+            bottom: 0,
+            end: 0,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _closeAccountPanel,
+              child: ColoredBox(color: Colors.black.withValues(alpha: 0.2)),
+            ),
+          ),
+          PositionedDirectional(
+            top: 0,
+            bottom: 0,
+            start: sidebarWidth,
+            width: panelWidth,
+            child: Material(
+              elevation: 3,
+              child: V2boardAccountPanel(onClose: _closeAccountPanel),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final navigationState = ref.watch(navigationStateProvider);
+    final viewMode = navigationState.viewMode;
+    final isMobileView = viewMode == ViewMode.mobile;
+    final session = ref.watch(
+      v2boardActionProvider.select((state) => state.session),
+    );
+    return Scaffold(
+      key: _drawerKey,
+      drawer: isMobileView
+          ? Drawer(
+              child: Builder(
+                builder: (drawerContext) {
+                  return V2boardAccountPanel(
+                    onClose: () => Navigator.of(drawerContext).pop(),
+                  );
+                },
+              ),
+            )
+          : null,
+      body: CommonScaffoldDrawerProvider(
+        openDrawer: _openDrawer,
+        enabled: isMobileView,
+        child: _buildLayout(
+          child: widget.child,
+          viewMode: viewMode,
+          navigationItems: navigationState.navigationItems,
+          currentIndex: navigationState.currentIndex,
+          session: session,
+        ),
       ),
     );
   }

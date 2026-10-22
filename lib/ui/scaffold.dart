@@ -426,6 +426,14 @@ class CommonScaffoldState extends State<CommonScaffold> {
         },
       );
     }
+    final drawerProvider = CommonScaffoldDrawerProvider.of(context);
+    if (drawerProvider != null && drawerProvider.enabled) {
+      return IconButton(
+        tooltip: context.appLocalizations.account,
+        onPressed: drawerProvider.openDrawer,
+        icon: const GlyphIcon(AppGlyphs.account),
+      );
+    }
     final route = ModalRoute.of(context);
     if (route?.impliesAppBarDismissal != true) {
       return null;

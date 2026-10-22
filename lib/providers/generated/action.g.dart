@@ -40,7 +40,7 @@ final class CommonActionProvider extends $NotifierProvider<CommonAction, void> {
   }
 }
 
-String _$commonActionHash() => r'54ce5b04654db2574cc10d9e364eacb8c7137a36';
+String _$commonActionHash() => r'd486d7a6a69b4d73527d2bb74931fe423ced5a97';
 
 abstract class _$CommonAction extends $Notifier<void> {
   void build();
@@ -91,7 +91,7 @@ final class SetupActionProvider extends $NotifierProvider<SetupAction, void> {
   }
 }
 
-String _$setupActionHash() => r'25138994408b232d6a5501660da7a75d0515a9b9';
+String _$setupActionHash() => r'4f66bcba4d60a9befa5f2240e096f87342a941d1';
 
 abstract class _$SetupAction extends $Notifier<void> {
   void build();
@@ -142,7 +142,7 @@ final class BackupActionProvider extends $NotifierProvider<BackupAction, void> {
   }
 }
 
-String _$backupActionHash() => r'c0c2cd46ec5b246076902a297c356fde2ece3577';
+String _$backupActionHash() => r'60f45e769abdd98fa5b6c1bc9f4218ae32160eb7';
 
 abstract class _$BackupAction extends $Notifier<void> {
   void build();
@@ -244,7 +244,7 @@ final class SystemActionProvider extends $NotifierProvider<SystemAction, void> {
   }
 }
 
-String _$systemActionHash() => r'0415cd015950dbd6b21a3f14c0b1ced5c2333812';
+String _$systemActionHash() => r'e2608d91ecdb7f06d593eb85534fc49b247fac41';
 
 abstract class _$SystemAction extends $Notifier<void> {
   void build();
@@ -295,7 +295,7 @@ final class StoreActionProvider extends $NotifierProvider<StoreAction, void> {
   }
 }
 
-String _$storeActionHash() => r'e675a4866699b0669c25603d1fb08275871c0f20';
+String _$storeActionHash() => r'1985c9fff7477a309a9f121d51fdfaf228e7bde1';
 
 abstract class _$StoreAction extends $Notifier<void> {
   void build();
@@ -366,6 +366,58 @@ abstract class _$ThemeAction extends $Notifier<void> {
   }
 }
 
+@ProviderFor(V2boardAction)
+final v2boardActionProvider = V2boardActionProvider._();
+
+final class V2boardActionProvider
+    extends $NotifierProvider<V2boardAction, V2boardAccountState> {
+  V2boardActionProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'v2boardActionProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$v2boardActionHash();
+
+  @$internal
+  @override
+  V2boardAction create() => V2boardAction();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(V2boardAccountState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<V2boardAccountState>(value),
+    );
+  }
+}
+
+String _$v2boardActionHash() => r'633e122cf973dbbe147bc826171b959251623268';
+
+abstract class _$V2boardAction extends $Notifier<V2boardAccountState> {
+  V2boardAccountState build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<V2boardAccountState, V2boardAccountState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<V2boardAccountState, V2boardAccountState>,
+              V2boardAccountState,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
 @ProviderFor(ProxiesAction)
 final proxiesActionProvider = ProxiesActionProvider._();
 
@@ -398,7 +450,7 @@ final class ProxiesActionProvider
   }
 }
 
-String _$proxiesActionHash() => r'721af9e0ec9103345422caa33b5d73851d7d1517';
+String _$proxiesActionHash() => r'6792901e36ed8d74fc5b6d761bbe5057b26ef779';
 
 abstract class _$ProxiesAction extends $Notifier<void> {
   void build();
@@ -450,7 +502,7 @@ final class ProfilesActionProvider
   }
 }
 
-String _$profilesActionHash() => r'5489060d78e082015815ed1bcb8bfda159111acb';
+String _$profilesActionHash() => r'a60edcebc9615defd530e0325bdf663fa3a47ce1';
 
 abstract class _$ProfilesAction extends $Notifier<void> {
   void build();
@@ -502,7 +554,7 @@ final class ScriptsActionProvider
   }
 }
 
-String _$scriptsActionHash() => r'f4ec8e120ae8163e4b7bb78636c30d75264de87d';
+String _$scriptsActionHash() => r'69ef0800ba3bb8c7b5de44b772c2421ac06c71da';
 
 abstract class _$ScriptsAction extends $Notifier<void> {
   void build();
@@ -555,61 +607,9 @@ final class ClashProvidersActionProvider
 }
 
 String _$clashProvidersActionHash() =>
-    r'eddc52e010d900fbf17a95f466e92217eb2a9987';
+    r'b139fd15cdc918740a6048722b936735661ecdac';
 
 abstract class _$ClashProvidersAction extends $Notifier<void> {
-  void build();
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<void, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<void, void>,
-              void,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
-  }
-}
-
-@ProviderFor(IconSetsAction)
-final iconSetsActionProvider = IconSetsActionProvider._();
-
-final class IconSetsActionProvider
-    extends $NotifierProvider<IconSetsAction, void> {
-  IconSetsActionProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'iconSetsActionProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$iconSetsActionHash();
-
-  @$internal
-  @override
-  IconSetsAction create() => IconSetsAction();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(void value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
-    );
-  }
-}
-
-String _$iconSetsActionHash() => r'2568fa51c9ac71e3f0b5c990db458ddc7337ee88';
-
-abstract class _$IconSetsAction extends $Notifier<void> {
   void build();
   @$mustCallSuper
   @override
@@ -659,61 +659,9 @@ final class GeoResourceActionProvider
   }
 }
 
-String _$geoResourceActionHash() => r'0c51366685262ad99f7965bc998aee87690ee1b6';
+String _$geoResourceActionHash() => r'f83bb6968d44102ed056d850d0dd7a46a63293d8';
 
 abstract class _$GeoResourceAction extends $Notifier<void> {
-  void build();
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<void, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<void, void>,
-              void,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
-  }
-}
-
-@ProviderFor(ResourcesAction)
-final resourcesActionProvider = ResourcesActionProvider._();
-
-final class ResourcesActionProvider
-    extends $NotifierProvider<ResourcesAction, void> {
-  ResourcesActionProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'resourcesActionProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$resourcesActionHash();
-
-  @$internal
-  @override
-  ResourcesAction create() => ResourcesAction();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(void value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
-    );
-  }
-}
-
-String _$resourcesActionHash() => r'4789f340b60eadbbc3bc124f296bbeaa35121ba6';
-
-abstract class _$ResourcesAction extends $Notifier<void> {
   void build();
   @$mustCallSuper
   @override
