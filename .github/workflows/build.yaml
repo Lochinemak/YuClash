@@ -17,7 +17,8 @@ concurrency:
 
 env:
   IS_STABLE: ${{ !contains(github.ref, '-') }}
-  FLUTTER_VERSION: '3.47.4'
+  FLUTTER_VERSION: '3.47.6'
+  GO_VERSION: '1.27.1'
 
 jobs:
   test:
@@ -37,6 +38,9 @@ jobs:
         shell: bash
         run: bash .github/scripts/resolve_pubspec_version_test.sh
 
+      - name: Test git hooks
+        run: bash tool/hooks/test.sh
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -54,7 +58,7 @@ jobs:
         run: flutter analyze --no-fatal-infos
 
       - name: Run tests
-        run: flutter test --reporter expanded --coverage
+        run: dart run tool/test.dart -- --reporter expanded --coverage
 
       - name: Check coverage
         run: dart run tool/check_coverage.dart coverage/lcov.info 75
@@ -72,7 +76,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.26.4'
+          go-version: ${{ env.GO_VERSION }}
           cache-dependency-path: core/go.sum
 
       - name: Validate Go core wrapper
@@ -80,8 +84,26 @@ jobs:
         env:
           CGO_ENABLED: 0
         run: |
-          go test .
-          go vet .
+          if ! compgen -G '*_test.go' > /dev/null; then
+            echo 'No Go tests found in core/; the test step would pass vacuously.' >&2
+            exit 1
+          fi
+          test -z "$(gofmt -l ./*.go ./cmd ./mobile ./platform ./tun)" || {
+            gofmt -l ./*.go ./cmd ./mobile ./platform ./tun >&2
+            exit 1
+          }
+          go test -count=1 .
+          go vet . ./cmd/...
+          GOOS=linux go vet ./platform
+
+      - name: Validate the Android core library
+        working-directory: core
+        env:
+          CGO_ENABLED: 0
+        run: |
+          tags="$(sed -n 's/^tags: *//p' ../build_config.yaml)"
+          test -n "$tags" || { echo 'Could not read tags from build_config.yaml' >&2; exit 1; }
+          GOOS=android GOARCH=arm64 go vet "-tags=$tags" . ./mobile ./tun ./platform
 
       - name: Validate Rust components
         run: |
@@ -128,9 +150,11 @@ jobs:
           - platform: windows
             os: windows-11-arm
             arch: arm64
+            flutter-channel: master
           - platform: linux
             os: ubuntu-24.04-arm
             arch: arm64
+            flutter-channel: master
 
     steps:
       - name: Setup rust
@@ -151,7 +175,6 @@ jobs:
         if: startsWith(matrix.platform,'android')
         run: |
           echo "${{ secrets.KEYSTORE }}" | base64 --decode > android/app/keystore.jks
-          echo "${{ secrets.FIREBASE_SERVICE_JSON }}" | base64 --decode > android/app/google-services.json
           {
             echo "keyAlias=${{ secrets.KEY_ALIAS }}"
             echo "storePassword=${{ secrets.STORE_PASSWORD }}"
@@ -161,7 +184,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.26.4'
+          go-version: ${{ env.GO_VERSION }}
           cache-dependency-path: |
             core/go.sum
 
@@ -172,7 +195,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: master
+          channel: ${{ matrix.flutter-channel || 'stable' }}
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
@@ -195,6 +218,16 @@ jobs:
         run: |
           flutter --version
           flutter pub get
+
+      - name: Fetch CA certificates
+        shell: bash
+        env:
+          CA_BUNDLE: cacert-2026-09-25.pem
+          CA_BUNDLE_SHA256: a41b5d356aea97a529fe27e0f7316d2f9d946d75927476cf9cf1b90637d00505
+        run: |
+          bundle=core/Clash.Meta/component/ca/ca-certificates.crt
+          curl -fsSL --retry 3 -o "$bundle" "https://curl.se/ca/$CA_BUNDLE"
+          echo "$CA_BUNDLE_SHA256  $bundle" | sha256sum -c -
 
       - name: Setup
         env:

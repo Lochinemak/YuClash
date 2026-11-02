@@ -1,9 +1,10 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/icons/icons.dart';
+import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/providers/database.dart';
+import 'package:fl_clash/ui/ui.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -122,7 +123,7 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
                       Text(
                         appName,
                         textAlign: TextAlign.center,
-                        style: context.textTheme.headlineMedium,
+                        style: AppTextStyle.title1.of(context),
                       ),
                       const SizedBox(height: 32),
                       RawAutocomplete<String>(
@@ -158,7 +159,6 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
                                     TextCapitalization.characters,
                                 textInputAction: TextInputAction.next,
                                 autocorrect: false,
-                                enableSuggestions: false,
                                 decoration: InputDecoration(
                                   prefixIcon: const GlyphIcon(AppGlyphs.key),
                                   border: const OutlineInputBorder(),
@@ -268,9 +268,9 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
                         const SizedBox(height: 16),
                         Text(
                           v2boardErrorText(context, widget.state.error!),
-                          style: context.textTheme.bodyMedium?.copyWith(
-                            color: context.colorScheme.error,
-                          ),
+                          style: AppTextStyle.subheadline
+                              .of(context)
+                              .copyWith(color: context.colorScheme.error),
                         ),
                       ],
                       const SizedBox(height: 24),
@@ -279,12 +279,7 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
                         child: FilledButton.icon(
                           onPressed: widget.state.loading ? null : _submit,
                           icon: widget.state.loading
-                              ? const SizedBox.square(
-                                  dimension: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
+                              ? const CommonCircleLoading(size: 20)
                               : const GlyphIcon(AppGlyphs.lockOpen, fill: 1),
                           label: Text(appLocalizations.login),
                         ),
@@ -297,9 +292,11 @@ class _V2boardLoginPageState extends ConsumerState<V2boardLoginPage> {
                       Text(
                         appLocalizations.customSetupHint,
                         textAlign: TextAlign.center,
-                        style: context.textTheme.bodySmall?.copyWith(
-                          color: context.colorScheme.onSurfaceVariant,
-                        ),
+                        style: AppTextStyle.footnote
+                            .of(context)
+                            .copyWith(
+                              color: context.colorScheme.onSurfaceVariant,
+                            ),
                       ),
                     ],
                   ),

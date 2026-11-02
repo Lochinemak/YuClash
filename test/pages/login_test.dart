@@ -1,8 +1,9 @@
-import 'package:fl_clash/icons/icons.dart';
+import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/common/v2board.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/login.dart';
 import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/ui/ui.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -197,7 +198,7 @@ void main() {
         settle: false,
       );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(CommonCircleLoading), findsOneWidget);
       expect(find.byGlyph(AppGlyphs.lockOpen), findsNothing);
       expect(
         tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
